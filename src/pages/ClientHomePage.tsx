@@ -14,6 +14,7 @@ const services = [
 
 export default function ClientHomePage() {
   const navigate = useNavigate();
+  const [showLoyalty, setShowLoyalty] = useState(false);
 
   return (
     <div className="min-h-screen bg-background pb-24">
