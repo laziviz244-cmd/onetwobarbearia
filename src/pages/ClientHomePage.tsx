@@ -39,22 +39,28 @@ export default function ClientHomePage() {
           Promoções
         </h2>
         <div className="flex gap-3 overflow-x-auto pb-2 -mx-6 px-6 scrollbar-hide">
-          {[
-            { title: "Corte + Barba", discount: "20% OFF" },
-            { title: "Primeiro corte", discount: "GRÁTIS" },
-          ].map((promo, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.15 + i * 0.05 }}
-              className="min-w-[200px] rounded-2xl bg-primary/10 border border-primary/20 p-4 flex-shrink-0"
-            >
-              <span className="text-xs font-montserrat font-bold text-primary">{promo.discount}</span>
-              <h3 className="font-montserrat font-bold text-foreground mt-1">{promo.title}</h3>
-              <p className="text-xs text-dimmed mt-1 font-opensans">Barbearia OneTwo</p>
-            </motion.div>
-          ))}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.15 }}
+            className="min-w-[200px] rounded-2xl bg-primary/10 border border-primary/20 p-4 flex-shrink-0 cursor-pointer"
+            onClick={() => navigate("/agendar")}
+          >
+            <span className="text-xs font-montserrat font-bold text-primary">20% OFF</span>
+            <h3 className="font-montserrat font-bold text-foreground mt-1">Corte + Barba</h3>
+            <p className="text-xs text-dimmed mt-1 font-opensans">Barbearia OneTwo</p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+            className="min-w-[200px] rounded-2xl bg-primary/10 border border-primary/20 p-4 flex-shrink-0 cursor-pointer"
+            onClick={() => setShowLoyalty(true)}
+          >
+            <span className="text-xs font-montserrat font-bold text-primary">FIDELIDADE</span>
+            <h3 className="font-montserrat font-bold text-foreground mt-1">Fidelidade OneTwo</h3>
+            <p className="text-xs text-dimmed mt-1 font-opensans">A cada 9 cortes, o 10º é por nossa conta!</p>
+          </motion.div>
         </div>
       </div>
 
