@@ -3,6 +3,7 @@ import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
+import { useState } from "react";
 
 const services = [
   { id: "1", name: "Degradê", price: 45 },
