@@ -105,20 +105,31 @@ export default function ClientHomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-6"
-          onClick={() => setShowLoyalty(false)}
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-6"
+          onClick={() => { setShowLoyalty(false); navigate("/agendar"); }}
         >
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            className="w-full max-w-sm rounded-2xl bg-card border border-border p-6"
+            className="w-full max-w-sm rounded-2xl p-6 relative overflow-hidden"
+            style={{
+              background: "linear-gradient(160deg, hsl(0 0% 10%), hsl(0 0% 5%))",
+              border: "1px solid hsl(45 60% 40% / 0.3)",
+              boxShadow: "0 0 40px hsl(45 60% 30% / 0.08), inset 0 1px 0 hsl(45 60% 50% / 0.1)",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="font-montserrat font-bold text-xl text-foreground text-center mb-1">
+            {/* Decorative corner accents */}
+            <div className="absolute top-0 left-0 w-12 h-12 border-t border-l rounded-tl-2xl" style={{ borderColor: "hsl(45 60% 50% / 0.3)" }} />
+            <div className="absolute top-0 right-0 w-12 h-12 border-t border-r rounded-tr-2xl" style={{ borderColor: "hsl(45 60% 50% / 0.3)" }} />
+            <div className="absolute bottom-0 left-0 w-12 h-12 border-b border-l rounded-bl-2xl" style={{ borderColor: "hsl(45 60% 50% / 0.3)" }} />
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-b border-r rounded-br-2xl" style={{ borderColor: "hsl(45 60% 50% / 0.3)" }} />
+
+            <h2 className="font-montserrat font-bold text-xl text-foreground text-center mb-0.5 tracking-tight">
               Meu Cartão Fidelidade
             </h2>
-            <p className="text-xs text-dimmed text-center font-opensans mb-6">
+            <p className="text-[11px] text-center font-montserrat tracking-[0.2em] uppercase mb-6" style={{ color: "hsl(45 50% 60%)" }}>
               Barbearia OneTwo
             </p>
 
@@ -129,42 +140,62 @@ export default function ClientHomePage() {
                 return (
                   <div
                     key={i}
-                    className="aspect-square rounded-2xl flex items-center justify-center"
+                    className="aspect-square rounded-full flex items-center justify-center relative"
                     style={{
                       background: filled
-                        ? "linear-gradient(135deg, hsl(45 80% 55%), hsl(35 90% 45%))"
+                        ? "linear-gradient(145deg, hsl(43 70% 58%), hsl(38 80% 42%), hsl(43 70% 55%))"
                         : "transparent",
-                      border: filled ? "none" : "1.5px solid hsl(var(--muted-foreground))",
+                      border: filled
+                        ? "1.5px solid hsl(43 60% 60%)"
+                        : "1.5px solid hsl(45 40% 35% / 0.5)",
+                      boxShadow: filled
+                        ? "0 0 12px hsl(43 70% 50% / 0.3), inset 0 1px 2px hsl(43 80% 70% / 0.3)"
+                        : "none",
                     }}
                   >
-                    <span className={`text-lg ${filled ? "drop-shadow-md" : "opacity-40"}`}>
-                      ✂️
-                    </span>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke={filled ? "hsl(0 0% 8%)" : "hsl(45 30% 40% / 0.5)"}
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="6" cy="6" r="3" />
+                      <path d="M8.12 8.12 12 12" />
+                      <path d="M20 4 8.12 15.88" />
+                      <circle cx="6" cy="18" r="3" />
+                      <path d="M14.8 14.8 20 20" />
+                      <path d="M8.12 8.12 12 12" />
+                    </svg>
                   </div>
                 );
               })}
             </div>
 
             {/* Progress text */}
-            <p className="text-center text-sm font-opensans text-foreground">
+            <p className="text-center text-sm font-montserrat text-foreground">
               Faltam apenas <span className="font-bold text-primary">5 cortes</span> para o seu corte grátis!
             </p>
 
             {/* Progress bar */}
-            <div className="mt-4 w-full h-2 rounded-full bg-muted overflow-hidden">
+            <div className="mt-4 w-full h-1.5 rounded-full overflow-hidden" style={{ background: "hsl(45 20% 15%)" }}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: "40%" }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="h-full rounded-full bg-primary"
+                className="h-full rounded-full"
+                style={{ background: "linear-gradient(90deg, hsl(43 70% 45%), hsl(43 80% 58%))" }}
               />
             </div>
 
             <button
-              onClick={() => setShowLoyalty(false)}
-              className="mt-6 w-full py-3 rounded-2xl bg-primary text-primary-foreground font-montserrat font-bold text-sm"
+              onClick={() => { setShowLoyalty(false); navigate("/agendar"); }}
+              className="mt-6 w-full py-3 rounded-2xl bg-primary text-primary-foreground font-montserrat font-bold text-sm tracking-tight"
             >
-              Fechar
+              Ver detalhes do seu corte grátis
             </button>
           </motion.div>
         </motion.div>
