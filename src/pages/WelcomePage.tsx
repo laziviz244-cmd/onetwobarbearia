@@ -28,6 +28,9 @@ export default function WelcomePage() {
         <img src={logoOnetwo} alt="Onetwo" className="h-12 w-auto mb-6" />
 
         <div className="flex w-full max-w-sm flex-col gap-3">
+          <p className="text-center font-opensans font-light text-sm tracking-wide text-primary">
+            Barbeiro Educador &nbsp;|&nbsp; +1000 atendimentos
+          </p>
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
