@@ -243,7 +243,7 @@ export default function ClientHomePage() {
               className="mt-6 w-full py-3 rounded-2xl bg-primary text-primary-foreground font-montserrat font-bold text-sm tracking-tight"
             >
               Não perca tempo e{" "}
-              <span style={{ color: "#d4ff00" }}>agende já o seu corte!</span>
+              <span style={{ color: "#d4ff00" }}>agende o seu corte agora!</span>
             </button>
           </motion.div>
         </motion.div>
