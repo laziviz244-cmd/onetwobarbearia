@@ -70,40 +70,37 @@ export default function ClientHomePage() {
             </span>
 
             {/* 3D Metallic Emblem */}
-            <div className="relative w-28 h-28 mb-1 group">
+            <div className="relative w-32 h-32 mb-1 group">
               {/* Outer polished bevel */}
               <div
                 className="absolute inset-0 rounded-full"
                 style={{
-                  background: "conic-gradient(from 0deg, hsl(43 80% 58%), hsl(43 60% 38%), hsl(43 90% 65%), hsl(43 55% 35%), hsl(43 80% 58%))",
-                  padding: "4px",
+                  background: "conic-gradient(from 0deg, hsl(45 100% 60%), hsl(40 80% 40%), hsl(48 100% 70%), hsl(42 70% 38%), hsl(45 100% 60%))",
+                  padding: "5px",
                 }}
               >
                 {/* Inner brushed metal center */}
                 <div
                   className="w-full h-full rounded-full flex flex-col items-center justify-center relative overflow-hidden"
                   style={{
-                    background: "linear-gradient(160deg, hsl(43 50% 42%), hsl(43 40% 32%), hsl(43 55% 38%))",
-                    boxShadow: "inset 0 2px 6px hsl(43 80% 65% / 0.3), inset 0 -2px 6px hsl(0 0% 0% / 0.5), 0 4px 16px hsl(0 0% 0% / 0.6)",
+                    background: "radial-gradient(ellipse at 30% 20%, hsl(45 80% 55%), hsl(43 60% 38%) 50%, hsl(40 50% 30%) 100%)",
+                    boxShadow: "inset 0 3px 8px hsl(45 100% 70% / 0.4), inset 0 -3px 8px hsl(0 0% 0% / 0.6), 0 6px 24px hsl(0 0% 0% / 0.7)",
                   }}
                 >
-                  {/* Brushed metal texture (subtle lines) */}
+                  {/* Brushed metal texture */}
                   <div
-                    className="absolute inset-0 rounded-full opacity-20"
+                    className="absolute inset-0 rounded-full opacity-15"
                     style={{
-                      background: "repeating-linear-gradient(90deg, transparent, transparent 2px, hsl(43 30% 60% / 0.15) 2px, hsl(43 30% 60% / 0.15) 3px)",
+                      background: "repeating-linear-gradient(90deg, transparent, transparent 2px, hsl(45 40% 65% / 0.2) 2px, hsl(45 40% 65% / 0.2) 3px)",
                     }}
                   />
 
                   {/* Shimmer sweep */}
-                  <div
-                    className="absolute inset-0 rounded-full overflow-hidden"
-                  >
+                  <div className="absolute inset-0 rounded-full overflow-hidden">
                     <div
                       className="absolute -inset-full animate-shimmer-gold"
                       style={{
-                        background: "linear-gradient(90deg, transparent 30%, hsl(43 80% 75% / 0.35) 50%, transparent 70%)",
-                        animationDelay: "0s",
+                        background: "linear-gradient(90deg, transparent 20%, hsl(45 100% 80% / 0.5) 45%, hsl(45 100% 95% / 0.7) 50%, hsl(45 100% 80% / 0.5) 55%, transparent 80%)",
                         animationIterationCount: "infinite",
                         animationDuration: "5s",
                       }}
@@ -112,19 +109,19 @@ export default function ClientHomePage() {
 
                   {/* Embossed text */}
                   <span
-                    className="relative font-montserrat font-extrabold text-[13px] leading-tight text-center"
+                    className="relative font-montserrat font-extrabold text-[14px] leading-tight text-center"
                     style={{
-                      color: "hsl(0 0% 8%)",
-                      textShadow: "0 1px 1px hsl(43 60% 55% / 0.6), 0 -1px 1px hsl(0 0% 0% / 0.3)",
+                      color: "hsl(0 0% 5%)",
+                      textShadow: "0 1.5px 1px hsl(45 80% 60% / 0.7), 0 -1px 1px hsl(0 0% 0% / 0.4)",
                     }}
                   >
                     Meu
                   </span>
                   <span
-                    className="relative font-montserrat font-extrabold text-[11px] leading-tight text-center"
+                    className="relative font-montserrat font-extrabold text-[12px] leading-tight text-center"
                     style={{
-                      color: "hsl(0 0% 8%)",
-                      textShadow: "0 1px 1px hsl(43 60% 55% / 0.6), 0 -1px 1px hsl(0 0% 0% / 0.3)",
+                      color: "hsl(0 0% 5%)",
+                      textShadow: "0 1.5px 1px hsl(45 80% 60% / 0.7), 0 -1px 1px hsl(0 0% 0% / 0.4)",
                     }}
                   >
                     Corte Grátis
@@ -134,9 +131,9 @@ export default function ClientHomePage() {
 
               {/* Outer glow */}
               <div
-                className="absolute -inset-1 rounded-full pointer-events-none"
+                className="absolute -inset-2 rounded-full pointer-events-none"
                 style={{
-                  boxShadow: "0 0 20px hsl(43 70% 50% / 0.15), 0 0 40px hsl(43 60% 40% / 0.08)",
+                  boxShadow: "0 0 30px hsl(45 90% 55% / 0.25), 0 0 60px hsl(45 80% 45% / 0.12)",
                 }}
               />
             </div>
