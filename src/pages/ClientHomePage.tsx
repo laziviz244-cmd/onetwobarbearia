@@ -94,11 +94,11 @@ export default function ClientHomePage() {
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-montserrat font-semibold text-[11px] leading-tight" style={{ color: "hsl(15 45% 62%)" }}>
-                  Liberar meu
+                <span className="font-montserrat font-bold text-[13px] leading-tight" style={{ color: "hsl(35 45% 58%)" }}>
+                  Meu
                 </span>
-                <span className="font-montserrat font-bold text-[12px] leading-tight" style={{ color: "hsl(20 50% 65%)" }}>
-                  Corte Grátis!
+                <span className="font-montserrat font-bold text-[11px] leading-tight" style={{ color: "hsl(35 40% 52%)" }}>
+                  Corte Grátis
                 </span>
               </div>
             </div>
