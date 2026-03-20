@@ -25,11 +25,7 @@ export default function WelcomePage() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="relative -mt-20 flex flex-1 flex-col items-center px-6 pb-10"
       >
-        <img src={logoOnetwo} alt="Onetwo" className="h-12 w-auto mb-4" />
-        
-        <p className="text-center text-subtle font-opensans text-base max-w-xs mb-10">
-          Seu estilo, no seu tempo. Agende com os melhores barbeiros da cidade.
-        </p>
+        <img src={logoOnetwo} alt="Onetwo" className="h-12 w-auto mb-6" />
 
         <div className="flex w-full max-w-sm flex-col gap-3">
           <motion.button
@@ -39,15 +35,6 @@ export default function WelcomePage() {
             className="w-full rounded-2xl btn-primary-glow py-4 font-montserrat font-bold text-primary-foreground text-lg tracking-tight"
           >
             Agendar agora
-          </motion.button>
-
-          <motion.button
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            onClick={() => navigate("/dashboard")}
-            className="w-full rounded-2xl surface-card py-4 font-montserrat font-semibold text-foreground tracking-tight"
-          >
-            Sou barbeiro
           </motion.button>
         </div>
 
