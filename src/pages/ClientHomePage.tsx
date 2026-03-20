@@ -55,12 +55,52 @@ export default function ClientHomePage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="min-w-[200px] rounded-2xl bg-primary/10 border border-primary/20 p-4 flex-shrink-0 cursor-pointer"
+            className="min-w-[200px] rounded-2xl p-4 flex-shrink-0 cursor-pointer flex flex-col items-center"
+            style={{
+              background: "hsl(0 0% 4%)",
+              border: "1px solid hsl(45 60% 40% / 0.4)",
+            }}
             onClick={() => setShowLoyalty(true)}
           >
-            <span className="text-xs font-montserrat font-bold text-primary">FIDELIDADE</span>
-            <h3 className="font-montserrat font-bold text-foreground mt-1">Fidelidade OneTwo</h3>
-            <p className="text-xs text-dimmed mt-1 font-opensans">A cada 9 cortes, o 10º é por nossa conta!</p>
+            <span
+              className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase mb-3"
+              style={{ color: "hsl(45 50% 55%)" }}
+            >
+              Membro VIP OneTwo
+            </span>
+            {/* Progress Ring */}
+            <div className="relative w-20 h-20 mb-2">
+              <svg viewBox="0 0 80 80" className="w-full h-full -rotate-90">
+                <circle
+                  cx="40" cy="40" r="34"
+                  fill="none"
+                  stroke="hsl(45 40% 25% / 0.3)"
+                  strokeWidth="5"
+                />
+                <circle
+                  cx="40" cy="40" r="34"
+                  fill="none"
+                  stroke="url(#goldGradRing)"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeDasharray={`${2 * Math.PI * 34 * 0.4} ${2 * Math.PI * 34 * 0.6}`}
+                />
+                <defs>
+                  <linearGradient id="goldGradRing" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="hsl(43 80% 58%)" />
+                    <stop offset="100%" stopColor="hsl(38 70% 42%)" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="font-montserrat font-bold text-sm leading-tight" style={{ color: "hsl(43 70% 55%)" }}>
+                  Faltam 5
+                </span>
+                <span className="font-montserrat text-[9px] leading-tight" style={{ color: "hsl(45 50% 50%)" }}>
+                  Cortes Grátis
+                </span>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
