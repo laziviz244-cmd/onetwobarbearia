@@ -8,6 +8,8 @@ import ClientHomePage from "./pages/ClientHomePage";
 import BarberShopDetailPage from "./pages/BarberShopDetailPage";
 import BookingPage from "./pages/BookingPage";
 import BarberDashboard from "./pages/BarberDashboard";
+import MeusAgendamentos from "./pages/MeusAgendamentos";
+import Perfil from "./pages/Perfil";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
