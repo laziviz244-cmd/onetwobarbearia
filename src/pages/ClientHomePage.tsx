@@ -216,6 +216,12 @@ export default function ClientHomePage() {
               })}
             </div>
 
+            {/* Rule text */}
+            <p className="text-center text-sm font-montserrat mb-2">
+              <span className="text-foreground">A cada 9 cortes, o 10º é </span>
+              <span className="font-bold" style={{ color: "hsl(43 80% 55%)" }}>por nossa conta!</span>
+            </p>
+
             {/* Progress text */}
             <p className="text-center text-sm font-montserrat text-foreground">
               Faltam apenas <span className="font-bold text-primary">5 cortes</span> para o seu corte grátis!
