@@ -68,39 +68,77 @@ export default function ClientHomePage() {
             >
               Membro VIP OneTwo
             </span>
-            {/* Progress Ring — no frame, just the ring */}
-            <div className="relative w-24 h-24 mb-1">
-              <svg viewBox="0 0 96 96" className="w-full h-full -rotate-90">
-                <circle
-                  cx="48" cy="48" r="40"
-                  fill="none"
-                  stroke="hsl(43 50% 25% / 0.4)"
-                  strokeWidth="5"
-                />
-                <circle
-                  cx="48" cy="48" r="40"
-                  fill="none"
-                  stroke="url(#roseGoldRing)"
-                  strokeWidth="5"
-                  strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 40 * 0.4} ${2 * Math.PI * 40 * 0.6}`}
-                />
-                <defs>
-                  <linearGradient id="roseGoldRing" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="hsl(45 90% 65%)" />
-                    <stop offset="50%" stopColor="hsl(40 85% 55%)" />
-                    <stop offset="100%" stopColor="hsl(35 80% 45%)" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-montserrat font-bold text-[13px] leading-tight" style={{ color: "hsl(43 85% 60%)" }}>
-                  Meu
-                </span>
-                <span className="font-montserrat font-bold text-[11px] leading-tight" style={{ color: "hsl(40 80% 55%)" }}>
-                  Corte Grátis
-                </span>
+
+            {/* 3D Metallic Emblem */}
+            <div className="relative w-28 h-28 mb-1 group">
+              {/* Outer polished bevel */}
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: "conic-gradient(from 0deg, hsl(43 80% 58%), hsl(43 60% 38%), hsl(43 90% 65%), hsl(43 55% 35%), hsl(43 80% 58%))",
+                  padding: "4px",
+                }}
+              >
+                {/* Inner brushed metal center */}
+                <div
+                  className="w-full h-full rounded-full flex flex-col items-center justify-center relative overflow-hidden"
+                  style={{
+                    background: "linear-gradient(160deg, hsl(43 50% 42%), hsl(43 40% 32%), hsl(43 55% 38%))",
+                    boxShadow: "inset 0 2px 6px hsl(43 80% 65% / 0.3), inset 0 -2px 6px hsl(0 0% 0% / 0.5), 0 4px 16px hsl(0 0% 0% / 0.6)",
+                  }}
+                >
+                  {/* Brushed metal texture (subtle lines) */}
+                  <div
+                    className="absolute inset-0 rounded-full opacity-20"
+                    style={{
+                      background: "repeating-linear-gradient(90deg, transparent, transparent 2px, hsl(43 30% 60% / 0.15) 2px, hsl(43 30% 60% / 0.15) 3px)",
+                    }}
+                  />
+
+                  {/* Shimmer sweep */}
+                  <div
+                    className="absolute inset-0 rounded-full overflow-hidden"
+                  >
+                    <div
+                      className="absolute -inset-full animate-shimmer-gold"
+                      style={{
+                        background: "linear-gradient(90deg, transparent 30%, hsl(43 80% 75% / 0.35) 50%, transparent 70%)",
+                        animationDelay: "0s",
+                        animationIterationCount: "infinite",
+                        animationDuration: "5s",
+                      }}
+                    />
+                  </div>
+
+                  {/* Embossed text */}
+                  <span
+                    className="relative font-montserrat font-extrabold text-[13px] leading-tight text-center"
+                    style={{
+                      color: "hsl(0 0% 8%)",
+                      textShadow: "0 1px 1px hsl(43 60% 55% / 0.6), 0 -1px 1px hsl(0 0% 0% / 0.3)",
+                    }}
+                  >
+                    Meu
+                  </span>
+                  <span
+                    className="relative font-montserrat font-extrabold text-[11px] leading-tight text-center"
+                    style={{
+                      color: "hsl(0 0% 8%)",
+                      textShadow: "0 1px 1px hsl(43 60% 55% / 0.6), 0 -1px 1px hsl(0 0% 0% / 0.3)",
+                    }}
+                  >
+                    Corte Grátis
+                  </span>
+                </div>
               </div>
+
+              {/* Outer glow */}
+              <div
+                className="absolute -inset-1 rounded-full pointer-events-none"
+                style={{
+                  boxShadow: "0 0 20px hsl(43 70% 50% / 0.15), 0 0 40px hsl(43 60% 40% / 0.08)",
+                }}
+              />
             </div>
           </motion.div>
         </div>

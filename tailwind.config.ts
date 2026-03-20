@@ -82,11 +82,16 @@ export default {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.5" },
         },
+        "shimmer-gold": {
+          "0%": { transform: "translateX(-100%) rotate(25deg)" },
+          "100%": { transform: "translateX(100%) rotate(25deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "pulse-blue": "pulse-blue 2s ease-in-out infinite",
+        "shimmer-gold": "shimmer-gold 1.2s ease-in-out",
       },
     },
   },
