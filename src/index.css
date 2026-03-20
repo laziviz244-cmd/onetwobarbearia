@@ -102,4 +102,17 @@
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
+
+  /* Hide platform branding badge globally */
+  [id*="lovable"],
+  [class*="lovable-badge"],
+  [class*="gpt-engineer"],
+  [id*="gpt-engineer"],
+  a[href*="lovable.dev"][style],
+  #lovable-badge {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
 }
