@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 
 const navItems = [
   { icon: Home, path: "/cliente", label: "Início" },
-  { icon: Search, path: "/busca", label: "Buscar" },
   { icon: Plus, path: "/agendar", label: "Agendar", isCenter: true },
   { icon: Calendar, path: "/meus-agendamentos", label: "Agenda" },
   { icon: User, path: "/perfil", label: "Perfil" },
