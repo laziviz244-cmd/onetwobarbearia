@@ -8,6 +8,8 @@ import ClientHomePage from "./pages/ClientHomePage";
 import BarberShopDetailPage from "./pages/BarberShopDetailPage";
 import BookingPage from "./pages/BookingPage";
 import BarberDashboard from "./pages/BarberDashboard";
+import MeusAgendamentos from "./pages/MeusAgendamentos";
+import Perfil from "./pages/Perfil";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
           <Route path="/agendar" element={<BookingPage />} />
           <Route path="/dashboard" element={<BarberDashboard />} />
+          <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
+          <Route path="/perfil" element={<Perfil />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
