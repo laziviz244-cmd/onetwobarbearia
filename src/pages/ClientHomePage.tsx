@@ -58,46 +58,47 @@ export default function ClientHomePage() {
             className="min-w-[200px] rounded-2xl p-4 flex-shrink-0 cursor-pointer flex flex-col items-center"
             style={{
               background: "hsl(0 0% 4%)",
-              border: "1px solid hsl(45 60% 40% / 0.4)",
+              border: "1px solid hsl(15 40% 35% / 0.4)",
             }}
             onClick={() => setShowLoyalty(true)}
           >
             <span
               className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase mb-3"
-              style={{ color: "hsl(45 50% 55%)" }}
+              style={{ color: "hsl(15 35% 55%)" }}
             >
               Membro VIP OneTwo
             </span>
-            {/* Progress Ring */}
-            <div className="relative w-20 h-20 mb-2">
-              <svg viewBox="0 0 80 80" className="w-full h-full -rotate-90">
+            {/* Progress Ring — no frame, just the ring */}
+            <div className="relative w-24 h-24 mb-1">
+              <svg viewBox="0 0 96 96" className="w-full h-full -rotate-90">
                 <circle
-                  cx="40" cy="40" r="34"
+                  cx="48" cy="48" r="40"
                   fill="none"
-                  stroke="hsl(45 40% 25% / 0.3)"
+                  stroke="hsl(15 25% 20% / 0.35)"
                   strokeWidth="5"
                 />
                 <circle
-                  cx="40" cy="40" r="34"
+                  cx="48" cy="48" r="40"
                   fill="none"
-                  stroke="url(#goldGradRing)"
+                  stroke="url(#roseGoldRing)"
                   strokeWidth="5"
                   strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 34 * 0.4} ${2 * Math.PI * 34 * 0.6}`}
+                  strokeDasharray={`${2 * Math.PI * 40 * 0.4} ${2 * Math.PI * 40 * 0.6}`}
                 />
                 <defs>
-                  <linearGradient id="goldGradRing" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="hsl(43 80% 58%)" />
-                    <stop offset="100%" stopColor="hsl(38 70% 42%)" />
+                  <linearGradient id="roseGoldRing" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="hsl(15 55% 65%)" />
+                    <stop offset="50%" stopColor="hsl(25 50% 55%)" />
+                    <stop offset="100%" stopColor="hsl(15 45% 45%)" />
                   </linearGradient>
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-montserrat font-bold text-sm leading-tight" style={{ color: "hsl(43 70% 55%)" }}>
-                  Faltam 5
+                <span className="font-montserrat font-semibold text-[11px] leading-tight" style={{ color: "hsl(15 45% 62%)" }}>
+                  Liberar meu
                 </span>
-                <span className="font-montserrat text-[9px] leading-tight" style={{ color: "hsl(45 50% 50%)" }}>
-                  Cortes Grátis
+                <span className="font-montserrat font-bold text-[12px] leading-tight" style={{ color: "hsl(20 50% 65%)" }}>
+                  Corte Grátis!
                 </span>
               </div>
             </div>
