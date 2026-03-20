@@ -58,13 +58,13 @@ export default function ClientHomePage() {
             className="min-w-[200px] rounded-2xl p-4 flex-shrink-0 cursor-pointer flex flex-col items-center"
             style={{
               background: "hsl(0 0% 4%)",
-              border: "1px solid hsl(15 40% 35% / 0.4)",
+              border: "1px solid hsl(43 70% 45% / 0.5)",
             }}
             onClick={() => setShowLoyalty(true)}
           >
             <span
               className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase mb-3"
-              style={{ color: "hsl(15 35% 55%)" }}
+              style={{ color: "hsl(43 80% 55%)" }}
             >
               Membro VIP OneTwo
             </span>
@@ -74,7 +74,7 @@ export default function ClientHomePage() {
                 <circle
                   cx="48" cy="48" r="40"
                   fill="none"
-                  stroke="hsl(15 25% 20% / 0.35)"
+                  stroke="hsl(43 50% 25% / 0.4)"
                   strokeWidth="5"
                 />
                 <circle
@@ -87,17 +87,17 @@ export default function ClientHomePage() {
                 />
                 <defs>
                   <linearGradient id="roseGoldRing" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stopColor="hsl(15 55% 65%)" />
-                    <stop offset="50%" stopColor="hsl(25 50% 55%)" />
-                    <stop offset="100%" stopColor="hsl(15 45% 45%)" />
+                    <stop offset="0%" stopColor="hsl(45 90% 65%)" />
+                    <stop offset="50%" stopColor="hsl(40 85% 55%)" />
+                    <stop offset="100%" stopColor="hsl(35 80% 45%)" />
                   </linearGradient>
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="font-montserrat font-bold text-[13px] leading-tight" style={{ color: "hsl(35 45% 58%)" }}>
+                <span className="font-montserrat font-bold text-[13px] leading-tight" style={{ color: "hsl(43 85% 60%)" }}>
                   Meu
                 </span>
-                <span className="font-montserrat font-bold text-[11px] leading-tight" style={{ color: "hsl(35 40% 52%)" }}>
+                <span className="font-montserrat font-bold text-[11px] leading-tight" style={{ color: "hsl(40 80% 55%)" }}>
                   Corte Grátis
                 </span>
               </div>
