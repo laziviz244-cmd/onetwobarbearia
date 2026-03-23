@@ -167,9 +167,9 @@ export default function ClientHomePage() {
                 <span className="text-dimmed text-xs font-opensans">Foto</span>
               </div>
               <div className="p-3">
-                <h3 className="font-montserrat font-bold text-foreground">{service.name}</h3>
-                <span className="font-montserrat font-bold text-primary text-sm tabular-nums">
-                  R$ {service.price.toFixed(2)}
+                <h3 className="font-montserrat font-bold text-foreground text-sm">{service.name}</h3>
+                <span className="font-montserrat font-bold text-primary text-xs tabular-nums">
+                  {service.price}
                 </span>
               </div>
             </motion.button>
