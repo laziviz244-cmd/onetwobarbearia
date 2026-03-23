@@ -46,12 +46,93 @@ export default function ClientHomePage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.15 }}
-            className="min-w-[200px] rounded-2xl bg-primary/10 border border-primary/20 p-4 flex-shrink-0 cursor-pointer"
+            className="min-w-[200px] rounded-2xl p-4 flex-shrink-0 cursor-pointer flex flex-col items-center"
+            style={{
+              background: "hsl(0 0% 4%)",
+              border: "1px solid hsl(43 70% 45% / 0.5)",
+            }}
             onClick={() => navigate("/agendar")}
           >
-            <span className="text-xs font-montserrat font-bold text-primary">20% OFF</span>
-            <h3 className="font-montserrat font-bold text-foreground mt-1">Corte + Barba</h3>
-            <p className="text-xs text-dimmed mt-1 font-opensans">Barbearia OneTwo</p>
+            <span
+              className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase mb-3"
+              style={{ color: "hsl(43 80% 55%)" }}
+            >
+              Assinatura One Two
+            </span>
+
+            {/* 3D Metallic Emblem */}
+            <div className="relative w-32 h-32 mb-1 group">
+              <div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: "conic-gradient(from 0deg, hsl(45 100% 60%), hsl(40 80% 40%), hsl(48 100% 70%), hsl(42 70% 38%), hsl(45 100% 60%))",
+                  padding: "5px",
+                }}
+              >
+                <div
+                  className="w-full h-full rounded-full flex flex-col items-center justify-center relative overflow-hidden"
+                  style={{
+                    background: "radial-gradient(ellipse at 30% 20%, hsl(45 80% 55%), hsl(43 60% 38%) 50%, hsl(40 50% 30%) 100%)",
+                    boxShadow: "inset 0 3px 8px hsl(45 100% 70% / 0.4), inset 0 -3px 8px hsl(0 0% 0% / 0.6), 0 6px 24px hsl(0 0% 0% / 0.7)",
+                  }}
+                >
+                  <div
+                    className="absolute inset-0 rounded-full opacity-15"
+                    style={{
+                      background: "repeating-linear-gradient(90deg, transparent, transparent 2px, hsl(45 40% 65% / 0.2) 2px, hsl(45 40% 65% / 0.2) 3px)",
+                    }}
+                  />
+                  <div className="absolute inset-0 rounded-full overflow-hidden">
+                    <div
+                      className="absolute -inset-full animate-shimmer-gold"
+                      style={{
+                        background: "linear-gradient(90deg, transparent 20%, hsl(45 100% 80% / 0.5) 45%, hsl(45 100% 95% / 0.7) 50%, hsl(45 100% 80% / 0.5) 55%, transparent 80%)",
+                        animationIterationCount: "infinite",
+                        animationDuration: "5s",
+                      }}
+                    />
+                  </div>
+                  {/* Trophy icon */}
+                  <svg
+                    className="relative"
+                    width="36"
+                    height="36"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="hsl(0 0% 5%)"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    style={{
+                      filter: "drop-shadow(0 1px 1px hsl(45 80% 60% / 0.5))",
+                    }}
+                  >
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                    <path d="M4 22h16" />
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                  </svg>
+                </div>
+              </div>
+              <div
+                className="absolute -inset-2 rounded-full pointer-events-none"
+                style={{
+                  boxShadow: "0 0 30px hsl(45 90% 55% / 0.25), 0 0 60px hsl(45 80% 45% / 0.12)",
+                }}
+              />
+            </div>
+
+            <span
+              className="text-[11px] font-montserrat font-bold mt-2"
+              style={{
+                color: "hsl(0 0% 5%)",
+                textShadow: "0 1.5px 1px hsl(45 80% 60% / 0.7), 0 -1px 1px hsl(0 0% 0% / 0.4)",
+              }}
+            >
+              Cortes Ilimitados
+            </span>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
