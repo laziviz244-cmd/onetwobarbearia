@@ -27,6 +27,7 @@ const App = () => (
             <Route path="/cliente" element={<ClientHomePage />} />
             <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
             <Route path="/agendar" element={<BookingPage />} />
+            <Route path="/planos" element={<ClientHomePage />} />
             <Route path="/dashboard" element={<BarberDashboard />} />
             <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
             <Route path="/perfil" element={<Perfil />} />

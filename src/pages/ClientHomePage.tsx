@@ -54,7 +54,7 @@ export default function ClientHomePage() {
             onClick={() => navigate("/agendar")}
           >
             <span
-              className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase mb-3"
+              className="text-[8px] font-montserrat font-bold tracking-[0.12em] uppercase mb-3 whitespace-nowrap"
               style={{ color: "hsl(43 80% 55%)" }}
             >
               Assinatura One Two
@@ -92,27 +92,28 @@ export default function ClientHomePage() {
                       }}
                     />
                   </div>
-                  {/* Trophy icon */}
+                  {/* Solid Trophy icon */}
                   <svg
                     className="relative"
-                    width="36"
-                    height="36"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="hsl(0 0% 5%)"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 576 512"
                     style={{
-                      filter: "drop-shadow(0 1px 1px hsl(45 80% 60% / 0.5))",
+                      filter: "drop-shadow(0 3px 6px hsl(0 0% 0% / 0.7))",
                     }}
                   >
-                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
-                    <path d="M4 22h16" />
-                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
-                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
-                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                    <defs>
+                      <linearGradient id="trophyGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#B8860B" />
+                        <stop offset="40%" stopColor="#FFD700" />
+                        <stop offset="60%" stopColor="#DAA520" />
+                        <stop offset="100%" stopColor="#FFD700" />
+                      </linearGradient>
+                    </defs>
+                    <path
+                      fill="url(#trophyGold)"
+                      d="M400 0H176c-26.5 0-48.1 21.8-47.1 48.2c.2 5.3 .4 10.6 .7 15.8H24C10.7 64 0 74.7 0 88c0 92.6 33.5 157 78.5 200.7c44.3 43.1 98.3 64.8 138.1 75.8c23.4 6.5 39.4 26 39.4 45.6c0 20.9-17 37.9-37.9 37.9H192c-17.7 0-32 14.3-32 32s14.3 32 32 32H384c17.7 0 32-14.3 32-32s-14.3-32-32-32h-26.1c-20.9 0-37.9-17-37.9-37.9c0-19.6 15.9-39.2 39.4-45.6c39.9-11 93.9-32.7 138.2-75.8C542.5 245 576 180.6 576 88c0-13.3-10.7-24-24-24H446.4c.3-5.2 .5-10.4 .7-15.8C448.1 21.8 426.5 0 400 0zM48.9 112h84.4c9.1 90.1 29.2 150.3 51.9 190.6c-24.9-11-53.4-30.5-78.1-54.9C72 213.9 48.9 157.4 48.9 112zM469.1 247.7c-24.7 24.4-53.1 43.8-78 54.9c22.6-40.3 42.8-100.5 51.9-190.6h84.1c0 45.4-23.1 101.9-57.9 135.7z"
+                    />
                   </svg>
                 </div>
               </div>
@@ -125,10 +126,10 @@ export default function ClientHomePage() {
             </div>
 
             <span
-              className="text-[11px] font-montserrat font-bold mt-2"
+              className="text-[11px] font-montserrat font-extrabold mt-2"
               style={{
-                color: "hsl(0 0% 5%)",
-                textShadow: "0 1.5px 1px hsl(45 80% 60% / 0.7), 0 -1px 1px hsl(0 0% 0% / 0.4)",
+                color: "#000000",
+                textShadow: "0 0 8px #FFD700, 0 0 16px #FFD700, 0 0 24px #DAA520, 0 1px 1px #FFD700",
               }}
             >
               Cortes Ilimitados
