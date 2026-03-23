@@ -6,10 +6,12 @@ import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState } from "react";
 
 const services = [
-  { id: "1", name: "Degradê", price: 45 },
-  { id: "2", name: "Moicano", price: 40 },
-  { id: "3", name: "Barba", price: 35 },
-  { id: "4", name: "Social", price: 30 },
+  { id: "1", name: "Corte", price: "R$ 30,00" },
+  { id: "2", name: "Barba", price: "R$ 25,00" },
+  { id: "3", name: "Combo Corte + Barba", price: "R$ 50,00" },
+  { id: "4", name: "Pezinho", price: "R$ 10,00" },
+  { id: "5", name: "Luzes", price: "A partir de R$ 75,00" },
+  { id: "6", name: "Nevou", price: "A partir de R$ 100,00" },
 ];
 
 export default function ClientHomePage() {
