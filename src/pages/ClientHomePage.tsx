@@ -57,7 +57,7 @@ export default function ClientHomePage() {
               className="text-[8px] font-montserrat font-bold tracking-[0.12em] uppercase mb-3 whitespace-nowrap"
               style={{ color: "hsl(43 80% 55%)" }}
             >
-              Assinatura One Two
+              Assinatura OneTwo
             </span>
 
             {/* 3D Metallic Emblem */}
