@@ -68,7 +68,7 @@ export function BottomNav() {
                 <TrophySolidIcon className="h-5 w-5 transition-colors" isActive={isActive} />
                 <span
                   className={`text-[10px] font-opensans font-semibold`}
-                  style={{ color: isActive ? "#FFD700" : undefined }}
+                  style={{ color: isActive ? "#D4AF37" : undefined }}
                 >
                   {!isActive && <span className="text-dimmed">{item.label}</span>}
                   {isActive && item.label}

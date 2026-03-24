@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { isPublicAccess } from "@/lib/isPublicAccess";
 import MaintenanceModal from "./MaintenanceModal";
 
-const BLOCKED_ROUTES = ["/agendar", "/perfil", "/meus-agendamentos", "/dashboard", "/cliente"];
+const BLOCKED_ROUTES = ["/perfil", "/meus-agendamentos", "/dashboard", "/cliente"];
 
 export default function PublicGuard({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();

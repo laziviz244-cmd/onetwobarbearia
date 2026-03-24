@@ -54,7 +54,7 @@ export default function ClientHomePage() {
             onClick={() => navigate("/agendar")}
           >
             <span
-              className="text-[8px] font-montserrat font-bold tracking-[0.12em] uppercase mb-3 whitespace-nowrap"
+              className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase mb-3 whitespace-nowrap"
               style={{ color: "hsl(43 80% 55%)" }}
             >
               Assinatura OneTwo

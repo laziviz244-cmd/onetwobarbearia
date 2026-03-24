@@ -11,11 +11,7 @@ export default function WelcomePage() {
   const [showMaintenance, setShowMaintenance] = useState(false);
 
   const handleNavigate = (path: string) => {
-    if (isPublicAccess()) {
-      setShowMaintenance(true);
-    } else {
-      navigate(path);
-    }
+    navigate(path);
   };
 
   return (
