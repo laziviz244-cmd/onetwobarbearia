@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Check } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import MaintenanceOverlay from "@/components/MaintenanceOverlay";
 
 const timeSlots = [
   "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
