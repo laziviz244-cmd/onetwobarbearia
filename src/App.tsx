@@ -3,7 +3,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import PublicGuard from "./components/PublicGuard";
 import WelcomePage from "./pages/WelcomePage";
 import ClientHomePage from "./pages/ClientHomePage";
 import BarberShopDetailPage from "./pages/BarberShopDetailPage";
@@ -21,19 +20,17 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <PublicGuard>
-          <Routes>
-            <Route path="/" element={<WelcomePage />} />
-            <Route path="/cliente" element={<ClientHomePage />} />
-            <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
-            <Route path="/agendar" element={<BookingPage />} />
-            <Route path="/planos" element={<ClientHomePage />} />
-            <Route path="/dashboard" element={<BarberDashboard />} />
-            <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
-            <Route path="/perfil" element={<Perfil />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </PublicGuard>
+        <Routes>
+          <Route path="/" element={<WelcomePage />} />
+          <Route path="/cliente" element={<ClientHomePage />} />
+          <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
+          <Route path="/agendar" element={<BookingPage />} />
+          <Route path="/planos" element={<ClientHomePage />} />
+          <Route path="/dashboard" element={<BarberDashboard />} />
+          <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
