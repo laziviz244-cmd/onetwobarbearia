@@ -11,9 +11,9 @@ const TrophySolidIcon = ({ className, isActive }: { className?: string; isActive
   >
     <defs>
       <linearGradient id="navTrophyGold" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor={isActive ? "#FFD700" : "#8B7355"} />
-        <stop offset="50%" stopColor={isActive ? "#DAA520" : "#6B5B3E"} />
-        <stop offset="100%" stopColor={isActive ? "#FFD700" : "#8B7355"} />
+        <stop offset="0%" stopColor={isActive ? "#D4AF37" : "#8B7355"} />
+        <stop offset="50%" stopColor={isActive ? "#B8860B" : "#6B5B3E"} />
+        <stop offset="100%" stopColor={isActive ? "#D4AF37" : "#8B7355"} />
       </linearGradient>
     </defs>
     <path
