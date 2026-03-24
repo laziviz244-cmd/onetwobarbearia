@@ -61,6 +61,7 @@ export default function BookingPage() {
 
   return (
     <div className="min-h-screen bg-background pb-32">
+      <MaintenanceOverlay />
       {/* Header */}
       <div className="px-6 pt-12 flex items-center gap-4">
         <button
