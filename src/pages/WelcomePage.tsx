@@ -1,18 +1,10 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import logoOnetwo from "@/assets/logo-onetwo.png";
 import heroBarber from "@/assets/hero-barber.jpg";
-import { isPublicAccess } from "@/lib/isPublicAccess";
-import MaintenanceModal from "@/components/MaintenanceModal";
 
 export default function WelcomePage() {
   const navigate = useNavigate();
-  const [showMaintenance, setShowMaintenance] = useState(false);
-
-  const handleNavigate = (path: string) => {
-    navigate(path);
-  };
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
@@ -42,7 +34,7 @@ export default function WelcomePage() {
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            onClick={() => handleNavigate("/cliente")}
+            onClick={() => navigate("/cliente")}
             className="w-full rounded-2xl btn-primary-glow py-4 font-montserrat font-bold text-primary-foreground text-lg tracking-tight"
           >
             Agendar agora
@@ -51,13 +43,11 @@ export default function WelcomePage() {
 
         <p className="mt-6 text-xs text-dimmed font-opensans">
           Já tem conta?{" "}
-          <button onClick={() => handleNavigate("/cliente")} className="text-primary font-semibold">
+          <button onClick={() => navigate("/cliente")} className="text-primary font-semibold">
             Entrar
           </button>
         </p>
       </motion.div>
-
-      <MaintenanceModal open={showMaintenance} onClose={() => setShowMaintenance(false)} />
     </div>
   );
 }
