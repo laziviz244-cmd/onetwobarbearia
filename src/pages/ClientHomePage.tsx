@@ -132,11 +132,9 @@ export default function ClientHomePage() {
             </div>
 
             <span
-              className="text-[13px] font-montserrat font-extrabold mt-2"
+              className="text-[14px] font-montserrat font-bold mt-2"
               style={{
-                color: "#FFFFFF",
-                WebkitTextStroke: "1px #000000",
-                textShadow: "none",
+                color: "#F5F5F5",
               }}
             >
               Cortes Ilimitados

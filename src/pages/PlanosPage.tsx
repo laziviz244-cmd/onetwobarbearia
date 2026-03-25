@@ -4,27 +4,27 @@ import { staggerContainer, staggerItem } from "@/components/motion";
 
 const plans = [
   {
-    name: "SÓCIO CABELO VIP",
+    name: "CLUBE CABELO VIP",
     description: "Mantenha a régua perfeita o mês todo",
     benefits: [
       "Cortes de Cabelo ILIMITADOS",
       "Pezinho sempre limpo",
       "Café cortesia",
     ],
-    price: "R$ 00,00",
-    whatsappPlan: "Sócio Cabelo VIP",
+    price: "00,00",
+    whatsappPlan: "Clube Cabelo VIP",
   },
   {
-    name: "SÓCIO COMPLETO PREMIUM",
-    description: "O pacote definitivo para o cavalheiro moderno",
+    name: "CLUBE COMPLETO PREMIUM",
+    description: "O visual completo, sem limites, o mês todo.",
     benefits: [
       "Cabelo ILIMITADO",
       "Barba ILIMITADA",
       "Acabamento com navalha",
       "Café cortesia",
     ],
-    price: "R$ 00,00",
-    whatsappPlan: "Sócio Completo Premium",
+    price: "00,00",
+    whatsappPlan: "Clube Completo Premium",
   },
 ];
 
@@ -59,14 +59,14 @@ export default function PlanosPage() {
             variants={staggerItem}
             className="rounded-2xl p-6 relative overflow-hidden"
             style={{
-              background: "hsl(0 0% 4%)",
-              border: "1.5px solid #D4AF37",
-              boxShadow: "0 0 20px hsl(45 60% 30% / 0.1)",
+              background: "hsl(0 0% 0%)",
+              border: "1.5px solid #C5A059",
+              boxShadow: "0 0 20px hsl(40 50% 30% / 0.1)",
             }}
           >
             <h2
               className="font-montserrat font-extrabold text-lg tracking-tight"
-              style={{ color: "#D4AF37" }}
+              style={{ color: "#C5A059" }}
             >
               {plan.name}
             </h2>
@@ -79,7 +79,7 @@ export default function PlanosPage() {
                 <li key={b} className="flex items-center gap-2">
                   <span
                     className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ background: "#D4AF37" }}
+                    style={{ background: "#C5A059" }}
                   />
                   <span className="text-sm font-opensans text-foreground">
                     {b}
@@ -88,10 +88,20 @@ export default function PlanosPage() {
               ))}
             </ul>
 
-            <div className="flex items-baseline gap-1 mb-5">
+            {/* Luxury price tag */}
+            <div
+              className="inline-flex items-baseline gap-1 mb-5 px-4 py-2 rounded-xl"
+              style={{ background: "#1A1A1A" }}
+            >
               <span
-                className="font-montserrat font-extrabold text-2xl"
-                style={{ color: "#D4AF37" }}
+                className="font-opensans text-sm"
+                style={{ color: "#C5A059" }}
+              >
+                R$
+              </span>
+              <span
+                className="font-montserrat font-extrabold text-3xl"
+                style={{ color: "#C5A059" }}
               >
                 {plan.price}
               </span>
