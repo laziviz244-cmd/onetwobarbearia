@@ -301,7 +301,8 @@ export default function ClientHomePage() {
             {/* Scissors Grid */}
             <div className="grid grid-cols-5 gap-3 mb-6">
               {Array.from({ length: 10 }).map((_, i) => {
-                const filled = i < 4;
+                const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
+                const filled = i < Math.min(loyaltyCount, 9);
                 return (
                   <div
                     key={i}
