@@ -57,7 +57,7 @@ export default function ClientHomePage() {
               background: "hsl(0 0% 4%)",
               border: "1px solid hsl(43 70% 45% / 0.5)",
             }}
-            onClick={() => navigate("/agendar")}
+            onClick={() => navigate("/planos")}
           >
             <span
               className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase mb-3 whitespace-nowrap"
