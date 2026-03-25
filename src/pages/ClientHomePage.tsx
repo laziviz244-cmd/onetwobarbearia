@@ -9,9 +9,9 @@ const services = [
   { id: "1", name: "Corte", price: "R$ 30,00" },
   { id: "2", name: "Barba", price: "R$ 25,00" },
   { id: "3", name: "Combo Corte + Barba", price: "R$ 50,00" },
-  { id: "4", name: "Pezinho", price: "R$ 10,00" },
-  { id: "5", name: "Luzes", price: "A partir de R$ 75,00" },
-  { id: "6", name: "Nevou", price: "A partir de R$ 100,00" },
+  { id: "4", name: "Nevou", price: "R$ 80,00" },
+  { id: "5", name: "Luzes", price: "R$ 70,00" },
+  { id: "6", name: "Pezinho", price: "R$ 10,00" },
 ];
 
 export default function ClientHomePage() {
@@ -29,10 +29,16 @@ export default function ClientHomePage() {
               Bem-vindo à Barbearia OneTwo
             </h1>
           </div>
-          <div className="flex items-center gap-1 text-dimmed">
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Rua+Potiragua+406+Camaca+Itapetinga+BA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-dimmed no-underline"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
             <MapPin className="h-4 w-4" />
             <span className="text-xs font-opensans">Itapetinga</span>
-          </div>
+          </a>
         </div>
       </div>
 
@@ -51,7 +57,7 @@ export default function ClientHomePage() {
               background: "hsl(0 0% 4%)",
               border: "1px solid hsl(43 70% 45% / 0.5)",
             }}
-            onClick={() => navigate("/agendar")}
+            onClick={() => navigate("/planos")}
           >
             <span
               className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase mb-3 whitespace-nowrap"
@@ -126,10 +132,11 @@ export default function ClientHomePage() {
             </div>
 
             <span
-              className="text-[11px] font-montserrat font-extrabold mt-2"
+              className="text-[13px] font-montserrat font-extrabold mt-2"
               style={{
-                color: "#000000",
-                textShadow: "0 0 8px #FFD700, 0 0 16px #FFD700, 0 0 24px #DAA520, 0 1px 1px #FFD700",
+                color: "#FFFFFF",
+                WebkitTextStroke: "1px #000000",
+                textShadow: "none",
               }}
             >
               Cortes Ilimitados

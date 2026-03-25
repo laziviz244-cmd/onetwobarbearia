@@ -63,15 +63,17 @@ export function BottomNav() {
                 key={item.path}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => navigate(item.path)}
-                className="flex flex-col items-center gap-1 px-3 py-1"
+                className="relative flex flex-col items-center gap-1 px-3 py-1"
               >
-                <TrophySolidIcon className="h-5 w-5 transition-colors" isActive={isActive} />
+                {isActive && (
+                  <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-5 h-[2px] rounded-full" style={{ background: "#D4AF37" }} />
+                )}
+                <TrophySolidIcon className="h-5 w-5" isActive={isActive} />
                 <span
-                  className={`text-[10px] font-opensans font-semibold`}
-                  style={{ color: isActive ? "#D4AF37" : undefined }}
+                  className="text-[10px] font-opensans font-semibold"
+                  style={{ color: isActive ? "#D4AF37" : "#E0E0E0" }}
                 >
-                  {!isActive && <span className="text-dimmed">{item.label}</span>}
-                  {isActive && item.label}
+                  {item.label}
                 </span>
               </motion.button>
             );

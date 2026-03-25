@@ -11,6 +11,7 @@ import BookingPage from "./pages/BookingPage";
 import BarberDashboard from "./pages/BarberDashboard";
 import MeusAgendamentos from "./pages/MeusAgendamentos";
 import Perfil from "./pages/Perfil";
+import PlanosPage from "./pages/PlanosPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,7 +27,7 @@ const App = () => (
           <Route path="/cliente" element={<ClientHomePage />} />
           <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
           <Route path="/agendar" element={<BookingPage />} />
-          <Route path="/planos" element={<ClientHomePage />} />
+          <Route path="/planos" element={<PlanosPage />} />
           <Route path="/dashboard" element={<BarberDashboard />} />
           <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
           <Route path="/perfil" element={<Perfil />} />
