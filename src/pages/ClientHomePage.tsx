@@ -132,11 +132,9 @@ export default function ClientHomePage() {
             </div>
 
             <span
-              className="text-[13px] font-montserrat font-extrabold mt-2"
+              className="text-[14px] font-montserrat font-bold mt-2"
               style={{
-                color: "#FFFFFF",
-                WebkitTextStroke: "1px #000000",
-                textShadow: "none",
+                color: "#F5F5F5",
               }}
             >
               Cortes Ilimitados
@@ -249,7 +247,7 @@ export default function ClientHomePage() {
               variants={staggerItem}
               whileTap={{ scale: 0.96 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              onClick={() => navigate("/agendar")}
+              onClick={() => navigate(`/agendar?servico=${encodeURIComponent(service.name)}`)}
               className="flex flex-col rounded-2xl surface-card overflow-hidden text-left"
             >
               <div className="w-full aspect-square bg-muted/30 flex items-center justify-center">
@@ -303,7 +301,8 @@ export default function ClientHomePage() {
             {/* Scissors Grid */}
             <div className="grid grid-cols-5 gap-3 mb-6">
               {Array.from({ length: 10 }).map((_, i) => {
-                const filled = i < 4;
+                const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
+                const filled = i < Math.min(loyaltyCount, 9);
                 return (
                   <div
                     key={i}
@@ -350,14 +349,14 @@ export default function ClientHomePage() {
 
             {/* Progress text */}
             <p className="text-center text-sm font-montserrat text-foreground">
-              Faltam apenas <span className="font-bold text-primary">6 cortes</span> para o seu corte grátis!
+              Faltam apenas <span className="font-bold text-primary">{Math.max(9 - parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10), 0)} cortes</span> para o seu corte grátis!
             </p>
 
             {/* Progress bar */}
             <div className="mt-4 w-full h-1.5 rounded-full overflow-hidden" style={{ background: "hsl(45 20% 15%)" }}>
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: "40%" }}
+                animate={{ width: `${Math.min((parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10) / 9) * 100, 100)}%` }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="h-full rounded-full"
                 style={{ background: "linear-gradient(90deg, hsl(43 70% 45%), hsl(43 80% 58%))" }}

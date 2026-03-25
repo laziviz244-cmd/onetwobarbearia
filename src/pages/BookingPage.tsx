@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Check } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState } from "react";
-import MaintenanceOverlay from "@/components/MaintenanceOverlay";
 
 const timeSlots = [
   "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -19,11 +18,48 @@ const weekDays = [
   { day: "Sáb", date: "22", full: "2026-03-22" },
 ];
 
+const WHATSAPP_NUMBER = "5577999999999";
+
 export default function BookingPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const serviceName = searchParams.get("servico") || "Corte";
+
   const [selectedDate, setSelectedDate] = useState("2026-03-18");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
+
+  const handleConfirm = () => {
+    if (!selectedTime) return;
+
+    const dateObj = weekDays.find((d) => d.full === selectedDate);
+    const dateLabel = `${dateObj?.date}/03`;
+
+    // Save to localStorage
+    const existing = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
+    existing.push({
+      id: Date.now().toString(),
+      service: serviceName,
+      date: selectedDate,
+      dateLabel,
+      time: selectedTime,
+      status: "Confirmado",
+      createdAt: new Date().toISOString(),
+    });
+    localStorage.setItem("onetwo_appointments", JSON.stringify(existing));
+
+    // Update loyalty count
+    const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
+    localStorage.setItem("onetwo_loyalty", String(loyaltyCount + 1));
+
+    // Open WhatsApp
+    const msg = encodeURIComponent(
+      `Olá! Gostaria de confirmar meu agendamento:\n\n📋 Serviço: ${serviceName}\n📅 Data: ${dateLabel}/2026\n⏰ Horário: ${selectedTime}\n\nCliente: Meu Nome`
+    );
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
+
+    setConfirmed(true);
+  };
 
   if (confirmed) {
     return (
@@ -44,7 +80,8 @@ export default function BookingPage() {
           Agendamento confirmado!
         </h1>
         <p className="text-subtle font-opensans mt-2 text-center">
-          {weekDays.find(d => d.full === selectedDate)?.day} {weekDays.find(d => d.full === selectedDate)?.date} de Mar · {selectedTime}
+          {weekDays.find((d) => d.full === selectedDate)?.day}{" "}
+          {weekDays.find((d) => d.full === selectedDate)?.date} de Mar · {selectedTime}
         </p>
         <p className="text-dimmed font-opensans text-sm mt-1">Onetwo Barbershop</p>
 
@@ -61,7 +98,6 @@ export default function BookingPage() {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <MaintenanceOverlay />
       {/* Header */}
       <div className="px-6 pt-12 flex items-center gap-4">
         <button
@@ -70,9 +106,12 @@ export default function BookingPage() {
         >
           <ArrowLeft className="h-5 w-5 text-foreground" />
         </button>
-        <h1 className="font-montserrat font-bold text-xl text-foreground tracking-tighter">
-          Escolha o horário
-        </h1>
+        <div>
+          <h1 className="font-montserrat font-bold text-xl text-foreground tracking-tighter">
+            Escolha o horário
+          </h1>
+          <p className="text-sm text-dimmed font-opensans">{serviceName}</p>
+        </div>
       </div>
 
       {/* Date selector */}
@@ -87,15 +126,21 @@ export default function BookingPage() {
               whileTap={{ scale: 0.95 }}
               onClick={() => setSelectedDate(d.full)}
               className={`flex flex-col items-center gap-1 rounded-2xl px-4 py-3 min-w-[60px] transition-colors ${
-                selectedDate === d.full
-                  ? "btn-primary-glow"
-                  : "surface-card"
+                selectedDate === d.full ? "btn-primary-glow" : "surface-card"
               }`}
             >
-              <span className={`text-xs font-opensans ${selectedDate === d.full ? "text-primary-foreground" : "text-dimmed"}`}>
+              <span
+                className={`text-xs font-opensans ${
+                  selectedDate === d.full ? "text-primary-foreground" : "text-dimmed"
+                }`}
+              >
                 {d.day}
               </span>
-              <span className={`font-montserrat font-bold text-lg tabular-nums ${selectedDate === d.full ? "text-primary-foreground" : "text-foreground"}`}>
+              <span
+                className={`font-montserrat font-bold text-lg tabular-nums ${
+                  selectedDate === d.full ? "text-primary-foreground" : "text-foreground"
+                }`}
+              >
                 {d.date}
               </span>
             </motion.button>
@@ -136,10 +181,11 @@ export default function BookingPage() {
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            onClick={() => setConfirmed(true)}
-            className="w-full rounded-2xl btn-primary-glow py-4 font-montserrat font-bold text-primary-foreground text-lg tracking-tight"
+            onClick={handleConfirm}
+            className="w-full rounded-2xl py-4 font-montserrat font-bold text-lg tracking-tight"
+            style={{ background: "#25D366", color: "#FFFFFF" }}
           >
-            Confirmar · {selectedTime}
+            Confirmar via WhatsApp · {selectedTime}
           </motion.button>
         </motion.div>
       )}
