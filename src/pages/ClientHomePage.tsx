@@ -356,7 +356,7 @@ export default function ClientHomePage() {
             <div className="mt-4 w-full h-1.5 rounded-full overflow-hidden" style={{ background: "hsl(45 20% 15%)" }}>
               <motion.div
                 initial={{ width: 0 }}
-                animate={{ width: "40%" }}
+                animate={{ width: `${Math.min((parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10) / 9) * 100, 100)}%` }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="h-full rounded-full"
                 style={{ background: "linear-gradient(90deg, hsl(43 70% 45%), hsl(43 80% 58%))" }}
