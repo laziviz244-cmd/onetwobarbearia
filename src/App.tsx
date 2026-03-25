@@ -11,6 +11,7 @@ import BookingPage from "./pages/BookingPage";
 import BarberDashboard from "./pages/BarberDashboard";
 import MeusAgendamentos from "./pages/MeusAgendamentos";
 import Perfil from "./pages/Perfil";
+import PlanosPage from "./pages/PlanosPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
