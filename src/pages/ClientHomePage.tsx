@@ -349,7 +349,7 @@ export default function ClientHomePage() {
 
             {/* Progress text */}
             <p className="text-center text-sm font-montserrat text-foreground">
-              Faltam apenas <span className="font-bold text-primary">6 cortes</span> para o seu corte grátis!
+              Faltam apenas <span className="font-bold text-primary">{Math.max(9 - parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10), 0)} cortes</span> para o seu corte grátis!
             </p>
 
             {/* Progress bar */}
