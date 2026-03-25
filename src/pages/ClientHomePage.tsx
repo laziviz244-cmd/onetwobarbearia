@@ -29,10 +29,16 @@ export default function ClientHomePage() {
               Bem-vindo à Barbearia OneTwo
             </h1>
           </div>
-          <div className="flex items-center gap-1 text-dimmed">
+          <a
+            href="https://www.google.com/maps/search/?api=1&query=Rua+Potiragua+406+Camaca+Itapetinga+BA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-dimmed no-underline"
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
             <MapPin className="h-4 w-4" />
             <span className="text-xs font-opensans">Itapetinga</span>
-          </div>
+          </a>
         </div>
       </div>
 
