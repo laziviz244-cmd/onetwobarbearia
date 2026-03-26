@@ -2,17 +2,20 @@ import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
-import { PhotoGallery } from "@/components/PhotoGallery";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState } from "react";
+import corteImg from "@/assets/corte.jpg";
+import barbaImg from "@/assets/barba.jpg";
+import nevouImg from "@/assets/nevou.jpg";
+import luzesImg from "@/assets/luzes.jpg";
 
 const services = [
-  { id: "1", name: "Corte", price: "R$ 30,00" },
-  { id: "2", name: "Barba", price: "R$ 25,00" },
-  { id: "3", name: "Combo Corte + Barba", price: "R$ 50,00" },
-  { id: "4", name: "Nevou", price: "R$ 80,00" },
-  { id: "5", name: "Luzes", price: "R$ 70,00" },
-  { id: "6", name: "Pezinho", price: "R$ 10,00" },
+  { id: "1", name: "Corte", price: "R$ 30,00", image: corteImg },
+  { id: "2", name: "Barba", price: "R$ 25,00", image: barbaImg },
+  { id: "3", name: "Combo Corte + Barba", price: "R$ 50,00", image: null },
+  { id: "4", name: "Nevou", price: "R$ 80,00", image: nevouImg },
+  { id: "5", name: "Luzes", price: "R$ 70,00", image: luzesImg },
+  { id: "6", name: "Pezinho", price: "R$ 10,00", image: null },
 ];
 
 export default function ClientHomePage() {
@@ -256,8 +259,12 @@ export default function ClientHomePage() {
               onClick={() => navigate(`/agendar?servico=${encodeURIComponent(service.name)}`)}
               className="flex flex-col rounded-2xl surface-card overflow-hidden text-left"
             >
-              <div className="w-full aspect-square bg-muted/30 flex items-center justify-center">
-                <span className="text-dimmed text-xs font-opensans">Foto</span>
+              <div className="w-full aspect-square bg-muted/30 flex items-center justify-center overflow-hidden">
+                {service.image ? (
+                  <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-dimmed text-xs font-opensans">Foto</span>
+                )}
               </div>
               <div className="p-3">
                 <h3 className="font-montserrat font-bold text-foreground text-sm">{service.name}</h3>
@@ -379,11 +386,6 @@ export default function ClientHomePage() {
           </motion.div>
         </motion.div>
       )}
-
-      {/* Photo Gallery */}
-      <div className="mt-8 pb-4">
-        <PhotoGallery />
-      </div>
 
       <BottomNav />
     </div>
