@@ -44,12 +44,12 @@ export default function Perfil() {
       });
     }
     setShowSuccessModal(false);
-    setTimeout(() => navigate("/agendar"), 300);
+    setTimeout(() => navigate("/cliente"), 300);
   };
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
-    setTimeout(() => navigate("/agendar"), 300);
+    setTimeout(() => navigate("/cliente"), 300);
   };
 
   const handleLogout = () => {

@@ -7,12 +7,14 @@ import heroBarber from "@/assets/hero-barber.jpg";
 export default function WelcomePage() {
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const handleAction = () => {
     const user = localStorage.getItem("onetwo_user");
     if (user) {
       navigate("/cliente", { replace: true });
+    } else {
+      navigate("/perfil");
     }
-  }, [navigate]);
+  };
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
@@ -42,7 +44,7 @@ export default function WelcomePage() {
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            onClick={() => navigate("/cliente")}
+            onClick={handleAction}
             className="w-full rounded-2xl btn-primary-glow py-4 font-montserrat font-bold text-primary-foreground text-lg tracking-tight"
           >
             Agendar agora
@@ -51,7 +53,7 @@ export default function WelcomePage() {
 
         <p className="mt-6 text-xs text-dimmed font-opensans">
           Já tem conta?{" "}
-          <button onClick={() => navigate("/cliente")} className="text-primary font-semibold">
+          <button onClick={() => navigate("/login")} className="text-primary font-semibold">
             Entrar
           </button>
         </p>
