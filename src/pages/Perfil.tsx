@@ -1,25 +1,57 @@
 import { motion } from "framer-motion";
-import { User, Calendar, Scissors } from "lucide-react";
+import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
 import { useState, useEffect } from "react";
 
-interface Appointment {
-  id: string;
-  service: string;
-  dateLabel: string;
-  time: string;
-}
-
 export default function Perfil() {
   const navigate = useNavigate();
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [savedName, setSavedName] = useState("");
 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
-    setAppointments(stored.slice(-3).reverse());
+    const user = localStorage.getItem("onetwo_user");
+    if (user) {
+      const parsed = JSON.parse(user);
+      setIsLoggedIn(true);
+      setSavedName(parsed.username);
+    }
   }, []);
+
+  const handleCreateProfile = () => {
+    if (!username.trim() || !password.trim()) return;
+
+    const userData = {
+      username: username.trim(),
+      token: btoa(`${username}:${Date.now()}`),
+      createdAt: new Date().toISOString(),
+    };
+    localStorage.setItem("onetwo_user", JSON.stringify(userData));
+    setIsLoggedIn(true);
+    setSavedName(username.trim());
+
+    // Try to trigger PWA install prompt
+    const deferredPrompt = (window as any).__pwaInstallPrompt;
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {
+        (window as any).__pwaInstallPrompt = null;
+      });
+    }
+
+    // Redirect to vitrine
+    setTimeout(() => navigate("/cliente"), 300);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("onetwo_user");
+    setIsLoggedIn(false);
+    setSavedName("");
+    setUsername("");
+    setPassword("");
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-24">
@@ -38,73 +70,87 @@ export default function Perfil() {
           </div>
           <div>
             <h1 className="text-xl font-montserrat font-bold text-foreground">
-              Cliente OneTwo
+              {isLoggedIn ? savedName : "Meu Perfil"}
             </h1>
-            <p className="text-xs font-montserrat font-semibold" style={{ color: "#C5A059" }}>
-              Membro do Clube One Two
-            </p>
+            {isLoggedIn && (
+              <p className="text-xs font-montserrat font-semibold" style={{ color: "#C5A059" }}>
+                Membro do Clube One Two
+              </p>
+            )}
           </div>
         </motion.div>
       </header>
 
       <main className="px-6 space-y-5">
-        {/* Loyalty shortcut */}
-        <motion.button
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          whileTap={{ scale: 0.96 }}
-          onClick={() => navigate("/cliente")}
-          className="w-full rounded-2xl p-4 flex items-center gap-4"
-          style={{ background: "hsl(0 0% 0%)", border: "1px solid #C5A059" }}
-        >
-          <Scissors className="w-6 h-6 flex-shrink-0" style={{ color: "#C5A059" }} />
-          <div className="text-left flex-1">
-            <span className="font-montserrat font-bold text-foreground text-sm">
-              ✂️ Ver Meu Cartão Fidelidade
-            </span>
-            <p className="text-xs text-dimmed font-opensans mt-0.5">
-              {loyaltyCount} de 9 cortes completados
-            </p>
-          </div>
-        </motion.button>
-
-        {/* Recent appointments */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <h2 className="font-montserrat font-bold text-foreground text-sm mb-3 flex items-center gap-2">
-            <Calendar className="w-4 h-4" style={{ color: "#C5A059" }} />
-            Meus Horários Marcados
-          </h2>
-          {appointments.length === 0 ? (
-            <div className="surface-card rounded-2xl p-6 text-center">
-              <p className="text-subtle font-opensans text-sm">
-                Nenhum agendamento ainda.
+        {isLoggedIn ? (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-center gap-4"
+          >
+            <div
+              className="w-full rounded-2xl p-6 text-center"
+              style={{ background: "hsl(0 0% 4%)", border: "1px solid #C5A059" }}
+            >
+              <p className="font-montserrat font-bold text-foreground text-lg mb-1">
+                Bem-vindo, {savedName}!
+              </p>
+              <p className="text-sm text-dimmed font-opensans">
+                Sessão ativa · Membro do Clube One Two
               </p>
             </div>
-          ) : (
-            <div className="space-y-2">
-              {appointments.map((apt) => (
-                <div
-                  key={apt.id}
-                  className="rounded-xl p-3 flex items-center gap-3"
-                  style={{ background: "hsl(0 0% 4%)" }}
-                >
-                  <Scissors className="w-4 h-4 flex-shrink-0" style={{ color: "#C5A059" }} />
-                  <span className="font-montserrat font-semibold text-foreground text-sm flex-1">
-                    {apt.service}
-                  </span>
-                  <span className="text-xs text-dimmed font-opensans">
-                    {apt.dateLabel} · {apt.time}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </motion.div>
+
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              onClick={() => navigate("/agendar")}
+              className="w-full py-3.5 rounded-2xl font-montserrat font-bold text-sm"
+              style={{ background: "#C5A059", color: "#000000" }}
+            >
+              Ver Agendamentos e Fidelidade
+            </motion.button>
+
+            <button
+              onClick={handleLogout}
+              className="text-sm text-dimmed font-opensans underline mt-2"
+            >
+              Sair da conta
+            </button>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-center gap-4"
+          >
+            <input
+              type="text"
+              placeholder="Nome de Usuário"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full rounded-2xl px-5 py-3.5 font-opensans text-sm text-foreground placeholder:text-dimmed outline-none"
+              style={{ background: "hsl(0 0% 4%)", border: "1px solid hsl(40 50% 35% / 0.5)" }}
+            />
+            <input
+              type="password"
+              placeholder="Senha"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-2xl px-5 py-3.5 font-opensans text-sm text-foreground placeholder:text-dimmed outline-none"
+              style={{ background: "hsl(0 0% 4%)", border: "1px solid hsl(40 50% 35% / 0.5)" }}
+            />
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              onClick={handleCreateProfile}
+              className="w-full py-3.5 rounded-2xl font-montserrat font-bold text-sm tracking-tight"
+              style={{ background: "#C5A059", color: "#000000" }}
+            >
+              Criar Perfil
+            </motion.button>
+          </motion.div>
+        )}
       </main>
 
       <BottomNav />
