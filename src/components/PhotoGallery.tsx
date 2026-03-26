@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import corteImg from "@/assets/corte.jpg";
+import barbaImg from "@/assets/barba.jpg";
+import nevouImg from "@/assets/nevou.jpg";
+import luzesImg from "@/assets/luzes.jpg";
 
 const galleryImages = [
-  { id: 1, src: "/placeholder.svg", alt: "Corte premium OneTwo" },
-  { id: 2, src: "/placeholder.svg", alt: "Barba estilizada OneTwo" },
+  { id: 1, src: corteImg, alt: "Corte degradê OneTwo" },
+  { id: 2, src: barbaImg, alt: "Barba estilizada OneTwo" },
   { id: 3, src: "/placeholder.svg", alt: "Ambiente premium OneTwo" },
-  { id: 4, src: "/placeholder.svg", alt: "Resultado final OneTwo" },
+  { id: 4, src: nevouImg, alt: "Platinado OneTwo" },
+  { id: 5, src: luzesImg, alt: "Luzes OneTwo" },
 ];
 
 export function PhotoGallery() {
@@ -63,7 +68,7 @@ export function PhotoGallery() {
             onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
             className="w-2 h-2 rounded-full transition-all duration-300"
             style={{
-              background: i === current ? "#C5A059" : "hsl(0 0% 100% / 0.5)",
+              background: i === current ? "#C5A059" : "rgba(255, 255, 255, 0.5)",
               transform: i === current ? "scale(1.3)" : "scale(1)",
             }}
           />
