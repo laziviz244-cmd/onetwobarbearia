@@ -18,7 +18,7 @@ const weekDays = [
   { day: "Sáb", date: "22", full: "2026-03-22" },
 ];
 
-const WHATSAPP_NUMBER = "5577999999999";
+const WHATSAPP_NUMBER = "5577981302545";
 
 export default function BookingPage() {
   const navigate = useNavigate();
