@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import WelcomePage from "./pages/WelcomePage";
 import ClientHomePage from "./pages/ClientHomePage";
+import LoginPage from "./pages/LoginPage";
 import BarberShopDetailPage from "./pages/BarberShopDetailPage";
 import BookingPage from "./pages/BookingPage";
 import BarberDashboard from "./pages/BarberDashboard";
@@ -24,6 +25,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<WelcomePage />} />
+          <Route path="/vitrine" element={<WelcomePage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/cliente" element={<ClientHomePage />} />
           <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
           <Route path="/agendar" element={<BookingPage />} />
