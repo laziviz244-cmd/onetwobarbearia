@@ -9,6 +9,9 @@ import corteImg from "@/assets/corte.jpg";
 import barbaImg from "@/assets/barba.jpg";
 import nevouImg from "@/assets/nevou.jpg";
 import luzesImg from "@/assets/luzes.jpg";
+import corte2Img from "@/assets/corte_2.jpg";
+import barba2Img from "@/assets/barba_2.jpg";
+import combo4Img from "@/assets/conbo_4.jpg";
 
 const services = [
   { id: "1", name: "Corte", price: "R$ 30,00", image: corteImg },

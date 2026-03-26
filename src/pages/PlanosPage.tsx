@@ -7,40 +7,38 @@ const plans = [
     name: "PLANO BARBA",
     description: "4 Barbas",
     price: "75",
-    whatsappPlan: "Plano Barba",
+    whatsappMsg: "Olá, gostaria de assinar o PLANO BARBA",
   },
   {
     name: "PLANO CORTES",
     description: "4 Cortes",
     price: "100",
-    whatsappPlan: "Plano Cortes",
+    whatsappMsg: "Olá, gostaria de assinar o PLANO CORTES",
   },
   {
     name: "PLANO LUXO",
     description: "4 Barbas + 2 Cortes",
     price: "130",
-    whatsappPlan: "Plano Luxo",
+    whatsappMsg: "Olá, gostaria de assinar o PLANO LUXO",
   },
   {
     name: "PLANO PRIME",
     description: "4 Barbas + 4 Cortes",
     price: "169",
-    whatsappPlan: "Plano Prime",
+    whatsappMsg: "Olá, gostaria de assinar o PLANO PRIME",
   },
   {
     name: "PLANO 15NAL",
     description: "2 Cortes + 2 Barbas",
     price: "85",
-    whatsappPlan: "Plano 15nal",
+    whatsappMsg: "Olá, gostaria de assinar o PLANO 15NAL",
   },
 ];
 
 export default function PlanosPage() {
-  const handleWhatsApp = (planName: string) => {
-    const msg = encodeURIComponent(
-      `Olá! Quero assinar o ${planName} da OneTwo!`
-    );
-    window.open(`https://wa.me/5577981302545?text=${msg}`, "_blank");
+  const handleWhatsApp = (msg: string) => {
+    const encoded = encodeURIComponent(msg);
+    window.open(`https://wa.me/5577981302545?text=${encoded}`, "_blank");
   };
 
   return (
@@ -64,42 +62,49 @@ export default function PlanosPage() {
           <motion.div
             key={plan.name}
             variants={staggerItem}
-            className="rounded-2xl p-5 relative overflow-hidden"
+            className="rounded-2xl p-6 relative overflow-hidden"
             style={{
               background: "#000000",
               border: "1.5px solid #C5A059",
+              boxShadow: "0 0 18px hsla(43, 70%, 45%, 0.15), 0 0 40px hsla(43, 70%, 45%, 0.06)",
             }}
           >
-            <div className="flex items-center justify-between mb-1">
-              <h2
-                className="font-montserrat font-extrabold text-base tracking-tight"
-                style={{ color: "#FFFFFF" }}
-              >
-                {plan.name}
-              </h2>
+            {/* Title */}
+            <h2
+              className="font-montserrat font-extrabold text-lg tracking-tight uppercase"
+              style={{ color: "#FFFFFF" }}
+            >
+              {plan.name}
+            </h2>
+
+            {/* Description */}
+            <p
+              className="text-sm font-opensans mt-1"
+              style={{ color: "rgba(255,255,255,0.7)" }}
+            >
+              {plan.description}
+            </p>
+
+            {/* Price centered */}
+            <div className="flex items-center justify-center my-4">
               <span
-                className="font-montserrat font-extrabold text-xl"
+                className="font-montserrat font-extrabold text-3xl"
                 style={{ color: "#C5A059" }}
               >
                 R$ {plan.price}
               </span>
             </div>
 
-            <p
-              className="text-sm font-opensans mb-4"
-              style={{ color: "#FFFFFF", opacity: 0.7 }}
-            >
-              {plan.description}
-            </p>
-
+            {/* WhatsApp button — black bg, green border & text */}
             <motion.button
               whileTap={{ scale: 0.96 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              onClick={() => handleWhatsApp(plan.whatsappPlan)}
+              onClick={() => handleWhatsApp(plan.whatsappMsg)}
               className="w-full py-3 rounded-2xl font-montserrat font-bold text-sm tracking-tight"
               style={{
-                background: "#25D366",
-                color: "#FFFFFF",
+                background: "#000000",
+                color: "#25D366",
+                border: "1.5px solid #25D366",
               }}
             >
               ASSINAR VIA WHATSAPP
@@ -108,12 +113,16 @@ export default function PlanosPage() {
         ))}
       </motion.div>
 
-      <div className="px-6 mt-6">
+      {/* Benefits */}
+      <div className="px-6 mt-8 text-center">
         <p
-          className="text-sm font-opensans text-center"
+          className="font-montserrat font-bold text-sm mb-2"
           style={{ color: "#C5A059" }}
         >
-          + BENEFÍCIOS: Sobrancelha, Hidratação, Prioridade na Agenda e Brindes.
+          + BENEFÍCIOS PARA ASSINANTES
+        </p>
+        <p className="text-sm font-opensans" style={{ color: "#FFFFFF" }}>
+          Sobrancelha, Hidratação, Prioridade na Agenda e Brindes.
         </p>
       </div>
 
