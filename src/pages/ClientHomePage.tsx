@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
+import { PhotoGallery } from "@/components/PhotoGallery";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState } from "react";
 
