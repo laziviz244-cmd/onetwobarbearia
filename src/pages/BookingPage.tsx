@@ -21,12 +21,6 @@ const weekDays = [
 
 const WHATSAPP_NUMBER = "5577981302545";
 
-interface Appointment {
-  id: string;
-  service: string;
-  dateLabel: string;
-  time: string;
-}
 
 export default function BookingPage() {
   const navigate = useNavigate();
