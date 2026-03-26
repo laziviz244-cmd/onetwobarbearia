@@ -1,10 +1,18 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import logoOnetwo from "@/assets/logo-onetwo.png";
 import heroBarber from "@/assets/hero-barber.jpg";
 
 export default function WelcomePage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem("onetwo_user");
+    if (user) {
+      navigate("/cliente", { replace: true });
+    }
+  }, [navigate]);
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
