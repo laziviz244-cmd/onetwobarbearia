@@ -380,6 +380,11 @@ export default function ClientHomePage() {
         </motion.div>
       )}
 
+      {/* Photo Gallery */}
+      <div className="mt-8 pb-4">
+        <PhotoGallery />
+      </div>
+
       <BottomNav />
     </div>
   );
