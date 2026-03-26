@@ -1,40 +1,44 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
 
 const plans = [
   {
-    name: "CLUBE CABELO VIP",
-    description: "Mantenha a régua perfeita o mês todo",
-    benefits: [
-      "Cortes de Cabelo ILIMITADOS",
-      "Pezinho sempre limpo",
-      "Café cortesia",
-    ],
-    price: "00,00",
-    whatsappPlan: "Clube Cabelo VIP",
+    name: "PLANO BARBA",
+    description: "4 Barbas",
+    price: "75",
+    whatsappPlan: "Plano Barba",
   },
   {
-    name: "CLUBE COMPLETO PREMIUM",
-    description: "O visual completo, sem limites, o mês todo.",
-    benefits: [
-      "Cabelo ILIMITADO",
-      "Barba ILIMITADA",
-      "Acabamento com navalha",
-      "Café cortesia",
-    ],
-    price: "00,00",
-    whatsappPlan: "Clube Completo Premium",
+    name: "PLANO CORTES",
+    description: "4 Cortes",
+    price: "100",
+    whatsappPlan: "Plano Cortes",
+  },
+  {
+    name: "PLANO LUXO",
+    description: "4 Barbas + 2 Cortes",
+    price: "130",
+    whatsappPlan: "Plano Luxo",
+  },
+  {
+    name: "PLANO PRIME",
+    description: "4 Barbas + 4 Cortes",
+    price: "169",
+    whatsappPlan: "Plano Prime",
+  },
+  {
+    name: "PLANO 15NAL",
+    description: "2 Cortes + 2 Barbas",
+    price: "85",
+    whatsappPlan: "Plano 15nal",
   },
 ];
 
 export default function PlanosPage() {
-  const [activePlan, setActivePlan] = useState(0);
-
   const handleWhatsApp = (planName: string) => {
     const msg = encodeURIComponent(
-      `Olá! Quero entrar para o Clube de Sócios ${planName} da OneTwo!`
+      `Olá! Quero assinar o ${planName} da OneTwo!`
     );
     window.open(`https://wa.me/5577981302545?text=${msg}`, "_blank");
   };
@@ -54,69 +58,45 @@ export default function PlanosPage() {
         variants={staggerContainer}
         initial="hidden"
         animate="show"
-        className="px-6 flex flex-col gap-5"
+        className="px-6 flex flex-col gap-4"
       >
-        {plans.map((plan, index) => (
+        {plans.map((plan) => (
           <motion.div
             key={plan.name}
             variants={staggerItem}
-            onClick={() => setActivePlan(index)}
-            className="rounded-2xl p-6 relative overflow-hidden cursor-pointer"
+            className="rounded-2xl p-5 relative overflow-hidden"
             style={{
               background: "#000000",
               border: "1.5px solid #C5A059",
-              boxShadow: "0 0 20px hsl(40 50% 30% / 0.1)",
             }}
           >
-            <h2
-              className="font-montserrat font-extrabold text-lg tracking-tight"
-              style={{ color: "#F5F5F5" }}
+            <div className="flex items-center justify-between mb-1">
+              <h2
+                className="font-montserrat font-extrabold text-base tracking-tight"
+                style={{ color: "#FFFFFF" }}
+              >
+                {plan.name}
+              </h2>
+              <span
+                className="font-montserrat font-extrabold text-xl"
+                style={{ color: "#C5A059" }}
+              >
+                R$ {plan.price}
+              </span>
+            </div>
+
+            <p
+              className="text-sm font-opensans mb-4"
+              style={{ color: "#FFFFFF", opacity: 0.7 }}
             >
-              {plan.name}
-            </h2>
-            <p className="text-sm text-dimmed font-opensans mt-1 mb-4">
               {plan.description}
             </p>
-
-            <ul className="space-y-2 mb-5">
-              {plan.benefits.map((b) => (
-                <li key={b} className="flex items-center gap-2">
-                  <span
-                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ background: "#C5A059" }}
-                  />
-                  <span className="text-sm font-opensans text-foreground">
-                    {b}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            {/* Luxury price tag */}
-            <div
-              className="inline-flex items-baseline gap-1 mb-5 px-4 py-2 rounded-xl"
-              style={{ background: "#1A1A1A" }}
-            >
-              <span
-                className="font-opensans text-sm"
-                style={{ color: "#F5F5F5" }}
-              >
-                R$
-              </span>
-              <span
-                className="font-montserrat font-extrabold text-3xl"
-                style={{ color: "#F5F5F5" }}
-              >
-                {plan.price}
-              </span>
-              <span className="text-sm text-dimmed font-opensans">/mês</span>
-            </div>
 
             <motion.button
               whileTap={{ scale: 0.96 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               onClick={() => handleWhatsApp(plan.whatsappPlan)}
-              className="w-full py-3.5 rounded-2xl font-montserrat font-bold text-sm tracking-tight"
+              className="w-full py-3 rounded-2xl font-montserrat font-bold text-sm tracking-tight"
               style={{
                 background: "#25D366",
                 color: "#FFFFFF",
@@ -128,19 +108,13 @@ export default function PlanosPage() {
         ))}
       </motion.div>
 
-      {/* Navigation dots */}
-      <div className="flex justify-center gap-2 mt-6">
-        {plans.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setActivePlan(index)}
-            className="w-2 h-2 rounded-full transition-opacity duration-300"
-            style={{
-              background: "#FFFFFF",
-              opacity: activePlan === index ? 1 : 0.3,
-            }}
-          />
-        ))}
+      <div className="px-6 mt-6">
+        <p
+          className="text-sm font-opensans text-center"
+          style={{ color: "#C5A059" }}
+        >
+          + BENEFÍCIOS: Sobrancelha, Hidratação, Prioridade na Agenda e Brindes.
+        </p>
       </div>
 
       <BottomNav />
