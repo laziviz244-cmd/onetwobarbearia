@@ -33,7 +33,7 @@ export default function PlanosPage() {
     const msg = encodeURIComponent(
       `Olá! Quero entrar para o Clube de Sócios ${planName} da OneTwo!`
     );
-    window.open(`https://wa.me/5577999999999?text=${msg}`, "_blank");
+    window.open(`https://wa.me/5577981302545?text=${msg}`, "_blank");
   };
 
   return (

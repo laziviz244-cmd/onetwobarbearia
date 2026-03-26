@@ -33,11 +33,16 @@ export default function ClientHomePage() {
             href="https://www.google.com/maps/search/?api=1&query=Rua+Potiragua+406+Camaca+Itapetinga+BA"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 text-dimmed no-underline"
+            className="flex flex-col items-end gap-0.5 no-underline"
             style={{ color: "inherit", textDecoration: "none" }}
           >
-            <MapPin className="h-4 w-4" />
-            <span className="text-xs font-opensans">Itapetinga</span>
+            <span className="text-[10px] font-opensans" style={{ color: "#C5A059" }}>
+              Clique e veja nossa localização
+            </span>
+            <span className="flex items-center gap-1 text-dimmed">
+              <MapPin className="h-4 w-4" />
+              <span className="text-xs font-opensans">Itapetinga</span>
+            </span>
           </a>
         </div>
       </div>
