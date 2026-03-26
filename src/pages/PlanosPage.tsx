@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
@@ -29,6 +30,8 @@ const plans = [
 ];
 
 export default function PlanosPage() {
+  const [activePlan, setActivePlan] = useState(0);
+
   const handleWhatsApp = (planName: string) => {
     const msg = encodeURIComponent(
       `Olá! Quero entrar para o Clube de Sócios ${planName} da OneTwo!`
@@ -53,20 +56,21 @@ export default function PlanosPage() {
         animate="show"
         className="px-6 flex flex-col gap-5"
       >
-        {plans.map((plan) => (
+        {plans.map((plan, index) => (
           <motion.div
             key={plan.name}
             variants={staggerItem}
-            className="rounded-2xl p-6 relative overflow-hidden"
+            onClick={() => setActivePlan(index)}
+            className="rounded-2xl p-6 relative overflow-hidden cursor-pointer"
             style={{
-              background: "hsl(0 0% 0%)",
+              background: "#000000",
               border: "1.5px solid #C5A059",
               boxShadow: "0 0 20px hsl(40 50% 30% / 0.1)",
             }}
           >
             <h2
               className="font-montserrat font-extrabold text-lg tracking-tight"
-              style={{ color: "#C5A059" }}
+              style={{ color: "#F5F5F5" }}
             >
               {plan.name}
             </h2>
@@ -95,13 +99,13 @@ export default function PlanosPage() {
             >
               <span
                 className="font-opensans text-sm"
-                style={{ color: "#C5A059" }}
+                style={{ color: "#F5F5F5" }}
               >
                 R$
               </span>
               <span
                 className="font-montserrat font-extrabold text-3xl"
-                style={{ color: "#C5A059" }}
+                style={{ color: "#F5F5F5" }}
               >
                 {plan.price}
               </span>
@@ -123,6 +127,21 @@ export default function PlanosPage() {
           </motion.div>
         ))}
       </motion.div>
+
+      {/* Navigation dots */}
+      <div className="flex justify-center gap-2 mt-6">
+        {plans.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setActivePlan(index)}
+            className="w-2 h-2 rounded-full transition-opacity duration-300"
+            style={{
+              background: "#FFFFFF",
+              opacity: activePlan === index ? 1 : 0.3,
+            }}
+          />
+        ))}
+      </div>
 
       <BottomNav />
     </div>
