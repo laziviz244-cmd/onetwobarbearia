@@ -161,7 +161,7 @@ export default function Perfil() {
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               onClick={handleCreateProfile}
               className="w-full py-3.5 rounded-2xl font-montserrat font-bold text-sm tracking-tight"
-              style={{ background: "#C5A059", color: "#000000" }}
+              style={{ background: "#FFFFFF", color: "#000000" }}
             >
               Criar Perfil
             </motion.button>
@@ -202,7 +202,7 @@ export default function Perfil() {
                 whileTap={{ scale: 0.96 }}
                 onClick={handleInstallPWA}
                 className="w-full py-3.5 rounded-2xl font-montserrat font-bold text-sm tracking-tight mb-3"
-                style={{ background: "#C5A059", color: "#000000" }}
+                style={{ background: "#FFFFFF", color: "#000000" }}
               >
                 ADICIONAR À TELA INICIAL
               </motion.button>
