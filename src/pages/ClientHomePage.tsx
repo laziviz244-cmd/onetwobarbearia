@@ -259,8 +259,12 @@ export default function ClientHomePage() {
               onClick={() => navigate(`/agendar?servico=${encodeURIComponent(service.name)}`)}
               className="flex flex-col rounded-2xl surface-card overflow-hidden text-left"
             >
-              <div className="w-full aspect-square bg-muted/30 flex items-center justify-center">
-                <span className="text-dimmed text-xs font-opensans">Foto</span>
+              <div className="w-full aspect-square bg-muted/30 flex items-center justify-center overflow-hidden">
+                {service.image ? (
+                  <img src={service.image} alt={service.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-dimmed text-xs font-opensans">Foto</span>
+                )}
               </div>
               <div className="p-3">
                 <h3 className="font-montserrat font-bold text-foreground text-sm">{service.name}</h3>
