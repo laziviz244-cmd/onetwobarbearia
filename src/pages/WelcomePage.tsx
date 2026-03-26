@@ -7,12 +7,14 @@ import heroBarber from "@/assets/hero-barber.jpg";
 export default function WelcomePage() {
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const handleAction = () => {
     const user = localStorage.getItem("onetwo_user");
     if (user) {
       navigate("/cliente", { replace: true });
+    } else {
+      navigate("/perfil");
     }
-  }, [navigate]);
+  };
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
