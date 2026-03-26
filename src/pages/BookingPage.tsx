@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Check, Scissors, Calendar } from "lucide-react";
+import { ArrowLeft, Check } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
