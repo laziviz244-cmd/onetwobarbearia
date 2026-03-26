@@ -36,15 +36,6 @@ export default function BookingPage() {
   const [selectedDate, setSelectedDate] = useState("2026-03-18");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [showLoyalty, setShowLoyalty] = useState(false);
-
-  const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
-
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
-    setAppointments(stored.slice(-3).reverse());
-  }, []);
 
   const userName = (() => {
     const user = localStorage.getItem("onetwo_user");
