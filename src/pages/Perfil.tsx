@@ -49,7 +49,7 @@ export default function Perfil() {
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
-    setTimeout(() => navigate("/agendar"), 300);
+    setTimeout(() => navigate("/cliente"), 300);
   };
 
   const handleLogout = () => {

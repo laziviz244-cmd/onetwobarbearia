@@ -44,7 +44,7 @@ export default function WelcomePage() {
           <motion.button
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            onClick={() => navigate("/cliente")}
+            onClick={handleAction}
             className="w-full rounded-2xl btn-primary-glow py-4 font-montserrat font-bold text-primary-foreground text-lg tracking-tight"
           >
             Agendar agora
@@ -53,7 +53,7 @@ export default function WelcomePage() {
 
         <p className="mt-6 text-xs text-dimmed font-opensans">
           Já tem conta?{" "}
-          <button onClick={() => navigate("/cliente")} className="text-primary font-semibold">
+          <button onClick={() => navigate("/login")} className="text-primary font-semibold">
             Entrar
           </button>
         </p>
