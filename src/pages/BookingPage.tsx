@@ -134,64 +134,6 @@ export default function BookingPage() {
         </div>
       </div>
 
-      {/* Loyalty + Appointments section */}
-      <div className="px-6 mt-6 space-y-4">
-        {/* Loyalty shortcut */}
-        <motion.button
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          whileTap={{ scale: 0.96 }}
-          onClick={() => setShowLoyalty(true)}
-          className="w-full rounded-2xl p-4 flex items-center gap-4"
-          style={{ background: "hsl(0 0% 0%)", border: "1px solid #C5A059" }}
-        >
-          <Scissors className="w-6 h-6 flex-shrink-0" style={{ color: "#C5A059" }} />
-          <div className="text-left flex-1">
-            <span className="font-montserrat font-bold text-foreground text-sm">
-              ✂️ Ver Meu Cartão Fidelidade
-            </span>
-            <p className="text-xs text-dimmed font-opensans mt-0.5">
-              {loyaltyCount} de 9 cortes completados
-            </p>
-          </div>
-        </motion.button>
-
-        {/* Recent appointments */}
-        {appointments.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <h2 className="font-montserrat font-bold text-foreground text-sm mb-3 flex items-center gap-2">
-              <Calendar className="w-4 h-4" style={{ color: "#C5A059" }} />
-              Meus Horários Marcados
-            </h2>
-            <div className="space-y-2">
-              {appointments.map((apt) => (
-                <div
-                  key={apt.id}
-                  className="rounded-xl p-3 flex items-center gap-3"
-                  style={{ background: "hsl(0 0% 4%)" }}
-                >
-                  <Scissors className="w-4 h-4 flex-shrink-0" style={{ color: "#C5A059" }} />
-                  <span className="font-montserrat font-semibold text-foreground text-sm flex-1">
-                    {apt.service}
-                  </span>
-                  <span className="text-xs text-dimmed font-opensans">
-                    {apt.dateLabel} · {apt.time}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Divider */}
-        <div className="w-full h-px" style={{ background: "hsl(0 0% 100% / 0.08)" }} />
-      </div>
-
       {/* Date selector */}
       <div className="px-6 mt-6">
         <h2 className="font-montserrat font-bold text-foreground tracking-tighter mb-3">
