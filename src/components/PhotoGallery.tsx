@@ -63,7 +63,7 @@ export function PhotoGallery() {
             onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
             className="w-2 h-2 rounded-full transition-all duration-300"
             style={{
-              background: i === current ? "#C5A059" : "hsl(0 0% 100% / 0.2)",
+              background: i === current ? "#C5A059" : "hsl(0 0% 100% / 0.5)",
               transform: i === current ? "scale(1.3)" : "scale(1)",
             }}
           />

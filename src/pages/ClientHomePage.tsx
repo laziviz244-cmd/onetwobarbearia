@@ -37,7 +37,7 @@ export default function ClientHomePage() {
             className="flex flex-col items-end gap-0.5 no-underline"
             style={{ color: "inherit", textDecoration: "none" }}
           >
-            <span className="text-[10px] font-opensans" style={{ color: "#C5A059" }}>
+            <span className="text-[10px] font-opensans text-foreground">
               Clique e veja nossa localização
             </span>
             <span className="flex items-center gap-1 text-dimmed">
