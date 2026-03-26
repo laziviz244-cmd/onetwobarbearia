@@ -2,17 +2,20 @@ import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
-import { PhotoGallery } from "@/components/PhotoGallery";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState } from "react";
+import corteImg from "@/assets/corte.jpg";
+import barbaImg from "@/assets/barba.jpg";
+import nevouImg from "@/assets/nevou.jpg";
+import luzesImg from "@/assets/luzes.jpg";
 
 const services = [
-  { id: "1", name: "Corte", price: "R$ 30,00" },
-  { id: "2", name: "Barba", price: "R$ 25,00" },
-  { id: "3", name: "Combo Corte + Barba", price: "R$ 50,00" },
-  { id: "4", name: "Nevou", price: "R$ 80,00" },
-  { id: "5", name: "Luzes", price: "R$ 70,00" },
-  { id: "6", name: "Pezinho", price: "R$ 10,00" },
+  { id: "1", name: "Corte", price: "R$ 30,00", image: corteImg },
+  { id: "2", name: "Barba", price: "R$ 25,00", image: barbaImg },
+  { id: "3", name: "Combo Corte + Barba", price: "R$ 50,00", image: null },
+  { id: "4", name: "Nevou", price: "R$ 80,00", image: nevouImg },
+  { id: "5", name: "Luzes", price: "R$ 70,00", image: luzesImg },
+  { id: "6", name: "Pezinho", price: "R$ 10,00", image: null },
 ];
 
 export default function ClientHomePage() {
