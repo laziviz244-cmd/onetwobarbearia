@@ -78,7 +78,7 @@ export default function BookingPage() {
     const msg = encodeURIComponent(
       `Olá! Gostaria de confirmar meu agendamento:\n\n📋 Serviço: ${serviceName}\n📅 Data: ${dateLabel}/2026\n⏰ Horário: ${selectedTime}\n\nCliente: ${userName}`
     );
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
 
     setConfirmed(true);
   };
