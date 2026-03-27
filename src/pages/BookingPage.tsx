@@ -252,15 +252,25 @@ export default function BookingPage() {
           animate={{ opacity: 1, y: 0 }}
           className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent"
         >
-          <motion.button
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            onClick={handleConfirm}
-            className="w-full rounded-2xl py-4 font-montserrat font-bold text-lg tracking-tight"
-            style={{ background: "#25D366", color: "#FFFFFF" }}
-          >
-            Confirmar via WhatsApp · {selectedTime}
-          </motion.button>
+          <div className="flex gap-3">
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              onClick={() => handleConfirm("site")}
+              className="flex-1 rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight bg-primary text-primary-foreground"
+            >
+              Marcar via Site · {selectedTime}
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              onClick={() => handleConfirm("whatsapp")}
+              className="flex-1 rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight"
+              style={{ background: "#25D366", color: "#FFFFFF" }}
+            >
+              Confirmar via WhatsApp
+            </motion.button>
+          </div>
         </motion.div>
       )}
 
