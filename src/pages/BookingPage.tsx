@@ -3,6 +3,7 @@ import { ArrowLeft, Check } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -49,11 +50,18 @@ export default function BookingPage() {
   const [showNameModal, setShowNameModal] = useState(false);
   const [guestName, setGuestName] = useState("");
 
-  const reservedSlots = useMemo(() => {
-    const appointments = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
-    return appointments
-      .filter((a: any) => a.date === selectedDate && a.status === "Confirmado")
-      .map((a: any) => a.time as string);
+  const [reservedSlots, setReservedSlots] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchReserved = async () => {
+      const { data } = await supabase
+        .from("appointments")
+        .select("time")
+        .eq("date", selectedDate)
+        .eq("status", "Confirmado");
+      setReservedSlots((data || []).map((a: any) => a.time));
+    };
+    fetchReserved();
   }, [selectedDate]);
 
   const [bookingMode, setBookingMode] = useState<"site" | "whatsapp" | null>(null);
@@ -86,18 +94,14 @@ export default function BookingPage() {
     const dateObj = weekDays.find((d) => d.full === selectedDate);
     const dateLabel = `${dateObj?.date}/03`;
 
-    const existing = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
-    existing.push({
-      id: Date.now().toString(),
+    await supabase.from("appointments").insert({
       service: serviceName,
       date: selectedDate,
-      dateLabel,
+      date_label: dateLabel,
       time: selectedTime,
       status: "Confirmado",
-      clientName,
-      createdAt: new Date().toISOString(),
+      client_name: clientName,
     });
-    localStorage.setItem("onetwo_appointments", JSON.stringify(existing));
 
     const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
     localStorage.setItem("onetwo_loyalty", String(loyaltyCount + 1));
