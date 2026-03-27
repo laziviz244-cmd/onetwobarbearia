@@ -64,8 +64,8 @@ export default function MeusAgendamentos() {
         </motion.h1>
       </header>
 
-      <main className="px-6 space-y-4">
-        {/* Loyalty shortcut */}
+      <main className="px-6 space-y-5">
+        {/* Loyalty Card - Gold border style */}
         <motion.button
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -89,64 +89,123 @@ export default function MeusAgendamentos() {
           </div>
         </motion.button>
 
+        {/* Section: Cortes Realizados */}
+        <div>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="flex items-center gap-2 mb-3"
+          >
+            <Scissors className="w-4 h-4 text-dimmed" />
+            <h2 className="font-montserrat font-bold text-sm text-foreground">Cortes Realizados</h2>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.15 }}
+            className="grid grid-cols-5 gap-2"
+          >
+            {Array.from({ length: 10 }).map((_, i) => {
+              const filled = i < Math.min(loyaltyCount, 9);
+              return (
+                <div
+                  key={i}
+                  className="aspect-square rounded-full flex items-center justify-center"
+                  style={{
+                    background: filled
+                      ? "linear-gradient(145deg, hsl(43 70% 58%), hsl(38 80% 42%))"
+                      : "transparent",
+                    border: filled
+                      ? "1.5px solid hsl(43 60% 60%)"
+                      : "1.5px solid hsl(45 40% 35% / 0.4)",
+                    boxShadow: filled
+                      ? "0 0 10px hsl(43 70% 50% / 0.25)"
+                      : "none",
+                  }}
+                >
+                  <Scissors
+                    className="w-3.5 h-3.5"
+                    style={{
+                      color: filled ? "hsl(0 0% 8%)" : "hsl(45 30% 40% / 0.4)",
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </motion.div>
+        </div>
+
         {/* Divider */}
         <div className="w-full h-px" style={{ background: "hsl(0 0% 100% / 0.08)" }} />
 
-        {/* Appointments */}
-        {appointments.length === 0 ? (
+        {/* Section: Próximos Agendamentos */}
+        <div>
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="surface-card rounded-2xl p-8 flex flex-col items-center gap-4"
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="flex items-center gap-2 mb-3"
           >
-            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-              <Calendar className="w-7 h-7 text-primary" />
-            </div>
-            <p className="text-center text-subtle font-opensans text-sm leading-relaxed">
-              Você ainda não possui agendamentos marcados.
-            </p>
+            <Calendar className="w-4 h-4 text-dimmed" />
+            <h2 className="font-montserrat font-bold text-sm text-foreground">Próximos Agendamentos</h2>
           </motion.div>
-        ) : (
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="show"
-            className="flex flex-col gap-3"
-          >
-            {appointments.map((apt) => (
-              <motion.div
-                key={apt.id}
-                variants={staggerItem}
-                className="surface-card rounded-2xl p-4"
-              >
-                <div className="flex items-center gap-4">
-                  <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ background: "hsl(0 0% 12%)" }}
-                  >
-                    <Scissors className="w-5 h-5 text-dimmed" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-montserrat font-bold text-foreground text-sm truncate">
-                      {apt.service}
-                    </h3>
-                    <p className="text-xs text-dimmed font-opensans mt-0.5">
-                      📅 {apt.dateLabel} · ⏰ {apt.time}
-                    </p>
-                    <button
-                      onClick={() => setCancelId(apt.id)}
-                      className="text-[11px] font-opensans mt-1 transition-opacity hover:opacity-80"
-                      style={{ color: "hsl(0 0% 45%)" }}
+
+          {appointments.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="surface-card rounded-2xl p-8 flex flex-col items-center gap-4"
+            >
+              <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                <Calendar className="w-7 h-7 text-primary" />
+              </div>
+              <p className="text-center text-subtle font-opensans text-sm leading-relaxed">
+                Você ainda não possui agendamentos marcados.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="show"
+              className="flex flex-col gap-3"
+            >
+              {appointments.map((apt) => (
+                <motion.div
+                  key={apt.id}
+                  variants={staggerItem}
+                  className="surface-card rounded-2xl p-4"
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{ background: "hsl(0 0% 12%)" }}
                     >
-                      cancelar agendamento
-                    </button>
+                      <Scissors className="w-5 h-5 text-dimmed" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-montserrat font-bold text-foreground text-sm truncate">
+                        {apt.service}
+                      </h3>
+                      <p className="text-xs text-dimmed font-opensans mt-0.5">
+                        📅 {apt.dateLabel} · ⏰ {apt.time}
+                        <button
+                          onClick={() => setCancelId(apt.id)}
+                          className="ml-2 transition-opacity hover:opacity-80"
+                          style={{ color: "#808080" }}
+                        >
+                          · cancelar agendamento
+                        </button>
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </div>
       </main>
 
       {/* Cancel Confirmation */}
