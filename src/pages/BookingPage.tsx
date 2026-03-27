@@ -56,8 +56,11 @@ export default function BookingPage() {
       .map((a: any) => a.time as string);
   }, [selectedDate]);
 
-  const handleConfirm = () => {
+  const [bookingMode, setBookingMode] = useState<"site" | "whatsapp" | null>(null);
+
+  const handleConfirm = (mode: "site" | "whatsapp") => {
     if (!selectedTime) return;
+    setBookingMode(mode);
 
     const clientName = getClientName();
     if (!clientName) {
@@ -65,7 +68,7 @@ export default function BookingPage() {
       return;
     }
 
-    finalizeBooking(clientName);
+    finalizeBooking(clientName, mode);
   };
 
   const handleGuestConfirm = () => {
