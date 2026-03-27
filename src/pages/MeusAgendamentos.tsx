@@ -3,6 +3,7 @@ import { Calendar, Scissors } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,29 +32,41 @@ export default function MeusAgendamentos() {
 
   const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
 
-  const loadAppointments = () => {
-    const stored: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
-    setAppointments([...stored].reverse());
+  const loadAppointments = async () => {
+    const { data } = await supabase
+      .from("appointments")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (data) {
+      setAppointments(
+        data.map((a: any) => ({
+          id: a.id,
+          service: a.service,
+          date: a.date,
+          dateLabel: a.date_label,
+          time: a.time,
+          status: a.status,
+          clientName: a.client_name,
+        }))
+      );
+    }
   };
 
   useEffect(() => {
     loadAppointments();
-  }, []);
-
-  useEffect(() => {
-    const handleFocus = () => loadAppointments();
-    window.addEventListener("focus", handleFocus);
-    const interval = setInterval(loadAppointments, 1000);
+    const channel = supabase
+      .channel("appointments-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
+        loadAppointments();
+      })
+      .subscribe();
     return () => {
-      window.removeEventListener("focus", handleFocus);
-      clearInterval(interval);
+      supabase.removeChannel(channel);
     };
   }, []);
 
-  const handleCancel = (id: string) => {
-    const all: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
-    const updated = all.filter((a) => a.id !== id);
-    localStorage.setItem("onetwo_appointments", JSON.stringify(updated));
+  const handleCancel = async (id: string) => {
+    await supabase.from("appointments").delete().eq("id", id);
     setCancelId(null);
     loadAppointments();
   };
