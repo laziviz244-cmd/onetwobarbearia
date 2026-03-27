@@ -97,7 +97,7 @@ export default function MeusAgendamentos() {
             transition={{ duration: 0.4, delay: 0.15 }}
             className="flex items-center gap-2 mb-3"
           >
-            <Calendar className="w-4 h-4 text-dimmed" />
+            <Calendar className="w-4 h-4 text-foreground" />
             <h2 className="font-montserrat font-bold text-sm text-foreground">Meus Horários Marcados</h2>
           </motion.div>
 
@@ -120,35 +120,31 @@ export default function MeusAgendamentos() {
               variants={staggerContainer}
               initial="hidden"
               animate="show"
-              className="flex flex-col gap-3"
+              className="surface-card rounded-2xl p-4 flex flex-col gap-0"
             >
-              {appointments.map((apt) => (
+              {appointments.map((apt, index) => (
                 <motion.div
                   key={apt.id}
                   variants={staggerItem}
-                  className="surface-card rounded-2xl p-4"
+                  className={index < appointments.length - 1 ? "pb-3 mb-3" : ""}
+                  style={index < appointments.length - 1 ? { borderBottom: "1px solid hsl(0 0% 12%)" } : {}}
                 >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ background: "hsl(0 0% 12%)" }}
-                    >
-                      <Scissors className="w-5 h-5 text-dimmed" />
-                    </div>
+                  <div className="flex items-center gap-3">
+                    <Scissors className="w-4 h-4 flex-shrink-0" style={{ color: "#C5A059" }} />
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-montserrat font-bold text-foreground text-sm truncate">
+                      <span className="font-montserrat font-bold text-foreground text-sm">
                         {apt.service}
-                      </h3>
-                      <p className="text-xs text-dimmed font-opensans mt-0.5">
-                        📅 {apt.dateLabel} · ⏰ {apt.time}
-                        <button
-                          onClick={() => setCancelId(apt.id)}
-                          className="ml-2 transition-opacity hover:opacity-80"
-                          style={{ color: "#808080" }}
-                        >
-                          · cancelar agendamento
-                        </button>
-                      </p>
+                      </span>
+                      <span className="text-xs text-dimmed font-opensans ml-2">
+                        - {apt.time}
+                      </span>
+                      <button
+                        onClick={() => setCancelId(apt.id)}
+                        className="ml-2 text-xs transition-opacity hover:opacity-80"
+                        style={{ color: "#808080" }}
+                      >
+                        cancelar agendamento
+                      </button>
                     </div>
                   </div>
                 </motion.div>
