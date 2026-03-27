@@ -3,6 +3,14 @@ import { ArrowLeft, Check } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 const timeSlots = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
@@ -22,6 +30,13 @@ const weekDays = [
 
 const WHATSAPP_NUMBER = "5577981302545";
 
+function getClientName(): string | null {
+  const user = localStorage.getItem("onetwo_user");
+  if (user) {
+    try { return JSON.parse(user).username || null; } catch { return null; }
+  }
+  return localStorage.getItem("onetwo_guest_name") || null;
+}
 
 export default function BookingPage() {
   const navigate = useNavigate();
@@ -31,8 +46,9 @@ export default function BookingPage() {
   const [selectedDate, setSelectedDate] = useState("2026-03-18");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [guestName, setGuestName] = useState("");
 
-  // Compute reserved time slots for the selected date
   const reservedSlots = useMemo(() => {
     const appointments = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
     return appointments
@@ -40,30 +56,28 @@ export default function BookingPage() {
       .map((a: any) => a.time as string);
   }, [selectedDate]);
 
-  // Session recovery when returning from WhatsApp
-  useEffect(() => {
-    const revive = () => {
-      const user = localStorage.getItem("onetwo_user");
-      if (!user && (location.pathname === "/agendar")) {
-        navigate("/vitrine", { replace: true });
-      }
-    };
-    const onVis = () => { if (!document.hidden) revive(); };
-    window.addEventListener("pageshow", revive);
-    document.addEventListener("visibilitychange", onVis);
-    return () => {
-      window.removeEventListener("pageshow", revive);
-      document.removeEventListener("visibilitychange", onVis);
-    };
-  }, [navigate]);
-
-  const userName = (() => {
-    const user = localStorage.getItem("onetwo_user");
-    if (user) return JSON.parse(user).username;
-    return "Meu Nome";
-  })();
-
   const handleConfirm = () => {
+    if (!selectedTime) return;
+
+    const clientName = getClientName();
+    if (!clientName) {
+      setShowNameModal(true);
+      return;
+    }
+
+    finalizeBooking(clientName);
+  };
+
+  const handleGuestConfirm = () => {
+    const name = guestName.trim();
+    if (!name) return;
+    localStorage.setItem("onetwo_guest_name", name);
+    localStorage.setItem("last_logged_user", name);
+    setShowNameModal(false);
+    finalizeBooking(name);
+  };
+
+  const finalizeBooking = (clientName: string) => {
     if (!selectedTime) return;
 
     const dateObj = weekDays.find((d) => d.full === selectedDate);
@@ -77,6 +91,7 @@ export default function BookingPage() {
       dateLabel,
       time: selectedTime,
       status: "Confirmado",
+      clientName,
       createdAt: new Date().toISOString(),
     });
     localStorage.setItem("onetwo_appointments", JSON.stringify(existing));
@@ -85,7 +100,7 @@ export default function BookingPage() {
     localStorage.setItem("onetwo_loyalty", String(loyaltyCount + 1));
 
     const msg = encodeURIComponent(
-      `Olá! Gostaria de confirmar meu agendamento:\n\n📋 Serviço: ${serviceName}\n📅 Data: ${dateLabel}/2026\n⏰ Horário: ${selectedTime}\n\nCliente: ${userName}`
+      `Olá! Meu nome é ${clientName}. Gostaria de confirmar meu agendamento de ${serviceName} para o dia ${dateLabel}/2026 às ${selectedTime}.`
     );
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
 
@@ -244,6 +259,48 @@ export default function BookingPage() {
         </motion.div>
       )}
 
+      {/* Guest Name Modal */}
+      <Dialog open={showNameModal} onOpenChange={setShowNameModal}>
+        <DialogContent
+          className="rounded-2xl border-0 max-w-[340px]"
+          style={{
+            background: "hsl(0 0% 5%)",
+            border: "1px solid hsl(43 70% 45% / 0.4)",
+          }}
+        >
+          <DialogHeader>
+            <DialogTitle className="font-montserrat font-bold text-foreground text-center">
+              Qual o seu nome?
+            </DialogTitle>
+            <DialogDescription className="text-center text-dimmed font-opensans text-sm">
+              Para registrar seu agendamento
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4 mt-2">
+            <Input
+              placeholder="Seu nome"
+              value={guestName}
+              onChange={(e) => setGuestName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleGuestConfirm()}
+              className="rounded-xl border-0 font-opensans"
+              style={{
+                background: "hsl(0 0% 10%)",
+                color: "hsl(0 0% 100%)",
+              }}
+              autoFocus
+            />
+            <motion.button
+              whileTap={{ scale: 0.96 }}
+              onClick={handleGuestConfirm}
+              disabled={!guestName.trim()}
+              className="w-full rounded-2xl py-3 font-montserrat font-bold text-sm tracking-tight disabled:opacity-40"
+              style={{ background: "#25D366", color: "#FFFFFF" }}
+            >
+              Confirmar Agendamento
+            </motion.button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,8 +1,18 @@
 import { motion } from "framer-motion";
-import { Calendar, Scissors, Check } from "lucide-react";
+import { Calendar, Scissors, Check, X } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState, useEffect } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface Appointment {
   id: string;
@@ -11,23 +21,35 @@ interface Appointment {
   dateLabel: string;
   time: string;
   status: string;
+  clientName?: string;
 }
 
 export default function MeusAgendamentos() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [showLoyalty, setShowLoyalty] = useState(false);
+  const [cancelId, setCancelId] = useState<string | null>(null);
 
   const user = localStorage.getItem("onetwo_user");
-  const loyaltyCount = user ? parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10) : 0;
+  const guestName = localStorage.getItem("onetwo_guest_name");
+  const hasIdentity = !!(user || guestName);
+  const loyaltyCount = hasIdentity ? parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10) : 0;
 
   useEffect(() => {
-    if (!user) {
+    if (!hasIdentity) {
       setAppointments([]);
       return;
     }
-    const stored = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
-    setAppointments(stored.reverse());
-  }, [user]);
+    const stored: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
+    setAppointments([...stored].reverse());
+  }, [hasIdentity]);
+
+  const handleCancel = (id: string) => {
+    const all: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
+    const updated = all.filter((a) => a.id !== id);
+    localStorage.setItem("onetwo_appointments", JSON.stringify(updated));
+    setAppointments([...updated].reverse());
+    setCancelId(null);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-24">
@@ -64,41 +86,10 @@ export default function MeusAgendamentos() {
           </div>
         </motion.button>
 
-        {/* Recent appointments */}
-        {appointments.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <h2 className="font-montserrat font-bold text-foreground text-sm mb-3 flex items-center gap-2">
-              <Calendar className="w-4 h-4" style={{ color: "#C5A059" }} />
-              Meus Horários Marcados
-            </h2>
-            <div className="space-y-2">
-              {appointments.map((apt) => (
-                <div
-                  key={apt.id}
-                  className="rounded-xl p-3 flex items-center gap-3"
-                  style={{ background: "hsl(0 0% 4%)" }}
-                >
-                  <Scissors className="w-4 h-4 flex-shrink-0" style={{ color: "#C5A059" }} />
-                  <span className="font-montserrat font-semibold text-foreground text-sm flex-1">
-                    {apt.service}
-                  </span>
-                  <span className="text-xs text-dimmed font-opensans">
-                    {apt.dateLabel} · {apt.time}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
         {/* Divider */}
         <div className="w-full h-px" style={{ background: "hsl(0 0% 100% / 0.08)" }} />
 
-        {/* Empty state or full list */}
+        {/* Appointments */}
         {appointments.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -144,18 +135,59 @@ export default function MeusAgendamentos() {
                     📅 {apt.dateLabel} · ⏰ {apt.time}
                   </p>
                 </div>
-                <span
-                  className="text-[10px] font-montserrat font-bold px-2 py-1 rounded-full flex items-center gap-1"
-                  style={{ background: "hsl(140 50% 15%)", color: "hsl(140 60% 55%)" }}
-                >
-                  <Check className="w-3 h-3" />
-                  {apt.status}
-                </span>
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <span
+                    className="text-[10px] font-montserrat font-bold px-2 py-1 rounded-full flex items-center gap-1"
+                    style={{ background: "hsl(140 50% 15%)", color: "hsl(140 60% 55%)" }}
+                  >
+                    <Check className="w-3 h-3" />
+                    {apt.status}
+                  </span>
+                  <button
+                    onClick={() => setCancelId(apt.id)}
+                    className="w-7 h-7 rounded-full flex items-center justify-center"
+                    style={{ background: "hsl(0 30% 15%)" }}
+                  >
+                    <X className="w-3.5 h-3.5" style={{ color: "hsl(0 50% 50%)" }} />
+                  </button>
+                </div>
               </motion.div>
             ))}
           </motion.div>
         )}
       </main>
+
+      {/* Cancel Confirmation */}
+      <AlertDialog open={!!cancelId} onOpenChange={(open) => !open && setCancelId(null)}>
+        <AlertDialogContent
+          className="rounded-2xl border-0 max-w-[340px]"
+          style={{ background: "hsl(0 0% 5%)", border: "1px solid hsl(0 40% 30% / 0.5)" }}
+        >
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-montserrat font-bold text-foreground text-center">
+              Cancelar agendamento?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-center text-dimmed font-opensans text-sm">
+              Deseja realmente cancelar este horário? Ele ficará disponível para outros clientes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row gap-2 sm:flex-row">
+            <AlertDialogCancel
+              className="flex-1 rounded-2xl border-0 font-montserrat font-bold"
+              style={{ background: "hsl(0 0% 10%)", color: "hsl(0 0% 100%)" }}
+            >
+              Não
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => cancelId && handleCancel(cancelId)}
+              className="flex-1 rounded-2xl border-0 font-montserrat font-bold"
+              style={{ background: "hsl(0 50% 40%)", color: "#FFFFFF" }}
+            >
+              Sim, cancelar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Loyalty Modal */}
       {showLoyalty && (
@@ -208,16 +240,9 @@ export default function MeusAgendamentos() {
                         : "none",
                     }}
                   >
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
                       stroke={filled ? "hsl(0 0% 8%)" : "hsl(45 30% 40% / 0.5)"}
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
+                      strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <circle cx="6" cy="6" r="3" />
                       <path d="M8.12 8.12 12 12" />
                       <path d="M20 4 8.12 15.88" />
@@ -234,7 +259,6 @@ export default function MeusAgendamentos() {
               <span className="text-foreground">A cada 9 cortes, o 10º é </span>
               <span className="font-bold" style={{ color: "hsl(43 80% 55%)" }}>por nossa conta!</span>
             </p>
-
             <p className="text-center text-sm font-montserrat text-foreground">
               Faltam apenas <span className="font-bold text-primary">{Math.max(9 - loyaltyCount, 0)} cortes</span> para o seu corte grátis!
             </p>
