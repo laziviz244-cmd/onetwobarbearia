@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Check } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const timeSlots = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
@@ -30,6 +30,23 @@ export default function BookingPage() {
   const [selectedDate, setSelectedDate] = useState("2026-03-18");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
+
+  // Session recovery when returning from WhatsApp
+  useEffect(() => {
+    const revive = () => {
+      const user = localStorage.getItem("onetwo_user");
+      if (!user && (location.pathname === "/agendar")) {
+        navigate("/vitrine", { replace: true });
+      }
+    };
+    const onVis = () => { if (!document.hidden) revive(); };
+    window.addEventListener("pageshow", revive);
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      window.removeEventListener("pageshow", revive);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [navigate]);
 
   const userName = (() => {
     const user = localStorage.getItem("onetwo_user");
@@ -61,7 +78,7 @@ export default function BookingPage() {
     const msg = encodeURIComponent(
       `Olá! Gostaria de confirmar meu agendamento:\n\n📋 Serviço: ${serviceName}\n📅 Data: ${dateLabel}/2026\n⏰ Horário: ${selectedTime}\n\nCliente: ${userName}`
     );
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
 
     setConfirmed(true);
   };

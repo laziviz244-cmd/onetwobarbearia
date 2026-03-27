@@ -38,7 +38,7 @@ const plans = [
 export default function PlanosPage() {
   const handleWhatsApp = (msg: string) => {
     const encoded = encodeURIComponent(msg);
-    window.open(`https://wa.me/5577981302545?text=${encoded}`, "_blank");
+    window.open(`https://wa.me/5577981302545?text=${encoded}`, "_blank", "noopener,noreferrer");
   };
 
   return (
