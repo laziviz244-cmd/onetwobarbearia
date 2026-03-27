@@ -34,21 +34,38 @@ export default function MeusAgendamentos() {
   const hasIdentity = !!(user || guestName);
   const loyaltyCount = hasIdentity ? parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10) : 0;
 
-  useEffect(() => {
+  const loadAppointments = () => {
     if (!hasIdentity) {
       setAppointments([]);
       return;
     }
+    const currentUser = user ? JSON.parse(user).username : guestName;
     const stored: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
-    setAppointments([...stored].reverse());
+    const mine = stored.filter((a) => a.clientName === currentUser);
+    setAppointments([...mine].reverse());
+  };
+
+  useEffect(() => {
+    loadAppointments();
+  }, [hasIdentity]);
+
+  useEffect(() => {
+    const handleFocus = () => loadAppointments();
+    window.addEventListener("focus", handleFocus);
+    // Also reload when navigating back to this page
+    const interval = setInterval(loadAppointments, 1000);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      clearInterval(interval);
+    };
   }, [hasIdentity]);
 
   const handleCancel = (id: string) => {
     const all: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
     const updated = all.filter((a) => a.id !== id);
     localStorage.setItem("onetwo_appointments", JSON.stringify(updated));
-    setAppointments([...updated].reverse());
     setCancelId(null);
+    loadAppointments();
   };
 
   return (
