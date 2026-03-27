@@ -31,6 +31,23 @@ export default function BookingPage() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
 
+  // Session recovery when returning from WhatsApp
+  useEffect(() => {
+    const revive = () => {
+      const user = localStorage.getItem("onetwo_user");
+      if (!user && (location.pathname === "/agendar")) {
+        navigate("/vitrine", { replace: true });
+      }
+    };
+    const onVis = () => { if (!document.hidden) revive(); };
+    window.addEventListener("pageshow", revive);
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      window.removeEventListener("pageshow", revive);
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [navigate]);
+
   const userName = (() => {
     const user = localStorage.getItem("onetwo_user");
     if (user) return JSON.parse(user).username;
