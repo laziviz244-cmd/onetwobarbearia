@@ -75,11 +75,18 @@ export default function Perfil() {
   };
 
   const handleLogout = () => {
+    // Clear all app data
     localStorage.removeItem("onetwo_user");
+    localStorage.removeItem("onetwo_appointments");
+    localStorage.removeItem("onetwo_loyalty");
+    sessionStorage.clear();
+    // Reset state
     setIsLoggedIn(false);
     setSavedName("");
     setUsername("");
     setPassword("");
+    // Redirect to vitrine
+    navigate("/vitrine", { replace: true });
   };
 
   const canSubmit = username.trim().length > 0 && password.trim().length > 0 && !isDuplicate;
