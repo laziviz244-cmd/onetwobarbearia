@@ -60,8 +60,9 @@ export default function Perfil() {
       token: btoa(`${username}:${Date.now()}`),
       createdAt: new Date().toISOString(),
     };
-    // Save session immediately
+    // Save session immediately and update device memory
     localStorage.setItem("onetwo_user", JSON.stringify(userData));
+    localStorage.setItem("last_logged_user", username.trim());
 
     // Save to users registry for duplicate checking
     const users = JSON.parse(localStorage.getItem("onetwo_users") || "[]");
@@ -75,7 +76,13 @@ export default function Perfil() {
   };
 
   const handleLogout = () => {
-    // Clear all app data
+    // Save last user for device memory before clearing session
+    const currentUser = localStorage.getItem("onetwo_user");
+    if (currentUser) {
+      const parsed = JSON.parse(currentUser);
+      localStorage.setItem("last_logged_user", parsed.username);
+    }
+    // Clear session data but keep last_logged_user
     localStorage.removeItem("onetwo_user");
     localStorage.removeItem("onetwo_appointments");
     localStorage.removeItem("onetwo_loyalty");

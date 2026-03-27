@@ -4,7 +4,8 @@ import { useState } from "react";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const lastUser = localStorage.getItem("last_logged_user") || "";
+  const [username, setUsername] = useState(lastUser);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -23,13 +24,14 @@ export default function LoginPage() {
       }
     }
 
-    // Simple login: save session and go to home
+    // Simple login: save session and update device memory
     const userData = {
       username: username.trim(),
       token: btoa(`${username}:${Date.now()}`),
       createdAt: new Date().toISOString(),
     };
     localStorage.setItem("onetwo_user", JSON.stringify(userData));
+    localStorage.setItem("last_logged_user", username.trim());
     navigate("/cliente", { replace: true });
   };
 

@@ -11,9 +11,22 @@ export default function WelcomePage() {
     const user = localStorage.getItem("onetwo_user");
     if (user) {
       navigate("/cliente", { replace: true });
-    } else {
-      navigate("/perfil");
+      return;
     }
+    // Try to auto-login last device user
+    const lastUser = localStorage.getItem("last_logged_user");
+    if (lastUser) {
+      // Re-authenticate last user automatically
+      const userData = {
+        username: lastUser,
+        token: btoa(`${lastUser}:${Date.now()}`),
+        createdAt: new Date().toISOString(),
+      };
+      localStorage.setItem("onetwo_user", JSON.stringify(userData));
+      navigate("/cliente", { replace: true });
+      return;
+    }
+    navigate("/perfil");
   };
 
   return (
