@@ -65,7 +65,7 @@ export default function MeusAgendamentos() {
       </header>
 
       <main className="px-6 space-y-5">
-        {/* Loyalty Card - Gold border style */}
+        {/* Loyalty Card */}
         <motion.button
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -89,66 +89,16 @@ export default function MeusAgendamentos() {
           </div>
         </motion.button>
 
-        {/* Section: Cortes Realizados */}
+        {/* Section: Meus Horários Marcados */}
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="flex items-center gap-2 mb-3"
-          >
-            <Scissors className="w-4 h-4 text-dimmed" />
-            <h2 className="font-montserrat font-bold text-sm text-foreground">Cortes Realizados</h2>
-          </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
-            className="grid grid-cols-5 gap-2"
-          >
-            {Array.from({ length: 10 }).map((_, i) => {
-              const filled = i < Math.min(loyaltyCount, 9);
-              return (
-                <div
-                  key={i}
-                  className="aspect-square rounded-full flex items-center justify-center"
-                  style={{
-                    background: filled
-                      ? "linear-gradient(145deg, hsl(43 70% 58%), hsl(38 80% 42%))"
-                      : "transparent",
-                    border: filled
-                      ? "1.5px solid hsl(43 60% 60%)"
-                      : "1.5px solid hsl(45 40% 35% / 0.4)",
-                    boxShadow: filled
-                      ? "0 0 10px hsl(43 70% 50% / 0.25)"
-                      : "none",
-                  }}
-                >
-                  <Scissors
-                    className="w-3.5 h-3.5"
-                    style={{
-                      color: filled ? "hsl(0 0% 8%)" : "hsl(45 30% 40% / 0.4)",
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </motion.div>
-        </div>
-
-        {/* Divider */}
-        <div className="w-full h-px" style={{ background: "hsl(0 0% 100% / 0.08)" }} />
-
-        {/* Section: Próximos Agendamentos */}
-        <div>
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2 }}
             className="flex items-center gap-2 mb-3"
           >
             <Calendar className="w-4 h-4 text-dimmed" />
-            <h2 className="font-montserrat font-bold text-sm text-foreground">Próximos Agendamentos</h2>
+            <h2 className="font-montserrat font-bold text-sm text-foreground">Meus Horários Marcados</h2>
           </motion.div>
 
           {appointments.length === 0 ? (
@@ -219,7 +169,7 @@ export default function MeusAgendamentos() {
               Cancelar agendamento?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center text-dimmed font-opensans text-sm">
-              Deseja realmente cancelar este horário? Ele ficará disponível para outros clientes.
+              Tem certeza que deseja cancelar seu agendamento? O horário ficará disponível para outros clientes.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-row gap-2 sm:flex-row">
