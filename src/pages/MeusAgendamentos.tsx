@@ -72,14 +72,18 @@ export default function MeusAgendamentos() {
           transition={{ duration: 0.5 }}
           whileTap={{ scale: 0.96 }}
           onClick={() => setShowLoyalty(true)}
-          className="w-full surface-card rounded-2xl p-4 flex items-center gap-4"
+          className="w-full rounded-2xl p-4 flex items-center gap-4"
+          style={{
+            background: "hsl(0 0% 6%)",
+            border: "1.5px solid hsl(43 60% 50%)",
+          }}
         >
-          <Scissors className="w-6 h-6 flex-shrink-0 text-dimmed" />
+          <Scissors className="w-6 h-6 flex-shrink-0" style={{ color: "#C5A059" }} />
           <div className="text-left flex-1">
             <span className="font-montserrat font-bold text-foreground text-sm">
               ✂️ Ver Meu Cartão Fidelidade
             </span>
-            <p className="text-xs text-dimmed font-opensans mt-0.5">
+            <p className="text-xs font-opensans mt-0.5" style={{ color: "hsl(0 0% 75%)" }}>
               {loyaltyCount} de 9 cortes completados
             </p>
           </div>
