@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Check } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { toast } from "@/hooks/use-toast";
 
 const timeSlots = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
