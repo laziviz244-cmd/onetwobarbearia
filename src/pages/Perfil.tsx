@@ -60,8 +60,9 @@ export default function Perfil() {
       token: btoa(`${username}:${Date.now()}`),
       createdAt: new Date().toISOString(),
     };
-    // Save session immediately
+    // Save session immediately and update device memory
     localStorage.setItem("onetwo_user", JSON.stringify(userData));
+    localStorage.setItem("last_logged_user", username.trim());
 
     // Save to users registry for duplicate checking
     const users = JSON.parse(localStorage.getItem("onetwo_users") || "[]");
