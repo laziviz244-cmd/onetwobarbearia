@@ -60,7 +60,7 @@ export default function MeusAgendamentos() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="text-2xl font-montserrat font-bold"
         >
-          Meus Horários Marcados
+          Meus Agendamentos
         </motion.h1>
       </header>
 
