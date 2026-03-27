@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
@@ -10,7 +10,7 @@ export default function Perfil() {
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [savedName, setSavedName] = useState("");
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isDuplicate, setIsDuplicate] = useState(false);
 
   useEffect(() => {
     const user = localStorage.getItem("onetwo_user");
@@ -21,35 +21,57 @@ export default function Perfil() {
     }
   }, []);
 
+  // Check for duplicate username
+  useEffect(() => {
+    const users = JSON.parse(localStorage.getItem("onetwo_users") || "[]");
+    setIsDuplicate(
+      users.some(
+        (u: any) =>
+          u.username?.toLowerCase() === username.trim().toLowerCase()
+      ) && username.trim().length > 0
+    );
+  }, [username]);
+
+  // Session recovery on visibility change / pageshow
+  useEffect(() => {
+    const revive = () => {
+      const s = localStorage.getItem("onetwo_user");
+      if (s && isLoggedIn) return;
+      if (s) {
+        const parsed = JSON.parse(s);
+        setIsLoggedIn(true);
+        setSavedName(parsed.username);
+      }
+    };
+    const onVisChange = () => { if (!document.hidden) revive(); };
+    window.addEventListener("pageshow", revive);
+    document.addEventListener("visibilitychange", onVisChange);
+    return () => {
+      window.removeEventListener("pageshow", revive);
+      document.removeEventListener("visibilitychange", onVisChange);
+    };
+  }, [isLoggedIn]);
+
   const handleCreateProfile = () => {
-    if (!username.trim() || !password.trim()) return;
+    if (!username.trim() || !password.trim() || isDuplicate) return;
 
     const userData = {
       username: username.trim(),
       token: btoa(`${username}:${Date.now()}`),
       createdAt: new Date().toISOString(),
     };
+    // Save session immediately
     localStorage.setItem("onetwo_user", JSON.stringify(userData));
+
+    // Save to users registry for duplicate checking
+    const users = JSON.parse(localStorage.getItem("onetwo_users") || "[]");
+    users.push({ username: username.trim() });
+    localStorage.setItem("onetwo_users", JSON.stringify(users));
+
     setIsLoggedIn(true);
     setSavedName(username.trim());
-    setShowSuccessModal(true);
-  };
-
-  const handleInstallPWA = () => {
-    const deferredPrompt = (window as any).__pwaInstallPrompt;
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(() => {
-        (window as any).__pwaInstallPrompt = null;
-      });
-    }
-    setShowSuccessModal(false);
-    setTimeout(() => navigate("/cliente"), 300);
-  };
-
-  const handleCloseModal = () => {
-    setShowSuccessModal(false);
-    setTimeout(() => navigate("/cliente"), 300);
+    // Go directly to internal home
+    navigate("/cliente", { replace: true });
   };
 
   const handleLogout = () => {
@@ -59,6 +81,8 @@ export default function Perfil() {
     setUsername("");
     setPassword("");
   };
+
+  const canSubmit = username.trim().length > 0 && password.trim().length > 0 && !isDuplicate;
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-24">
@@ -140,10 +164,15 @@ export default function Perfil() {
               className="w-full rounded-2xl px-5 py-3.5 font-opensans text-sm text-foreground outline-none"
               style={{
                 background: "#1A1A1A",
-                border: "1px solid #C5A059",
+                border: `1px solid ${isDuplicate ? '#ff4444' : '#C5A059'}`,
                 color: "#FFFFFF",
               }}
             />
+            {isDuplicate && (
+              <p className="text-xs font-opensans w-full text-left -mt-2" style={{ color: "#ff4444" }}>
+                Este nome de usuário já está em uso. Tente outro.
+              </p>
+            )}
             <input
               type="password"
               placeholder="Senha"
@@ -157,66 +186,22 @@ export default function Perfil() {
               }}
             />
             <motion.button
-              whileTap={{ scale: 0.96 }}
+              whileTap={canSubmit ? { scale: 0.96 } : undefined}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               onClick={handleCreateProfile}
-              className="w-full py-3.5 rounded-2xl font-montserrat font-bold text-sm tracking-tight"
-              style={{ background: "#FFFFFF", color: "#000000" }}
+              disabled={!canSubmit}
+              className="w-full py-3.5 rounded-2xl font-montserrat font-bold text-sm tracking-tight transition-opacity"
+              style={{
+                background: "#FFFFFF",
+                color: "#000000",
+                opacity: canSubmit ? 1 : 0.4,
+              }}
             >
               Criar Perfil
             </motion.button>
           </motion.div>
         )}
       </main>
-
-      {/* Success Modal */}
-      <AnimatePresence>
-        {showSuccessModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-6"
-            style={{ background: "hsl(0 0% 0% / 0.9)", backdropFilter: "blur(8px)" }}
-            onClick={handleCloseModal}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="w-full max-w-sm rounded-2xl p-6 text-center"
-              style={{ background: "#0A0A0A", border: "1px solid #C5A059" }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2
-                className="font-montserrat font-bold text-xl mb-3"
-                style={{ color: "#C5A059" }}
-              >
-                Parabéns! Perfil Criado com Sucesso.
-              </h2>
-              <p className="text-sm font-opensans mb-6" style={{ color: "#FFFFFF" }}>
-                Adicione nosso app à sua tela inicial para agendar com 1 clique. Fique tranquilo: nosso app é ultra leve e NÃO ocupa a memória do seu celular!
-              </p>
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={handleInstallPWA}
-                className="w-full py-3.5 rounded-2xl font-montserrat font-bold text-sm tracking-tight mb-3"
-                style={{ background: "#FFFFFF", color: "#000000" }}
-              >
-                ADICIONAR À TELA INICIAL
-              </motion.button>
-              <button
-                onClick={handleCloseModal}
-                className="text-sm font-opensans"
-                style={{ color: "hsl(0 0% 100% / 0.5)" }}
-              >
-                Agora não
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <BottomNav />
     </div>
