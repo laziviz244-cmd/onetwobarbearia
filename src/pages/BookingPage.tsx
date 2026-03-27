@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Check } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { toast } from "@/hooks/use-toast";
 
 const timeSlots = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
@@ -30,6 +31,14 @@ export default function BookingPage() {
   const [selectedDate, setSelectedDate] = useState("2026-03-18");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
+
+  // Compute reserved time slots for the selected date
+  const reservedSlots = useMemo(() => {
+    const appointments = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
+    return appointments
+      .filter((a: any) => a.date === selectedDate && a.status === "Confirmado")
+      .map((a: any) => a.time as string);
+  }, [selectedDate]);
 
   // Session recovery when returning from WhatsApp
   useEffect(() => {
@@ -176,25 +185,48 @@ export default function BookingPage() {
           Horários disponíveis
         </h2>
         <div className="grid grid-cols-3 gap-2">
-          {timeSlots.map((time) => (
-            <motion.button
-              key={time}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedTime(time)}
-              className={`rounded-xl px-4 py-3 font-opensans font-semibold text-sm tabular-nums transition-colors ${
-                selectedTime === time
-                  ? "btn-primary-glow text-primary-foreground"
-                  : "surface-card text-foreground"
-              }`}
-            >
-              {time}
-            </motion.button>
-          ))}
+          {timeSlots.map((time) => {
+            const isReserved = reservedSlots.includes(time);
+            return (
+              <motion.button
+                key={time}
+                whileTap={isReserved ? undefined : { scale: 0.95 }}
+                onClick={() => {
+                  if (isReserved) {
+                    toast({
+                      title: "Putz! Horário indisponível",
+                      description: "Este horário já foi reservado por outro cliente. Por favor, marque outro.",
+                      variant: "destructive",
+                    });
+                    return;
+                  }
+                  setSelectedTime(time);
+                }}
+                disabled={isReserved}
+                className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
+                  isReserved
+                    ? "surface-card opacity-40 cursor-not-allowed"
+                    : selectedTime === time
+                      ? "btn-primary-glow text-primary-foreground font-semibold"
+                      : "surface-card text-foreground font-semibold"
+                }`}
+              >
+                {isReserved ? (
+                  <span className="flex flex-col items-center leading-tight">
+                    <span style={{ color: "#808080" }}>{time}</span>
+                    <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
+                  </span>
+                ) : (
+                  time
+                )}
+              </motion.button>
+            );
+          })}
         </div>
       </div>
 
       {/* Confirm */}
-      {selectedTime && (
+      {selectedTime && !reservedSlots.includes(selectedTime) && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
