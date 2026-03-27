@@ -17,12 +17,17 @@ export default function MeusAgendamentos() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [showLoyalty, setShowLoyalty] = useState(false);
 
-  const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
+  const user = localStorage.getItem("onetwo_user");
+  const loyaltyCount = user ? parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10) : 0;
 
   useEffect(() => {
+    if (!user) {
+      setAppointments([]);
+      return;
+    }
     const stored = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
     setAppointments(stored.reverse());
-  }, []);
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-24">
