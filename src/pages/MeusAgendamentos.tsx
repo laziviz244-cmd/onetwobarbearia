@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Calendar, Scissors, Check, X } from "lucide-react";
+import { Calendar, Scissors } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState, useEffect } from "react";
@@ -60,7 +60,7 @@ export default function MeusAgendamentos() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="text-2xl font-montserrat font-bold"
         >
-          Meus Agendamentos
+          Meus Horários Marcados
         </motion.h1>
       </header>
 
@@ -72,10 +72,9 @@ export default function MeusAgendamentos() {
           transition={{ duration: 0.5 }}
           whileTap={{ scale: 0.96 }}
           onClick={() => setShowLoyalty(true)}
-          className="w-full rounded-2xl p-4 flex items-center gap-4"
-          style={{ background: "hsl(0 0% 0%)", border: "1px solid #C5A059" }}
+          className="w-full surface-card rounded-2xl p-4 flex items-center gap-4"
         >
-          <Scissors className="w-6 h-6 flex-shrink-0" style={{ color: "#C5A059" }} />
+          <Scissors className="w-6 h-6 flex-shrink-0 text-dimmed" />
           <div className="text-left flex-1">
             <span className="font-montserrat font-bold text-foreground text-sm">
               ✂️ Ver Meu Cartão Fidelidade
@@ -115,41 +114,30 @@ export default function MeusAgendamentos() {
               <motion.div
                 key={apt.id}
                 variants={staggerItem}
-                className="rounded-2xl p-4 flex items-center gap-4"
-                style={{
-                  background: "hsl(0 0% 0%)",
-                  border: "1px solid #C5A059",
-                }}
+                className="surface-card rounded-2xl p-4"
               >
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{ background: "hsl(40 40% 15%)" }}
-                >
-                  <Scissors className="w-5 h-5" style={{ color: "#C5A059" }} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-montserrat font-bold text-foreground text-sm truncate">
-                    {apt.service}
-                  </h3>
-                  <p className="text-xs text-dimmed font-opensans mt-0.5">
-                    📅 {apt.dateLabel} · ⏰ {apt.time}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <span
-                    className="text-[10px] font-montserrat font-bold px-2 py-1 rounded-full flex items-center gap-1"
-                    style={{ background: "hsl(140 50% 15%)", color: "hsl(140 60% 55%)" }}
+                <div className="flex items-center gap-4">
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ background: "hsl(0 0% 12%)" }}
                   >
-                    <Check className="w-3 h-3" />
-                    {apt.status}
-                  </span>
-                  <button
-                    onClick={() => setCancelId(apt.id)}
-                    className="w-7 h-7 rounded-full flex items-center justify-center"
-                    style={{ background: "hsl(0 30% 15%)" }}
-                  >
-                    <X className="w-3.5 h-3.5" style={{ color: "hsl(0 50% 50%)" }} />
-                  </button>
+                    <Scissors className="w-5 h-5 text-dimmed" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-montserrat font-bold text-foreground text-sm truncate">
+                      {apt.service}
+                    </h3>
+                    <p className="text-xs text-dimmed font-opensans mt-0.5">
+                      📅 {apt.dateLabel} · ⏰ {apt.time}
+                    </p>
+                    <button
+                      onClick={() => setCancelId(apt.id)}
+                      className="text-[11px] font-opensans mt-1 transition-opacity hover:opacity-80"
+                      style={{ color: "hsl(0 0% 45%)" }}
+                    >
+                      cancelar agendamento
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -161,7 +149,7 @@ export default function MeusAgendamentos() {
       <AlertDialog open={!!cancelId} onOpenChange={(open) => !open && setCancelId(null)}>
         <AlertDialogContent
           className="rounded-2xl border-0 max-w-[340px]"
-          style={{ background: "hsl(0 0% 5%)", border: "1px solid hsl(0 40% 30% / 0.5)" }}
+          style={{ background: "hsl(0 0% 5%)", border: "1px solid hsl(0 0% 15%)" }}
         >
           <AlertDialogHeader>
             <AlertDialogTitle className="font-montserrat font-bold text-foreground text-center">
@@ -181,7 +169,7 @@ export default function MeusAgendamentos() {
             <AlertDialogAction
               onClick={() => cancelId && handleCancel(cancelId)}
               className="flex-1 rounded-2xl border-0 font-montserrat font-bold"
-              style={{ background: "hsl(0 50% 40%)", color: "#FFFFFF" }}
+              style={{ background: "hsl(0 50% 40%)", color: "hsl(0 0% 100%)" }}
             >
               Sim, cancelar
             </AlertDialogAction>
