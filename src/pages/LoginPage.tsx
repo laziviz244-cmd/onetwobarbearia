@@ -4,7 +4,8 @@ import { useState } from "react";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const lastUser = localStorage.getItem("last_logged_user") || "";
+  const [username, setUsername] = useState(lastUser);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 

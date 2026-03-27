@@ -75,7 +75,13 @@ export default function Perfil() {
   };
 
   const handleLogout = () => {
-    // Clear all app data
+    // Save last user for device memory before clearing session
+    const currentUser = localStorage.getItem("onetwo_user");
+    if (currentUser) {
+      const parsed = JSON.parse(currentUser);
+      localStorage.setItem("last_logged_user", parsed.username);
+    }
+    // Clear session data but keep last_logged_user
     localStorage.removeItem("onetwo_user");
     localStorage.removeItem("onetwo_appointments");
     localStorage.removeItem("onetwo_loyalty");
