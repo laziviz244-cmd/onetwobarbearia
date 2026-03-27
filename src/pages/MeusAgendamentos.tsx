@@ -64,8 +64,8 @@ export default function MeusAgendamentos() {
     const all: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
     const updated = all.filter((a) => a.id !== id);
     localStorage.setItem("onetwo_appointments", JSON.stringify(updated));
-    setAppointments([...updated].reverse());
     setCancelId(null);
+    loadAppointments();
   };
 
   return (
