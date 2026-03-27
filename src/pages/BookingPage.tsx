@@ -32,6 +32,14 @@ export default function BookingPage() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
 
+  // Compute reserved time slots for the selected date
+  const reservedSlots = useMemo(() => {
+    const appointments = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
+    return appointments
+      .filter((a: any) => a.date === selectedDate && a.status === "Confirmado")
+      .map((a: any) => a.time as string);
+  }, [selectedDate]);
+
   // Session recovery when returning from WhatsApp
   useEffect(() => {
     const revive = () => {
