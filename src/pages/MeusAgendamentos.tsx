@@ -29,10 +29,7 @@ export default function MeusAgendamentos() {
   const [showLoyalty, setShowLoyalty] = useState(false);
   const [cancelId, setCancelId] = useState<string | null>(null);
 
-  const user = localStorage.getItem("onetwo_user");
-  const guestName = localStorage.getItem("onetwo_guest_name");
-  const hasIdentity = !!(user || guestName);
-  const loyaltyCount = hasIdentity ? parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10) : 0;
+  const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
 
   const loadAppointments = () => {
     const stored: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
@@ -41,18 +38,17 @@ export default function MeusAgendamentos() {
 
   useEffect(() => {
     loadAppointments();
-  }, [hasIdentity]);
+  }, []);
 
   useEffect(() => {
     const handleFocus = () => loadAppointments();
     window.addEventListener("focus", handleFocus);
-    // Also reload when navigating back to this page
     const interval = setInterval(loadAppointments, 1000);
     return () => {
       window.removeEventListener("focus", handleFocus);
       clearInterval(interval);
     };
-  }, [hasIdentity]);
+  }, []);
 
   const handleCancel = (id: string) => {
     const all: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
@@ -76,7 +72,7 @@ export default function MeusAgendamentos() {
       </header>
 
       <main className="px-6 space-y-5">
-        {/* Loyalty Card */}
+        {/* Loyalty Card - Gold Premium */}
         <motion.button
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -106,7 +102,7 @@ export default function MeusAgendamentos() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.15 }}
-            className="flex items-center gap-2 mb-3"
+            className="flex items-center gap-2 mb-4"
           >
             <Calendar className="w-4 h-4 text-foreground" />
             <h2 className="font-montserrat font-bold text-sm text-foreground">Meus Horários Marcados</h2>
@@ -131,32 +127,29 @@ export default function MeusAgendamentos() {
               variants={staggerContainer}
               initial="hidden"
               animate="show"
-              className="surface-card rounded-2xl p-4 flex flex-col gap-0"
+              className="flex flex-col gap-3"
             >
-              {appointments.map((apt, index) => (
+              {appointments.map((apt) => (
                 <motion.div
                   key={apt.id}
                   variants={staggerItem}
-                  className={index < appointments.length - 1 ? "pb-3 mb-3" : ""}
-                  style={index < appointments.length - 1 ? { borderBottom: "1px solid hsl(0 0% 12%)" } : {}}
+                  className="flex items-center gap-3 py-1"
                 >
-                  <div className="flex items-center gap-3">
-                    <Scissors className="w-4 h-4 flex-shrink-0" style={{ color: "#C5A059" }} />
-                    <div className="flex-1 min-w-0">
-                      <span className="font-montserrat font-bold text-foreground text-sm">
-                        {apt.service}
-                      </span>
-                      <span className="text-xs text-dimmed font-opensans ml-2">
-                        - {apt.time}
-                      </span>
-                      <button
-                        onClick={() => setCancelId(apt.id)}
-                        className="ml-2 text-xs transition-opacity hover:opacity-80"
-                        style={{ color: "#808080" }}
-                      >
-                        cancelar agendamento
-                      </button>
-                    </div>
+                  <Scissors className="w-4 h-4 flex-shrink-0" style={{ color: "#C5A059" }} />
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span className="font-montserrat font-bold text-foreground text-sm">
+                      {apt.service}
+                    </span>
+                    <span className="text-xs text-dimmed font-opensans">
+                      - {apt.time}
+                    </span>
+                    <button
+                      onClick={() => setCancelId(apt.id)}
+                      className="ml-auto text-xs transition-opacity hover:opacity-80 flex-shrink-0"
+                      style={{ color: "#808080" }}
+                    >
+                      cancelar agendamento
+                    </button>
                   </div>
                 </motion.div>
               ))}
