@@ -35,14 +35,8 @@ export default function MeusAgendamentos() {
   const loyaltyCount = hasIdentity ? parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10) : 0;
 
   const loadAppointments = () => {
-    if (!hasIdentity) {
-      setAppointments([]);
-      return;
-    }
-    const currentUser = user ? JSON.parse(user).username : guestName;
     const stored: Appointment[] = JSON.parse(localStorage.getItem("onetwo_appointments") || "[]");
-    const mine = stored.filter((a) => a.clientName === currentUser);
-    setAppointments([...mine].reverse());
+    setAppointments([...stored].reverse());
   };
 
   useEffect(() => {
