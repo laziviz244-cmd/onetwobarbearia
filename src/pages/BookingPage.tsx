@@ -88,7 +88,7 @@ export default function BookingPage() {
     finalizeBooking(name, bookingMode || "site");
   };
 
-  const finalizeBooking = (clientName: string, mode: "site" | "whatsapp") => {
+  const finalizeBooking = async (clientName: string, mode: "site" | "whatsapp") => {
     if (!selectedTime) return;
 
     const dateObj = weekDays.find((d) => d.full === selectedDate);
