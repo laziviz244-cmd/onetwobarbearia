@@ -18,7 +18,7 @@ const services = [
   { id: "1", name: "Corte", price: "R$ 30,00", image: corte2Img },
   { id: "2", name: "Barba", price: "R$ 25,00", image: barba2Img },
   { id: "3", name: "Combo Corte + Barba", price: "R$ 50,00", image: combo4Img },
-  { id: "4", name: "Nevou", price: "R$ 80,00", image: nevouImg },
+  { id: "4", name: "Nevou", price: "R$ 100,00", image: nevouImg },
   { id: "5", name: "Luzes", price: "R$ 70,00", image: luzesImg },
   { id: "6", name: "Pezinho", price: "R$ 10,00", image: peImg },
 ];

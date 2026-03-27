@@ -24,7 +24,7 @@ const plans = [
   {
     name: "PLANO PRIME",
     description: "4 Barbas + 4 Cortes",
-    price: "169",
+    price: "149",
     whatsappMsg: "Olá, gostaria de assinar o PLANO PRIME",
   },
   {
