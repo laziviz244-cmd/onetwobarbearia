@@ -77,10 +77,10 @@ export default function BookingPage() {
     localStorage.setItem("onetwo_guest_name", name);
     localStorage.setItem("last_logged_user", name);
     setShowNameModal(false);
-    finalizeBooking(name);
+    finalizeBooking(name, bookingMode || "site");
   };
 
-  const finalizeBooking = (clientName: string) => {
+  const finalizeBooking = (clientName: string, mode: "site" | "whatsapp") => {
     if (!selectedTime) return;
 
     const dateObj = weekDays.find((d) => d.full === selectedDate);
@@ -102,10 +102,12 @@ export default function BookingPage() {
     const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
     localStorage.setItem("onetwo_loyalty", String(loyaltyCount + 1));
 
-    const msg = encodeURIComponent(
-      `Olá! Meu nome é ${clientName}. Gostaria de confirmar meu agendamento de ${serviceName} para o dia ${dateLabel}/2026 às ${selectedTime}.`
-    );
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
+    if (mode === "whatsapp") {
+      const msg = encodeURIComponent(
+        `Olá! Meu nome é ${clientName}. Gostaria de confirmar meu agendamento de ${serviceName} para o dia ${dateLabel}/2026 às ${selectedTime}.`
+      );
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
+    }
 
     setConfirmed(true);
   };
