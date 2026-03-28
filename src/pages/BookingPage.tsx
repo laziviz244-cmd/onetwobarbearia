@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentAppointmentUserId } from "@/lib/appointment-user";
 import {
   Dialog,
   DialogContent,
@@ -30,14 +31,6 @@ const weekDays = [
 ];
 
 const WHATSAPP_NUMBER = "5577981302545";
-
-function getClientName(): string | null {
-  const user = localStorage.getItem("onetwo_user");
-  if (user) {
-    try { return JSON.parse(user).username || null; } catch { return null; }
-  }
-  return localStorage.getItem("onetwo_guest_name") || null;
-}
 
 export default function BookingPage() {
   const navigate = useNavigate();
@@ -70,7 +63,7 @@ export default function BookingPage() {
     if (!selectedTime) return;
     setBookingMode(mode);
 
-    const clientName = getClientName();
+    const clientName = getCurrentAppointmentUserId();
     if (!clientName) {
       setShowNameModal(true);
       return;
@@ -93,15 +86,26 @@ export default function BookingPage() {
 
     const dateObj = weekDays.find((d) => d.full === selectedDate);
     const dateLabel = `${dateObj?.date}/03`;
+    const userId = getCurrentAppointmentUserId() ?? clientName.trim();
 
-    await supabase.from("appointments").insert({
+    const { error } = await supabase.from("appointments").insert({
       service: serviceName,
       date: selectedDate,
       date_label: dateLabel,
       time: selectedTime,
       status: "Confirmado",
       client_name: clientName,
-    });
+      user_id: userId,
+    } as never);
+
+    if (error) {
+      toast({
+        title: "Não foi possível concluir o agendamento",
+        description: "Tente novamente em alguns instantes.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
     localStorage.setItem("onetwo_loyalty", String(loyaltyCount + 1));
