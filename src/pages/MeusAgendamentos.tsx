@@ -2,8 +2,9 @@ import { motion } from "framer-motion";
 import { Calendar, Scissors } from "lucide-react";
 import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentAppointmentUserId } from "@/lib/appointment-user";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,44 +30,71 @@ export default function MeusAgendamentos() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [showLoyalty, setShowLoyalty] = useState(false);
   const [cancelId, setCancelId] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(() => getCurrentAppointmentUserId());
+  const [isLoading, setIsLoading] = useState(true);
 
   const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
 
-  const loadAppointments = async () => {
+  const loadAppointments = useCallback(async () => {
+    if (!currentUserId) {
+      setAppointments([]);
+      setIsLoading(false);
+      return;
+    }
+
     const { data } = await supabase
       .from("appointments")
       .select("*")
+      .eq("user_id", currentUserId)
       .order("created_at", { ascending: false });
-    if (data) {
-      setAppointments(
-        data.map((a: any) => ({
-          id: a.id,
-          service: a.service,
-          date: a.date,
-          dateLabel: a.date_label,
-          time: a.time,
-          status: a.status,
-          clientName: a.client_name,
-        }))
-      );
-    }
-  };
+
+    setAppointments(
+      (data || []).map((a: any) => ({
+        id: a.id,
+        service: a.service,
+        date: a.date,
+        dateLabel: a.date_label,
+        time: a.time,
+        status: a.status,
+        clientName: a.client_name,
+      }))
+    );
+    setIsLoading(false);
+  }, [currentUserId]);
+
+  useEffect(() => {
+    const syncCurrentUser = () => setCurrentUserId(getCurrentAppointmentUserId());
+
+    window.addEventListener("focus", syncCurrentUser);
+    window.addEventListener("storage", syncCurrentUser);
+
+    return () => {
+      window.removeEventListener("focus", syncCurrentUser);
+      window.removeEventListener("storage", syncCurrentUser);
+    };
+  }, []);
 
   useEffect(() => {
     loadAppointments();
+
+    if (!currentUserId) return;
+
     const channel = supabase
-      .channel("appointments-realtime")
+      .channel(`appointments-realtime-${currentUserId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
         loadAppointments();
       })
       .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [currentUserId, loadAppointments]);
 
   const handleCancel = async (id: string) => {
-    await supabase.from("appointments").delete().eq("id", id);
+    if (!currentUserId) return;
+
+    await supabase.from("appointments").delete().eq("id", id).eq("user_id", currentUserId);
     setCancelId(null);
     loadAppointments();
   };
@@ -121,7 +149,17 @@ export default function MeusAgendamentos() {
             <h2 className="font-montserrat font-bold text-sm text-foreground">Meus Horários Marcados</h2>
           </motion.div>
 
-          {appointments.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="mb-4 flex items-center gap-2"
+          >
+            <Scissors className="w-4 h-4 text-foreground" />
+            <span className="font-montserrat text-sm font-semibold text-foreground">Cortes</span>
+          </motion.div>
+
+          {!isLoading && appointments.length === 0 ? (
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -132,7 +170,7 @@ export default function MeusAgendamentos() {
                 <Calendar className="w-7 h-7 text-primary" />
               </div>
               <p className="text-center text-subtle font-opensans text-sm leading-relaxed">
-                Você ainda não possui agendamentos marcados.
+                Nenhum agendamento encontrado
               </p>
             </motion.div>
           ) : (
@@ -153,13 +191,13 @@ export default function MeusAgendamentos() {
                     <span className="font-montserrat font-bold text-foreground text-sm">
                       {apt.service}
                     </span>
-                    <span className="text-xs text-dimmed font-opensans">
-                      - {apt.time}
+                    <span className="text-xs text-dimmed font-opensans tabular-nums">
+                      - {apt.time}hrs
                     </span>
+                    <span className="text-xs text-muted-foreground">|</span>
                     <button
                       onClick={() => setCancelId(apt.id)}
-                      className="ml-auto text-xs transition-opacity hover:opacity-80 flex-shrink-0"
-                      style={{ color: "#808080" }}
+                      className="text-xs text-muted-foreground transition-opacity hover:opacity-80 flex-shrink-0"
                     >
                       cancelar agendamento
                     </button>
