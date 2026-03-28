@@ -48,17 +48,17 @@ export default function MeusAgendamentos() {
       .eq("user_id", currentUserId)
       .order("created_at", { ascending: false });
 
-    setAppointments(
-      (data || []).map((a: any) => ({
-        id: a.id,
-        service: a.service,
-        date: a.date,
-        dateLabel: a.date_label,
-        time: a.time,
-        status: a.status,
-        clientName: a.client_name,
-      }))
-    );
+    const mapped = (data || []).map((a: any) => ({
+      id: a.id,
+      service: a.service,
+      date: a.date,
+      dateLabel: a.date_label,
+      time: a.time,
+      status: a.status,
+      clientName: a.client_name,
+    }));
+    setAppointments(mapped);
+    setLoyaltyCount(mapped.length);
     setIsLoading(false);
   }, [currentUserId]);
 
