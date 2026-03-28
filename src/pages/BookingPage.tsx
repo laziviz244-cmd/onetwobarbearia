@@ -55,6 +55,18 @@ export default function BookingPage() {
       setReservedSlots((data || []).map((a: any) => a.time));
     };
     fetchReserved();
+
+    // Realtime: update available slots for ALL users when any appointment changes
+    const channel = supabase
+      .channel(`slots-realtime-${selectedDate}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
+        fetchReserved();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [selectedDate]);
 
   const [bookingMode, setBookingMode] = useState<"site" | "whatsapp" | null>(null);

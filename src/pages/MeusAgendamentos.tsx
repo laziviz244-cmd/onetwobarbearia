@@ -95,6 +95,13 @@ export default function MeusAgendamentos() {
     if (!currentUserId) return;
 
     await supabase.from("appointments").delete().eq("id", id).eq("user_id", currentUserId);
+
+    // Subtract 1 loyalty point when cancelling
+    const currentLoyalty = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
+    if (currentLoyalty > 0) {
+      localStorage.setItem("onetwo_loyalty", String(currentLoyalty - 1));
+    }
+
     setCancelId(null);
     loadAppointments();
   };
