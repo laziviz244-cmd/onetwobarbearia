@@ -33,7 +33,7 @@ export default function MeusAgendamentos() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(() => getCurrentAppointmentUserId());
   const [isLoading, setIsLoading] = useState(true);
 
-  const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
+  const [loyaltyCount, setLoyaltyCount] = useState(0);
 
   const loadAppointments = useCallback(async () => {
     if (!currentUserId) {

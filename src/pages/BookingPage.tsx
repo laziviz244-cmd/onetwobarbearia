@@ -13,6 +13,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { addDays, format, isAfter, isBefore, startOfDay, getDay } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const timeSlots = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
@@ -21,14 +23,30 @@ const timeSlots = [
   "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
 ];
 
-const weekDays = [
-  { day: "Seg", date: "17", full: "2026-03-17" },
-  { day: "Ter", date: "18", full: "2026-03-18" },
-  { day: "Qua", date: "19", full: "2026-03-19" },
-  { day: "Qui", date: "20", full: "2026-03-20" },
-  { day: "Sex", date: "21", full: "2026-03-21" },
-  { day: "Sáb", date: "22", full: "2026-03-22" },
+const DAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+const MONTH_LABELS = [
+  "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+  "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ];
+
+function generateWeekDays(): { day: string; date: string; full: string; monthLabel: string }[] {
+  const today = startOfDay(new Date());
+  const days: { day: string; date: string; full: string; monthLabel: string }[] = [];
+
+  for (let i = 0; i < 14; i++) {
+    const d = addDays(today, i);
+    const dow = getDay(d); // 0=Sun
+    if (dow === 0) continue; // skip Sunday
+    days.push({
+      day: DAY_LABELS[dow],
+      date: format(d, "dd"),
+      full: format(d, "yyyy-MM-dd"),
+      monthLabel: `${MONTH_LABELS[d.getMonth()]} ${d.getFullYear()}`,
+    });
+  }
+
+  return days;
+}
 
 const WHATSAPP_NUMBER = "5577981302545";
 
@@ -37,7 +55,8 @@ export default function BookingPage() {
   const [searchParams] = useSearchParams();
   const serviceName = searchParams.get("servico") || "Corte";
 
-  const [selectedDate, setSelectedDate] = useState("2026-03-18");
+  const weekDays = useMemo(() => generateWeekDays(), []);
+  const [selectedDate, setSelectedDate] = useState(() => weekDays[0]?.full ?? "");
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
@@ -45,7 +64,10 @@ export default function BookingPage() {
 
   const [reservedSlots, setReservedSlots] = useState<string[]>([]);
 
+  const monthLabel = weekDays.find((d) => d.full === selectedDate)?.monthLabel ?? "";
+
   useEffect(() => {
+    if (!selectedDate) return;
     const fetchReserved = async () => {
       const { data } = await supabase
         .from("appointments")
@@ -56,7 +78,6 @@ export default function BookingPage() {
     };
     fetchReserved();
 
-    // Realtime: update available slots for ALL users when any appointment changes
     const channel = supabase
       .channel(`slots-realtime-${selectedDate}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
@@ -97,7 +118,8 @@ export default function BookingPage() {
     if (!selectedTime) return;
 
     const dateObj = weekDays.find((d) => d.full === selectedDate);
-    const dateLabel = `${dateObj?.date}/03`;
+    const d = new Date(selectedDate + "T00:00:00");
+    const dateLabel = `${format(d, "dd")}/${format(d, "MM")}`;
     const userId = getCurrentAppointmentUserId() ?? clientName.trim();
 
     const { error } = await supabase.from("appointments").insert({
@@ -119,8 +141,7 @@ export default function BookingPage() {
       return;
     }
 
-    const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
-    localStorage.setItem("onetwo_loyalty", String(loyaltyCount + 1));
+    // Loyalty is now computed from DB count — no manual localStorage increment needed
 
     if (mode === "whatsapp") {
       const msg = encodeURIComponent(
@@ -133,6 +154,7 @@ export default function BookingPage() {
   };
 
   if (confirmed) {
+    const dateObj = weekDays.find((d) => d.full === selectedDate);
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -151,8 +173,7 @@ export default function BookingPage() {
           Agendamento confirmado!
         </h1>
         <p className="text-subtle font-opensans mt-2 text-center">
-          {weekDays.find((d) => d.full === selectedDate)?.day}{" "}
-          {weekDays.find((d) => d.full === selectedDate)?.date} de Mar · {selectedTime}
+          {dateObj?.day} {dateObj?.date} · {selectedTime}
         </p>
         <p className="text-dimmed font-opensans text-sm mt-1">Onetwo Barbershop</p>
 
@@ -188,14 +209,17 @@ export default function BookingPage() {
       {/* Date selector */}
       <div className="px-6 mt-6">
         <h2 className="font-montserrat font-bold text-foreground tracking-tighter mb-3">
-          Março 2026
+          {monthLabel}
         </h2>
         <div className="flex gap-2 overflow-x-auto pb-2">
           {weekDays.map((d) => (
             <motion.button
               key={d.full}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedDate(d.full)}
+              onClick={() => {
+                setSelectedDate(d.full);
+                setSelectedTime(null);
+              }}
               className={`flex flex-col items-center gap-1 rounded-2xl px-4 py-3 min-w-[60px] transition-colors ${
                 selectedDate === d.full ? "btn-primary-glow" : "surface-card"
               }`}
