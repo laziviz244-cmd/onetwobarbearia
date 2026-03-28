@@ -33,7 +33,7 @@ export default function MeusAgendamentos() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(() => getCurrentAppointmentUserId());
   const [isLoading, setIsLoading] = useState(true);
 
-  const loyaltyCount = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
+  const [loyaltyCount, setLoyaltyCount] = useState(0);
 
   const loadAppointments = useCallback(async () => {
     if (!currentUserId) {
@@ -48,17 +48,17 @@ export default function MeusAgendamentos() {
       .eq("user_id", currentUserId)
       .order("created_at", { ascending: false });
 
-    setAppointments(
-      (data || []).map((a: any) => ({
-        id: a.id,
-        service: a.service,
-        date: a.date,
-        dateLabel: a.date_label,
-        time: a.time,
-        status: a.status,
-        clientName: a.client_name,
-      }))
-    );
+    const mapped = (data || []).map((a: any) => ({
+      id: a.id,
+      service: a.service,
+      date: a.date,
+      dateLabel: a.date_label,
+      time: a.time,
+      status: a.status,
+      clientName: a.client_name,
+    }));
+    setAppointments(mapped);
+    setLoyaltyCount(mapped.length);
     setIsLoading(false);
   }, [currentUserId]);
 
@@ -96,13 +96,8 @@ export default function MeusAgendamentos() {
 
     await supabase.from("appointments").delete().eq("id", id).eq("user_id", currentUserId);
 
-    // Subtract 1 loyalty point when cancelling
-    const currentLoyalty = parseInt(localStorage.getItem("onetwo_loyalty") || "0", 10);
-    if (currentLoyalty > 0) {
-      localStorage.setItem("onetwo_loyalty", String(currentLoyalty - 1));
-    }
-
     setCancelId(null);
+    // loadAppointments will re-count and update loyaltyCount automatically
     loadAppointments();
   };
 
