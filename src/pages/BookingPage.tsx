@@ -111,10 +111,9 @@ export default function BookingPage() {
     finalizeBooking(name);
   };
 
-  const finalizeBooking = async (clientName: string, mode: "site" | "whatsapp") => {
+  const finalizeBooking = async (clientName: string) => {
     if (!selectedTime) return;
 
-    const dateObj = weekDays.find((d) => d.full === selectedDate);
     const d = new Date(selectedDate + "T00:00:00");
     const dateLabel = `${format(d, "dd")}/${format(d, "MM")}`;
     const userId = getCurrentAppointmentUserId() ?? clientName.trim();
@@ -138,14 +137,12 @@ export default function BookingPage() {
       return;
     }
 
-    // Loyalty is now computed from DB count — no manual localStorage increment needed
-
-    if (mode === "whatsapp") {
-      const msg = encodeURIComponent(
-        `Olá! Meu nome é ${clientName}. Gostaria de confirmar meu agendamento de ${serviceName} para o dia ${dateLabel}/2026 às ${selectedTime}.`
-      );
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
-    }
+    // Always open WhatsApp with booking details
+    const year = d.getFullYear();
+    const msg = encodeURIComponent(
+      `Olá! Meu nome é ${clientName}. Gostaria de confirmar meu agendamento de ${serviceName} para o dia ${dateLabel}/${year} às ${selectedTime}.`
+    );
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
 
     setConfirmed(true);
   };

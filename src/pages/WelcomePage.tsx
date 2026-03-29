@@ -30,14 +30,14 @@ export default function WelcomePage() {
 
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
-      {/* Hero Image */}
-      <div className="relative h-[60vh] overflow-hidden">
+      {/* Hero Logo */}
+      <div className="relative h-[60vh] overflow-hidden flex items-center justify-center">
         <img
-          src={heroBarber}
-          alt="Barbearia premium"
+          src={logoVitrine}
+          alt="One Two Barbearia"
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
       </div>
 
       {/* Content */}
@@ -47,7 +47,6 @@ export default function WelcomePage() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="relative -mt-20 flex flex-1 flex-col items-center px-6 pb-10"
       >
-        <img src={logoOnetwo} alt="Onetwo" className="h-12 w-auto mb-6" />
 
         <div className="flex w-full max-w-sm flex-col gap-3">
           <p className="text-center font-opensans font-light text-sm tracking-wide text-primary">
