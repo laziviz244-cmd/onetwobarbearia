@@ -90,11 +90,8 @@ export default function BookingPage() {
     };
   }, [selectedDate]);
 
-  const [bookingMode, setBookingMode] = useState<"site" | "whatsapp" | null>(null);
-
-  const handleConfirm = (mode: "site" | "whatsapp") => {
+  const handleConfirm = () => {
     if (!selectedTime) return;
-    setBookingMode(mode);
 
     const clientName = getCurrentAppointmentUserId();
     if (!clientName) {
@@ -102,7 +99,7 @@ export default function BookingPage() {
       return;
     }
 
-    finalizeBooking(clientName, mode);
+    finalizeBooking(clientName);
   };
 
   const handleGuestConfirm = () => {
@@ -111,13 +108,12 @@ export default function BookingPage() {
     localStorage.setItem("onetwo_guest_name", name);
     localStorage.setItem("last_logged_user", name);
     setShowNameModal(false);
-    finalizeBooking(name, bookingMode || "site");
+    finalizeBooking(name);
   };
 
-  const finalizeBooking = async (clientName: string, mode: "site" | "whatsapp") => {
+  const finalizeBooking = async (clientName: string) => {
     if (!selectedTime) return;
 
-    const dateObj = weekDays.find((d) => d.full === selectedDate);
     const d = new Date(selectedDate + "T00:00:00");
     const dateLabel = `${format(d, "dd")}/${format(d, "MM")}`;
     const userId = getCurrentAppointmentUserId() ?? clientName.trim();
@@ -141,14 +137,12 @@ export default function BookingPage() {
       return;
     }
 
-    // Loyalty is now computed from DB count — no manual localStorage increment needed
-
-    if (mode === "whatsapp") {
-      const msg = encodeURIComponent(
-        `Olá! Meu nome é ${clientName}. Gostaria de confirmar meu agendamento de ${serviceName} para o dia ${dateLabel}/2026 às ${selectedTime}.`
-      );
-      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
-    }
+    // Always open WhatsApp with booking details
+    const year = d.getFullYear();
+    const msg = encodeURIComponent(
+      `Olá! Meu nome é ${clientName}. Gostaria de confirmar meu agendamento de ${serviceName} para o dia ${dateLabel}/${year} às ${selectedTime}.`
+    );
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
 
     setConfirmed(true);
   };
@@ -296,25 +290,15 @@ export default function BookingPage() {
           animate={{ opacity: 1, y: 0 }}
           className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent"
         >
-          <div className="flex gap-3">
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              onClick={() => handleConfirm("site")}
-              className="flex-1 rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight bg-primary text-primary-foreground"
-            >
-              Marcar via Site · {selectedTime}
-            </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              onClick={() => handleConfirm("whatsapp")}
-              className="flex-1 rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight"
-              style={{ background: "#25D366", color: "#FFFFFF" }}
-            >
-              Confirmar via WhatsApp
-            </motion.button>
-          </div>
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            onClick={() => handleConfirm()}
+            className="w-full rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight"
+            style={{ background: "#25D366", color: "#FFFFFF" }}
+          >
+            Confirmar via WhatsApp · {selectedTime}
+          </motion.button>
         </motion.div>
       )}
 

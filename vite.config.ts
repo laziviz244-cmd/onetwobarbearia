@@ -18,6 +18,9 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
+      devOptions: {
+        enabled: false,
+      },
       includeAssets: ["placeholder.svg", "robots.txt"],
       manifest: {
         name: "OneTwo Barbearia",
@@ -42,6 +45,9 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         navigateFallbackDenylist: [/^\/~oauth/],
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
       },
     }),
   ].filter(Boolean),
