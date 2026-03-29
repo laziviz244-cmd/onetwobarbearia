@@ -140,7 +140,7 @@ export default function BookingPage() {
     // Always open WhatsApp with booking details
     const year = d.getFullYear();
     const msg = encodeURIComponent(
-      `Olá! Meu nome é ${clientName}. Gostaria de confirmar meu agendamento de ${serviceName} para o dia ${dateLabel}/${year} às ${selectedTime}.`
+      `Olá, me chamo ${clientName}. Gostaria de agendar um ${serviceName} para o horário das ${selectedTime}.`
     );
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
 

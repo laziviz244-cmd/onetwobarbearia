@@ -31,11 +31,11 @@ export default function WelcomePage() {
   return (
     <div className="relative flex min-h-screen flex-col bg-background">
       {/* Hero Logo */}
-      <div className="relative h-[60vh] overflow-hidden flex items-center justify-center">
+      <div className="relative h-[60vh] overflow-hidden flex items-center justify-center bg-black">
         <img
           src={logoVitrine}
           alt="One Two Barbearia"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-contain"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
       </div>
