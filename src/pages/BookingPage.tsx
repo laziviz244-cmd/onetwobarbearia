@@ -90,11 +90,8 @@ export default function BookingPage() {
     };
   }, [selectedDate]);
 
-  const [bookingMode, setBookingMode] = useState<"site" | "whatsapp" | null>(null);
-
-  const handleConfirm = (mode: "site" | "whatsapp") => {
+  const handleConfirm = () => {
     if (!selectedTime) return;
-    setBookingMode(mode);
 
     const clientName = getCurrentAppointmentUserId();
     if (!clientName) {
@@ -102,7 +99,7 @@ export default function BookingPage() {
       return;
     }
 
-    finalizeBooking(clientName, mode);
+    finalizeBooking(clientName);
   };
 
   const handleGuestConfirm = () => {
@@ -111,7 +108,7 @@ export default function BookingPage() {
     localStorage.setItem("onetwo_guest_name", name);
     localStorage.setItem("last_logged_user", name);
     setShowNameModal(false);
-    finalizeBooking(name, bookingMode || "site");
+    finalizeBooking(name);
   };
 
   const finalizeBooking = async (clientName: string, mode: "site" | "whatsapp") => {
