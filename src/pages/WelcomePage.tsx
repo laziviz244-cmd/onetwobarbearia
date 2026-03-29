@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import logoOnetwo from "@/assets/logo-onetwo.png";
-import heroBarber from "@/assets/hero-barber.jpg";
+import logoVitrine from "@/assets/logo-vitrine.jpg";
 
 export default function WelcomePage() {
   const navigate = useNavigate();
