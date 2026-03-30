@@ -29,14 +29,14 @@ export default function WelcomePage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-black">
-      <div className="flex min-h-screen flex-col mx-auto w-full max-w-[500px]">
-        {/* Hero Image - contain to show full image, with top breathing room */}
-        <div className="w-full bg-black pt-[10px]">
+    <div className="relative flex h-[100dvh] flex-col bg-black overflow-hidden">
+      <div className="flex h-full flex-col mx-auto w-full max-w-[500px]">
+        {/* Hero Image - compact to fit screen without scrolling */}
+        <div className="w-full bg-black pt-[10px] pb-[5px]">
           <img
             src={logoVitrine}
             alt="One Two Barbearia"
-            className="w-full h-auto object-contain"
+            className="w-full h-[40vh] object-contain"
           />
         </div>
 
@@ -45,7 +45,7 @@ export default function WelcomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-col items-center px-6 pt-6 pb-10 gap-5"
+          className="flex flex-col items-center px-6 pt-3 pb-6 gap-3"
         >
           <p className="text-center font-opensans font-light text-sm tracking-wide text-primary">
             Barbeiro Educador &nbsp;|&nbsp; +1000 atendimentos
