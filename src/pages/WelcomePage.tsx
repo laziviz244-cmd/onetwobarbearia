@@ -29,45 +29,44 @@ export default function WelcomePage() {
   };
 
   return (
-    <div className="relative flex h-[100dvh] flex-col bg-black overflow-hidden">
-      <div className="flex h-full flex-col mx-auto w-full max-w-[500px]">
-        {/* Hero Image - compact to fit screen without scrolling */}
-        <div className="w-[100vw] -ml-[calc((100vw-100%)/2)] bg-black">
-          <img
-            src={logoVitrine}
-            alt="One Two Barbearia"
-            className="w-[100vw] h-[60vh] object-cover object-top"
-          />
-        </div>
+    <div className="relative h-[100dvh] bg-black overflow-hidden">
+      {/* Full-screen hero image */}
+      <img
+        src={logoVitrine}
+        alt="One Two Barbearia"
+        className="absolute inset-0 w-full h-full object-cover object-top"
+      />
 
-        {/* Content - below the image */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-col items-center px-6 pt-3 pb-6 gap-3"
+      {/* Gradient overlay for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" style={{ top: '50%' }} />
+
+      {/* Content pinned to bottom */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="absolute bottom-0 left-0 right-0 flex flex-col items-center px-6 pb-8 gap-3"
+      >
+        <p className="text-center font-opensans font-light text-sm tracking-wide text-primary">
+          Barbeiro Educador &nbsp;|&nbsp; +1000 atendimentos
+        </p>
+
+        <motion.button
+          whileTap={{ scale: 0.96 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          onClick={handleAction}
+          className="w-full max-w-sm rounded-2xl btn-primary-glow py-4 font-montserrat font-bold text-primary-foreground text-lg tracking-tight"
         >
-          <p className="text-center font-opensans font-light text-sm tracking-wide text-primary">
-            Barbeiro Educador &nbsp;|&nbsp; +1000 atendimentos
-          </p>
+          Agendar agora
+        </motion.button>
 
-          <motion.button
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            onClick={handleAction}
-            className="w-full max-w-sm rounded-2xl btn-primary-glow py-4 font-montserrat font-bold text-primary-foreground text-lg tracking-tight"
-          >
-            Agendar agora
-          </motion.button>
-
-          <p className="text-xs text-dimmed font-opensans">
-            Já tem conta?{" "}
-            <button onClick={() => navigate("/login")} className="text-primary font-semibold">
-              Entrar
-            </button>
-          </p>
-        </motion.div>
-      </div>
+        <p className="text-xs text-dimmed font-opensans">
+          Já tem conta?{" "}
+          <button onClick={() => navigate("/login")} className="text-primary font-semibold">
+            Entrar
+          </button>
+        </p>
+      </motion.div>
     </div>
   );
 }
