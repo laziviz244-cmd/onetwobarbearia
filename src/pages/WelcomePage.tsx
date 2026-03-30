@@ -36,7 +36,7 @@ export default function WelcomePage() {
           <img
             src={logoVitrine}
             alt="One Two Barbearia"
-            className="w-[100vw] h-[45vh] object-cover object-top"
+            className="w-[100vw] h-[60vh] object-cover object-top"
           />
         </div>
 
