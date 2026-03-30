@@ -36,7 +36,7 @@ export default function WelcomePage() {
           <img
             src={logoVitrine}
             alt="One Two Barbearia"
-            className="absolute inset-0 h-full w-full object-contain pt-5"
+            className="absolute inset-0 h-full w-full object-cover object-top"
           />
           <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
         </div>
