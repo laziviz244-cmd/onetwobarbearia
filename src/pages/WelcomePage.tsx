@@ -32,11 +32,11 @@ export default function WelcomePage() {
     <div className="relative flex h-[100dvh] flex-col bg-black overflow-hidden">
       <div className="flex h-full flex-col mx-auto w-full max-w-[500px]">
         {/* Hero Image - compact to fit screen without scrolling */}
-        <div className="w-full bg-black">
+        <div className="w-[100vw] -ml-[calc((100vw-100%)/2)] bg-black">
           <img
             src={logoVitrine}
             alt="One Two Barbearia"
-            className="w-full h-[45vh] object-contain"
+            className="w-[100vw] h-[45vh] object-cover object-top"
           />
         </div>
 
