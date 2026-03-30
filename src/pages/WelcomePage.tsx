@@ -32,13 +32,12 @@ export default function WelcomePage() {
     <div className="relative flex min-h-screen flex-col bg-black">
       <div className="flex min-h-screen flex-col mx-auto w-full max-w-[500px]">
         {/* Hero Image - contain to show full image, with top breathing room */}
-        <div className="relative w-full flex-1 min-h-[55vh] overflow-hidden bg-black pt-5">
+        <div className="w-full bg-black pt-[10px]">
           <img
             src={logoVitrine}
             alt="One Two Barbearia"
-            className="absolute inset-0 h-full w-full object-cover object-top"
+            className="w-full h-auto object-contain"
           />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-background to-transparent" />
         </div>
 
         {/* Content - below the image */}
