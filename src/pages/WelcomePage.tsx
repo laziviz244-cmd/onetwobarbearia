@@ -7,22 +7,7 @@ export default function WelcomePage() {
   const navigate = useNavigate();
 
   const handleAction = () => {
-    const msg = [
-      "*NOVO AGENDAMENTO*",
-      "",
-      "*Meu nome:*",
-      "*Serviço:*",
-      "*Data:*",
-      "*Horário:*",
-      "",
-      "Vi seu site e quero marcar um horário!",
-    ].join("%0A");
-
-    window.open(
-      `https://api.whatsapp.com/send?phone=5577981302545&text=${msg}`,
-      "_blank",
-      "noopener,noreferrer"
-    );
+    navigate("/cliente");
   };
 
   return (
