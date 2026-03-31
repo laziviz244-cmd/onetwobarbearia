@@ -16,37 +16,124 @@ export type Database = {
     Tables: {
       appointments: {
         Row: {
+          amount: number | null
           client_name: string
           created_at: string
           date: string
           date_label: string
           id: string
+          payment_method: string | null
+          phone: string | null
           service: string
           status: string
           time: string
           user_id: string
         }
         Insert: {
+          amount?: number | null
           client_name: string
           created_at?: string
           date: string
           date_label: string
           id?: string
+          payment_method?: string | null
+          phone?: string | null
           service: string
           status?: string
           time: string
           user_id?: string
         }
         Update: {
+          amount?: number | null
           client_name?: string
           created_at?: string
           date?: string
           date_label?: string
           id?: string
+          payment_method?: string | null
+          phone?: string | null
           service?: string
           status?: string
           time?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      barber_users: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          password_hash: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          password_hash: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          password_hash?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      expenses: {
+        Row: {
+          amount: number
+          created_at: string
+          date: string
+          description: string
+          id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          date?: string
+          description: string
+          id?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          date?: string
+          description?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number
+          client_name: string
+          created_at: string
+          date: string
+          id: string
+          payment_method: string
+          service: string
+        }
+        Insert: {
+          amount: number
+          client_name: string
+          created_at?: string
+          date?: string
+          id?: string
+          payment_method?: string
+          service: string
+        }
+        Update: {
+          amount?: number
+          client_name?: string
+          created_at?: string
+          date?: string
+          id?: string
+          payment_method?: string
+          service?: string
         }
         Relationships: []
       }
