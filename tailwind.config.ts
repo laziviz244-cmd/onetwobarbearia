@@ -53,6 +53,10 @@ export default {
           foreground: "hsl(var(--card-foreground))",
         },
         surface: "hsl(var(--surface))",
+        gold: {
+          DEFAULT: "hsl(40, 50%, 55%)",
+          foreground: "hsl(0, 0%, 0%)",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
