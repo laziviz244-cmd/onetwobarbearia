@@ -7,25 +7,22 @@ export default function WelcomePage() {
   const navigate = useNavigate();
 
   const handleAction = () => {
-    const user = localStorage.getItem("onetwo_user");
-    if (user) {
-      navigate("/cliente", { replace: true });
-      return;
-    }
-    // Try to auto-login last device user
-    const lastUser = localStorage.getItem("last_logged_user");
-    if (lastUser) {
-      // Re-authenticate last user automatically
-      const userData = {
-        username: lastUser,
-        token: btoa(`${lastUser}:${Date.now()}`),
-        createdAt: new Date().toISOString(),
-      };
-      localStorage.setItem("onetwo_user", JSON.stringify(userData));
-      navigate("/cliente", { replace: true });
-      return;
-    }
-    navigate("/perfil");
+    const msg = [
+      "*NOVO AGENDAMENTO*",
+      "",
+      "*Meu nome:*",
+      "*Serviço:*",
+      "*Data:*",
+      "*Horário:*",
+      "",
+      "Vi seu site e quero marcar um horário!",
+    ].join("%0A");
+
+    window.open(
+      `https://api.whatsapp.com/send?phone=5577981302545&text=${msg}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   };
 
   return (
