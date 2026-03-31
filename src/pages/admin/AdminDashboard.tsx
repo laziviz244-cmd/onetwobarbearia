@@ -1,0 +1,137 @@
+import { useEffect, useState } from "react";
+import { useAdminAuth } from "@/contexts/AdminAuthContext";
+import AdminLayout from "@/components/admin/AdminLayout";
+import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Calendar, Users, DollarSign, Clock, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+
+interface Appointment {
+  id: string;
+  client_name: string;
+  service: string;
+  time: string;
+  status: string;
+  phone?: string;
+}
+
+export default function AdminDashboard() {
+  const { user } = useAdminAuth();
+  const navigate = useNavigate();
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [todayRevenue, setTodayRevenue] = useState(0);
+  const [todayClients, setTodayClients] = useState(0);
+  const today = format(new Date(), "yyyy-MM-dd");
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    const { data: appts } = await supabase
+      .from("appointments")
+      .select("*")
+      .eq("date", today)
+      .order("time");
+    if (appts) {
+      setAppointments(appts as Appointment[]);
+      setTodayClients(new Set(appts.map((a: any) => a.client_name)).size);
+    }
+
+    const { data: payments } = await (supabase as any)
+      .from("payments")
+      .select("amount")
+      .eq("date", today);
+    if (payments) {
+      setTodayRevenue(payments.reduce((sum: number, p: any) => sum + Number(p.amount), 0));
+    }
+  };
+
+  const stats = [
+    { icon: Calendar, label: "Agendamentos", value: String(appointments.length), sub: "hoje" },
+    { icon: Users, label: "Clientes", value: String(todayClients), sub: "hoje" },
+    { icon: DollarSign, label: "Faturamento", value: `R$ ${todayRevenue.toFixed(0)}`, sub: "hoje" },
+  ];
+
+  const now = format(new Date(), "HH:mm");
+
+  return (
+    <AdminLayout>
+      <div className="mb-6">
+        <p className="text-sm text-muted-foreground font-opensans">
+          Olá, {user?.name} 👋
+        </p>
+        <h1 className="font-montserrat font-bold text-2xl text-foreground tracking-tight">
+          {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
+        </h1>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-3 mb-8">
+        {stats.map((stat) => (
+          <div key={stat.label} className="rounded-2xl surface-card p-4 flex flex-col gap-1">
+            <stat.icon className="h-5 w-5 mb-1" style={{ color: "hsl(40, 50%, 55%)" }} />
+            <span className="font-montserrat font-bold text-xl text-foreground tabular-nums">
+              {stat.value}
+            </span>
+            <span className="text-[10px] text-muted-foreground font-opensans">{stat.sub}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Today's appointments */}
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="font-montserrat font-bold text-lg text-foreground tracking-tight">
+          Agenda do dia
+        </h2>
+        <button
+          onClick={() => navigate("/admin/agenda")}
+          className="text-xs font-opensans font-semibold flex items-center gap-0.5"
+          style={{ color: "hsl(40, 50%, 55%)" }}
+        >
+          Ver tudo <ChevronRight className="h-3 w-3" />
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        {appointments.length === 0 ? (
+          <div className="surface-card rounded-2xl p-8 text-center">
+            <Clock className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground font-opensans">Nenhum agendamento hoje</p>
+          </div>
+        ) : (
+          appointments.map((apt) => {
+            const isPast = apt.time < now;
+            const isCurrent = !isPast && appointments.filter(a => a.time <= now).length > 0 && apt.time === appointments.filter(a => a.time >= now)[0]?.time;
+            return (
+              <motion.div
+                key={apt.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex items-center gap-4 rounded-2xl p-4 surface-card ${isPast ? "opacity-50" : ""} ${isCurrent ? "surface-card-hover border-[hsl(40,50%,55%)]" : ""}`}
+                style={isCurrent ? { borderColor: "hsl(40, 50%, 55%)" } : undefined}
+              >
+                <span className="text-sm font-opensans font-semibold tabular-nums text-muted-foreground w-12 flex-shrink-0">
+                  {apt.time}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-opensans font-semibold text-foreground text-sm truncate">
+                    {apt.client_name}
+                  </p>
+                  <p className="text-xs text-muted-foreground font-opensans">{apt.service}</p>
+                </div>
+                {isCurrent && (
+                  <span className="text-[10px] font-montserrat font-bold px-2 py-1 rounded-full" style={{ color: "hsl(40, 50%, 55%)", background: "hsl(40, 50%, 55%, 0.1)" }}>
+                    AGORA
+                  </span>
+                )}
+              </motion.div>
+            );
+          })
+        )}
+      </div>
+    </AdminLayout>
+  );
+}
