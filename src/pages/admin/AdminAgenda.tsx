@@ -3,7 +3,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Plus, X, Edit2, Trash2, Phone } from "lucide-react";
+import { Plus, Edit2, Trash2, Phone } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
@@ -36,27 +36,17 @@ export default function AdminAgenda() {
   const dateLabel = format(new Date(selectedDate + "T12:00:00"), "EEE, d MMM", { locale: ptBR });
 
   const loadAppointments = useCallback(async () => {
-    const { data } = await supabase
-      .from("appointments")
-      .select("*")
-      .eq("date", selectedDate)
-      .order("time");
+    const { data } = await supabase.from("appointments").select("*").eq("date", selectedDate).order("time");
     if (data) setAppointments(data as Appointment[]);
   }, [selectedDate]);
 
   useEffect(() => {
     loadAppointments();
-
     const channel = supabase
       .channel(`admin-agenda-${selectedDate}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
-        loadAppointments();
-      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => { loadAppointments(); })
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, [loadAppointments, selectedDate]);
 
   const occupiedTimes = new Set(appointments.map(a => a.time));
@@ -74,43 +64,18 @@ export default function AdminAgenda() {
   };
 
   const handleSave = async () => {
-    if (!form.client_name.trim() || !form.time) {
-      toast.error("Preencha nome e horário.");
-      return;
-    }
-
-    if (!editingId && occupiedTimes.has(form.time)) {
-      toast.error("Esse horário já está ocupado.");
-      return;
-    }
+    if (!form.client_name.trim() || !form.time) { toast.error("Preencha nome e horário."); return; }
+    if (!editingId && occupiedTimes.has(form.time)) { toast.error("Esse horário já está ocupado."); return; }
 
     if (editingId) {
-      const { error } = await supabase
-        .from("appointments")
-        .update({
-          client_name: form.client_name.trim(),
-          service: form.service,
-          time: form.time,
-          phone: form.phone || null,
-        } as any)
-        .eq("id", editingId);
+      const { error } = await supabase.from("appointments").update({ client_name: form.client_name.trim(), service: form.service, time: form.time, phone: form.phone || null } as any).eq("id", editingId);
       if (error) { toast.error("Erro ao atualizar."); return; }
       toast.success("Agendamento atualizado!");
     } else {
-      const { error } = await supabase.from("appointments").insert({
-        client_name: form.client_name.trim(),
-        service: form.service,
-        date: selectedDate,
-        date_label: dateLabel,
-        time: form.time,
-        status: "Confirmado",
-        user_id: form.client_name.trim(),
-        phone: form.phone || null,
-      } as any);
+      const { error } = await supabase.from("appointments").insert({ client_name: form.client_name.trim(), service: form.service, date: selectedDate, date_label: dateLabel, time: form.time, status: "Confirmado", user_id: form.client_name.trim(), phone: form.phone || null } as any);
       if (error) { toast.error("Erro ao salvar."); return; }
       toast.success("Agendamento criado!");
     }
-
     setDialogOpen(false);
     loadAppointments();
   };
@@ -122,20 +87,21 @@ export default function AdminAgenda() {
     loadAppointments();
   };
 
-  // Date navigation (7 days)
   const dates = Array.from({ length: 14 }, (_, i) => {
     const d = addDays(new Date(), i);
     return { value: format(d, "yyyy-MM-dd"), label: format(d, "EEE", { locale: ptBR }), day: format(d, "d") };
   });
 
+  const inputStyle = { background: "#0F172A", border: "1px solid #1F2937", color: "#F9FAFB" };
+
   return (
     <AdminLayout>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="font-montserrat font-bold text-2xl text-foreground tracking-tight">Agenda</h1>
+        <h1 className="font-montserrat font-bold text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
         <button
           onClick={() => openNew()}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-montserrat font-semibold text-sm text-black transition-opacity hover:opacity-90"
-          style={{ background: "hsl(40, 50%, 55%)" }}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-montserrat font-semibold text-sm text-white transition-all hover:brightness-110"
+          style={{ background: "#2563EB" }}
         >
           <Plus className="h-4 w-4" /> Novo
         </button>
@@ -147,10 +113,11 @@ export default function AdminAgenda() {
           <button
             key={d.value}
             onClick={() => setSelectedDate(d.value)}
-            className={`flex flex-col items-center min-w-[52px] py-2 px-3 rounded-xl text-xs font-opensans transition-all ${
-              selectedDate === d.value ? "text-black font-bold" : "surface-card text-muted-foreground"
-            }`}
-            style={selectedDate === d.value ? { background: "hsl(40, 50%, 55%)" } : undefined}
+            className="flex flex-col items-center min-w-[52px] py-2 px-3 rounded-xl text-xs font-opensans transition-all"
+            style={selectedDate === d.value
+              ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
+              : { background: "#0F172A", color: "#9CA3AF", border: "1px solid #1F2937" }
+            }
           >
             <span className="uppercase text-[10px]">{d.label}</span>
             <span className="text-lg font-montserrat font-bold">{d.day}</span>
@@ -165,20 +132,21 @@ export default function AdminAgenda() {
           return (
             <div
               key={time}
-              className={`flex items-center gap-3 rounded-xl p-3 transition-all ${
-                apt ? "surface-card border-l-2" : "surface-card opacity-60 hover:opacity-100"
-              }`}
-              style={apt ? { borderLeftColor: "hsl(40, 50%, 55%)" } : undefined}
+              className="flex items-center gap-3 rounded-xl p-3 transition-all"
+              style={apt
+                ? { background: "#0F172A", border: "1px solid #1F2937", borderLeft: "3px solid #2563EB" }
+                : { background: "#0F172A", border: "1px solid #1F2937", opacity: 0.6 }
+              }
+              onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
+              onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
             >
-              <span className="text-sm font-opensans font-semibold tabular-nums text-muted-foreground w-12 flex-shrink-0">
-                {time}
-              </span>
+              <span className="text-sm font-opensans font-semibold tabular-nums w-12 flex-shrink-0" style={{ color: "#9CA3AF" }}>{time}</span>
 
               {apt ? (
                 <>
                   <div className="flex-1 min-w-0">
-                    <p className="font-opensans font-semibold text-foreground text-sm truncate">{apt.client_name}</p>
-                    <p className="text-xs text-muted-foreground font-opensans flex items-center gap-1">
+                    <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>{apt.client_name}</p>
+                    <p className="text-xs font-opensans flex items-center gap-1" style={{ color: "#9CA3AF" }}>
                       {apt.service}
                       {apt.phone && (
                         <span className="inline-flex items-center gap-0.5 ml-2">
@@ -188,19 +156,16 @@ export default function AdminAgenda() {
                     </p>
                   </div>
                   <div className="flex items-center gap-1">
-                    <button onClick={() => openEdit(apt)} className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-[hsl(0,0%,100%,0.05)]">
-                      <Edit2 className="h-3.5 w-3.5 text-muted-foreground" />
+                    <button onClick={() => openEdit(apt)} className="h-8 w-8 flex items-center justify-center rounded-lg transition-colors" style={{ color: "#9CA3AF" }} onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(37,99,235,0.1)"; }} onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
+                      <Edit2 className="h-3.5 w-3.5" />
                     </button>
-                    <button onClick={() => handleDelete(apt.id)} className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-destructive/10">
-                      <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                    <button onClick={() => handleDelete(apt.id)} className="h-8 w-8 flex items-center justify-center rounded-lg transition-colors" onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; }} onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
+                      <Trash2 className="h-3.5 w-3.5" style={{ color: "#EF4444" }} />
                     </button>
                   </div>
                 </>
               ) : (
-                <button
-                  onClick={() => openNew(time)}
-                  className="flex-1 text-left text-xs text-muted-foreground font-opensans hover:text-foreground transition-colors"
-                >
+                <button onClick={() => openNew(time)} className="flex-1 text-left text-xs font-opensans transition-colors" style={{ color: "#9CA3AF" }}>
                   Horário livre — clique para agendar
                 </button>
               )}
@@ -209,65 +174,39 @@ export default function AdminAgenda() {
         })}
       </div>
 
-      {/* New/Edit Dialog */}
+      {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-[hsl(0,0%,5%)] border-[hsl(0,0%,100%,0.1)] max-w-md">
+        <DialogContent className="max-w-md" style={{ background: "#0F172A", borderColor: "#1F2937" }}>
           <DialogHeader>
-            <DialogTitle className="font-montserrat text-foreground">
+            <DialogTitle className="font-montserrat" style={{ color: "#F9FAFB" }}>
               {editingId ? "Editar Agendamento" : "Novo Agendamento"}
             </DialogTitle>
           </DialogHeader>
-
           <div className="flex flex-col gap-4 mt-2">
             <div>
-              <label className="text-xs text-muted-foreground font-opensans mb-1 block">Nome do Cliente *</label>
-              <input
-                value={form.client_name}
-                onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))}
-                className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none bg-secondary text-foreground border border-[hsl(0,0%,100%,0.1)] focus:border-[hsl(40,50%,55%)] transition-colors"
-                placeholder="Ex: João Silva"
-              />
+              <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Nome do Cliente *</label>
+              <input value={form.client_name} onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none transition-all" style={inputStyle} placeholder="Ex: João Silva" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
             </div>
             <div>
-              <label className="text-xs text-muted-foreground font-opensans mb-1 block">Telefone (opcional)</label>
-              <input
-                value={form.phone}
-                onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))}
-                className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none bg-secondary text-foreground border border-[hsl(0,0%,100%,0.1)] focus:border-[hsl(40,50%,55%)] transition-colors"
-                placeholder="(00) 00000-0000"
-              />
+              <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Telefone (opcional)</label>
+              <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none transition-all" style={inputStyle} placeholder="(00) 00000-0000" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
             </div>
             <div>
-              <label className="text-xs text-muted-foreground font-opensans mb-1 block">Serviço *</label>
-              <select
-                value={form.service}
-                onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))}
-                className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none bg-secondary text-foreground border border-[hsl(0,0%,100%,0.1)] focus:border-[hsl(40,50%,55%)] transition-colors"
-              >
+              <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Serviço *</label>
+              <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none transition-all" style={inputStyle}>
                 {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label className="text-xs text-muted-foreground font-opensans mb-1 block">Horário *</label>
-              <select
-                value={form.time}
-                onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))}
-                className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none bg-secondary text-foreground border border-[hsl(0,0%,100%,0.1)] focus:border-[hsl(40,50%,55%)] transition-colors"
-              >
+              <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Horário *</label>
+              <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none transition-all" style={inputStyle}>
                 <option value="">Selecione</option>
                 {TIME_SLOTS.map(t => (
-                  <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>
-                    {t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}
-                  </option>
+                  <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>{t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}</option>
                 ))}
               </select>
             </div>
-
-            <button
-              onClick={handleSave}
-              className="w-full py-3 rounded-xl font-montserrat font-bold text-sm text-black mt-2 transition-opacity hover:opacity-90"
-              style={{ background: "hsl(40, 50%, 55%)" }}
-            >
+            <button onClick={handleSave} className="w-full py-3 rounded-xl font-montserrat font-bold text-sm text-white mt-2 transition-all hover:brightness-110" style={{ background: "#2563EB" }}>
               {editingId ? "Salvar Alterações" : "Criar Agendamento"}
             </button>
           </div>
