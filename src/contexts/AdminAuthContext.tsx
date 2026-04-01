@@ -42,8 +42,17 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.functions.invoke("barber-auth", {
         body: { username, password },
       });
-      if (error) return { error: "Erro ao conectar ao servidor" };
-      if (data?.error) return { error: data.error };
+
+      // supabase.functions.invoke sets error for non-2xx responses
+      // but data may still contain the JSON body with our error message
+      if (error) {
+        const message = data?.error || "Usuário ou senha inválidos";
+        return { error: message };
+      }
+
+      if (!data?.token) {
+        return { error: data?.error || "Erro ao autenticar" };
+      }
 
       localStorage.setItem("barber_admin_session", data.token);
       setUser(data.user);
