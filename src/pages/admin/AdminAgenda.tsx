@@ -44,7 +44,20 @@ export default function AdminAgenda() {
     if (data) setAppointments(data as Appointment[]);
   }, [selectedDate]);
 
-  useEffect(() => { loadAppointments(); }, [loadAppointments]);
+  useEffect(() => {
+    loadAppointments();
+
+    const channel = supabase
+      .channel(`admin-agenda-${selectedDate}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
+        loadAppointments();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadAppointments, selectedDate]);
 
   const occupiedTimes = new Set(appointments.map(a => a.time));
 

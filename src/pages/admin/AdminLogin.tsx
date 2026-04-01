@@ -30,64 +30,128 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6">
-      <motion.form
-        initial={{ opacity: 0, y: 20 }}
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#000000" }}>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm flex flex-col items-center gap-5"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-md"
       >
-        <div className="h-16 w-16 rounded-2xl flex items-center justify-center mb-2" style={{ background: "hsl(40, 50%, 55%)" }}>
-          <Scissors className="h-8 w-8 text-black" />
-        </div>
-
-        <h1 className="font-montserrat font-bold text-2xl text-foreground tracking-tight">
-          Painel do Barbeiro
-        </h1>
-        <p className="text-sm text-muted-foreground font-opensans -mt-3">
-          Acesse sua área administrativa
-        </p>
-
-        <input
-          type="text"
-          placeholder="Usuário"
-          value={username}
-          onChange={(e) => { setUsername(e.target.value); setError(""); }}
-          className="w-full rounded-2xl px-5 py-3.5 font-opensans text-sm outline-none bg-secondary text-foreground border border-[hsl(0,0%,100%,0.1)] focus:border-[hsl(40,50%,55%)] transition-colors"
-          autoComplete="username"
-        />
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={(e) => { setPassword(e.target.value); setError(""); }}
-          className="w-full rounded-2xl px-5 py-3.5 font-opensans text-sm outline-none bg-secondary text-foreground border border-[hsl(0,0%,100%,0.1)] focus:border-[hsl(40,50%,55%)] transition-colors"
-          autoComplete="current-password"
-        />
-
-        {error && (
-          <p className="text-xs font-opensans text-destructive">{error}</p>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-3.5 rounded-2xl font-montserrat font-bold text-sm tracking-tight text-black disabled:opacity-50 flex items-center justify-center gap-2 transition-opacity"
-          style={{ background: "hsl(40, 50%, 55%)" }}
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-2xl p-8 sm:p-10 flex flex-col items-center gap-6"
+          style={{
+            background: "#111827",
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05)",
+          }}
         >
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-          {loading ? "Entrando..." : "Entrar"}
-        </button>
+          {/* Icon */}
+          <div
+            className="h-16 w-16 rounded-2xl flex items-center justify-center"
+            style={{ background: "rgba(37, 99, 235, 0.15)" }}
+          >
+            <Scissors className="h-8 w-8" style={{ color: "#3B82F6" }} />
+          </div>
 
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className="text-xs text-muted-foreground font-opensans hover:text-foreground transition-colors"
-        >
-          ← Voltar ao site
-        </button>
-      </motion.form>
+          {/* Title & Subtitle */}
+          <div className="text-center">
+            <h1
+              className="font-montserrat font-bold text-2xl tracking-tight"
+              style={{ color: "#F9FAFB" }}
+            >
+              Painel do Barbeiro
+            </h1>
+            <p
+              className="text-sm font-opensans mt-1"
+              style={{ color: "#9CA3AF" }}
+            >
+              Acesse sua área administrativa
+            </p>
+          </div>
+
+          {/* Inputs */}
+          <div className="w-full flex flex-col gap-4">
+            <div>
+              <label
+                className="block text-xs font-opensans mb-1.5"
+                style={{ color: "#9CA3AF" }}
+              >
+                Usuário
+              </label>
+              <input
+                type="text"
+                placeholder="Digite seu usuário"
+                value={username}
+                onChange={(e) => { setUsername(e.target.value); setError(""); }}
+                className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all duration-200"
+                style={{
+                  background: "#111827",
+                  border: "1px solid #1F2937",
+                  color: "#F9FAFB",
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"}
+                onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"}
+                autoComplete="username"
+              />
+            </div>
+            <div>
+              <label
+                className="block text-xs font-opensans mb-1.5"
+                style={{ color: "#9CA3AF" }}
+              >
+                Senha
+              </label>
+              <input
+                type="password"
+                placeholder="Digite sua senha"
+                value={password}
+                onChange={(e) => { setPassword(e.target.value); setError(""); }}
+                className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all duration-200"
+                style={{
+                  background: "#111827",
+                  border: "1px solid #1F2937",
+                  color: "#F9FAFB",
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"}
+                onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"}
+                autoComplete="current-password"
+              />
+            </div>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <p className="text-xs font-opensans w-full text-center" style={{ color: "#EF4444" }}>
+              {error}
+            </p>
+          )}
+
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3.5 rounded-xl font-montserrat font-bold text-sm tracking-tight text-white disabled:opacity-50 flex items-center justify-center gap-2 transition-all duration-200 hover:brightness-110"
+            style={{ background: "#2563EB" }}
+            onMouseEnter={(e) => e.currentTarget.style.background = "#3B82F6"}
+            onMouseLeave={(e) => e.currentTarget.style.background = "#2563EB"}
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {loading ? "Entrando..." : "Entrar"}
+          </button>
+
+          {/* Back */}
+          <button
+            type="button"
+            onClick={() => navigate("/")}
+            className="text-xs font-opensans transition-colors duration-200"
+            style={{ color: "#6B7280" }}
+            onMouseEnter={(e) => e.currentTarget.style.color = "#9CA3AF"}
+            onMouseLeave={(e) => e.currentTarget.style.color = "#6B7280"}
+          >
+            ← Voltar ao site
+          </button>
+        </form>
+      </motion.div>
     </div>
   );
 }
