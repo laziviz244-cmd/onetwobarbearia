@@ -126,13 +126,13 @@ export default function AdminAgenda() {
       </div>
 
       {/* Time slots — compact, no horizontal scroll */}
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1.5 overflow-hidden w-full">
         {TIME_SLOTS.map((time) => {
           const apt = appointments.find(a => a.time === time);
           return (
             <div
               key={time}
-              className="flex items-center gap-2 rounded-2xl p-3 transition-all"
+              className="flex items-center gap-1.5 sm:gap-2 rounded-2xl p-2 sm:p-3 transition-all overflow-hidden w-full max-w-full"
               style={apt
                 ? { background: "#111111", borderLeft: "3px solid #2563EB" }
                 : { background: "#111111", opacity: 0.6 }
@@ -140,33 +140,28 @@ export default function AdminAgenda() {
               onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
               onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
             >
-              <span className="text-sm font-opensans font-semibold tabular-nums w-11 flex-shrink-0" style={{ color: "#9CA3AF" }}>{time}</span>
+              <span className="text-xs sm:text-sm font-opensans font-semibold tabular-nums w-10 sm:w-11 flex-shrink-0" style={{ color: "#9CA3AF" }}>{time}</span>
 
               {apt ? (
                 <>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>{apt.client_name}</p>
-                    <p className="text-xs font-opensans truncate" style={{ color: "#9CA3AF" }}>
+                  <div className="flex-1 min-w-0 overflow-hidden">
+                    <p className="font-opensans font-semibold text-xs sm:text-sm truncate" style={{ color: "#F9FAFB" }}>{apt.client_name}</p>
+                    <p className="text-[10px] sm:text-xs font-opensans truncate" style={{ color: "#9CA3AF" }}>
                       {apt.service}
-                      {apt.phone && (
-                        <span className="inline-flex items-center gap-0.5 ml-1">
-                          <Phone className="h-3 w-3 inline" /> {apt.phone}
-                        </span>
-                      )}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1 flex-shrink-0">
-                    <button onClick={() => openEdit(apt)} className="h-8 w-8 flex items-center justify-center rounded-lg transition-colors" style={{ color: "#9CA3AF" }} onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(37,99,235,0.1)"; }} onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
+                  <div className="flex items-center gap-0.5 flex-shrink-0">
+                    <button onClick={() => openEdit(apt)} className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center rounded-lg transition-colors" style={{ color: "#9CA3AF" }}>
                       <Edit2 className="h-3.5 w-3.5" />
                     </button>
-                    <button onClick={() => handleDelete(apt.id)} className="h-8 w-8 flex items-center justify-center rounded-lg transition-colors" onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; }} onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
+                    <button onClick={() => handleDelete(apt.id)} className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center rounded-lg transition-colors">
                       <Trash2 className="h-3.5 w-3.5" style={{ color: "#EF4444" }} />
                     </button>
                   </div>
                 </>
               ) : (
-                <button onClick={() => openNew(time)} className="flex-1 text-left text-xs font-opensans transition-colors" style={{ color: "#9CA3AF" }}>
-                  Horário livre — clique para agendar
+                <button onClick={() => openNew(time)} className="flex-1 text-left text-[10px] sm:text-xs font-opensans transition-colors truncate" style={{ color: "#9CA3AF" }}>
+                  Livre — agendar
                 </button>
               )}
             </div>
