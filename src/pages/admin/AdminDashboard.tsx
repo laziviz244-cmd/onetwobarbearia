@@ -59,19 +59,23 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      <div className="mb-6">
+      {/* Hero title */}
+      <div className="mb-8">
         <p className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>
           Olá, {user?.name} 👋
         </p>
-        <h1 className="font-montserrat font-bold text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>
-          {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
+        <h1 className="font-montserrat font-bold text-2xl md:text-3xl tracking-tight mt-1" style={{ color: "#F9FAFB" }}>
+          Sua agenda tem <span style={{ color: "#2563EB" }}>{appointments.length}</span> agendamentos hoje
         </h1>
+        <p className="text-sm font-opensans mt-1" style={{ color: "#9CA3AF" }}>
+          {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
+        </p>
       </div>
 
-      {/* Stats */}
+      {/* Stats — no borders, #111111 bg, rounded-2xl */}
       <div className="grid grid-cols-3 gap-3 mb-8">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl p-4 flex flex-col gap-1" style={{ background: "#0F172A", border: "1px solid #1F2937" }}>
+          <div key={stat.label} className="rounded-2xl p-4 flex flex-col items-start gap-1" style={{ background: "#111111" }}>
             <stat.icon className="h-5 w-5 mb-1" style={{ color: "#2563EB" }} />
             <span className="font-montserrat font-bold text-xl tabular-nums" style={{ color: "#F9FAFB" }}>
               {stat.value}
@@ -97,7 +101,7 @@ export default function AdminDashboard() {
 
       <div className="flex flex-col gap-2">
         {appointments.length === 0 ? (
-          <div className="rounded-2xl p-8 text-center" style={{ background: "#0F172A", border: "1px solid #1F2937" }}>
+          <div className="rounded-2xl p-8 text-center" style={{ background: "#111111" }}>
             <Clock className="h-8 w-8 mx-auto mb-2" style={{ color: "#9CA3AF" }} />
             <p className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Nenhum agendamento hoje</p>
           </div>
@@ -110,27 +114,33 @@ export default function AdminDashboard() {
                 key={apt.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-4 rounded-2xl p-4"
+                className="relative rounded-2xl p-4 overflow-hidden"
                 style={{
-                  background: "#0F172A",
-                  border: isCurrent ? "1px solid #2563EB" : "1px solid #1F2937",
+                  background: "#111111",
+                  border: isCurrent ? "1px solid #2563EB" : "none",
                   opacity: isPast ? 0.5 : 1,
                 }}
               >
-                <span className="text-sm font-opensans font-semibold tabular-nums w-12 flex-shrink-0" style={{ color: "#9CA3AF" }}>
-                  {apt.time}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
-                    {apt.client_name}
-                  </p>
-                  <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
-                </div>
+                {/* Blue progress bar on top for current */}
                 {isCurrent && (
-                  <span className="text-[10px] font-montserrat font-bold px-2 py-1 rounded-full" style={{ color: "#3B82F6", background: "rgba(37, 99, 235, 0.1)" }}>
-                    AGORA
-                  </span>
+                  <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "#2563EB" }} />
                 )}
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-opensans font-semibold tabular-nums w-12 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                    {apt.time}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
+                      {apt.client_name}
+                    </p>
+                    <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
+                  </div>
+                  {isCurrent && (
+                    <span className="text-[10px] font-montserrat font-bold px-3 py-1 rounded-full" style={{ color: "#FFFFFF", background: "#2563EB" }}>
+                      AGORA
+                    </span>
+                  )}
+                </div>
               </motion.div>
             );
           })
