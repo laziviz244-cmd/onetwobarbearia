@@ -92,7 +92,7 @@ export default function AdminAgenda() {
     return { value: format(d, "yyyy-MM-dd"), label: format(d, "EEE", { locale: ptBR }), day: format(d, "d") };
   });
 
-  const inputStyle = { background: "#0F172A", border: "1px solid #1F2937", color: "#F9FAFB" };
+  const inputStyle = { background: "#111111", border: "1px solid #1F2937", color: "#F9FAFB" };
 
   return (
     <AdminLayout>
@@ -116,7 +116,7 @@ export default function AdminAgenda() {
             className="flex flex-col items-center min-w-[52px] py-2 px-3 rounded-xl text-xs font-opensans transition-all"
             style={selectedDate === d.value
               ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
-              : { background: "#0F172A", color: "#9CA3AF", border: "1px solid #1F2937" }
+              : { background: "#111111", color: "#9CA3AF" }
             }
           >
             <span className="uppercase text-[10px]">{d.label}</span>
@@ -125,37 +125,37 @@ export default function AdminAgenda() {
         ))}
       </div>
 
-      {/* Time slots */}
+      {/* Time slots — compact, no horizontal scroll */}
       <div className="flex flex-col gap-1.5">
         {TIME_SLOTS.map((time) => {
           const apt = appointments.find(a => a.time === time);
           return (
             <div
               key={time}
-              className="flex items-center gap-3 rounded-xl p-3 transition-all"
+              className="flex items-center gap-2 rounded-2xl p-3 transition-all"
               style={apt
-                ? { background: "#0F172A", border: "1px solid #1F2937", borderLeft: "3px solid #2563EB" }
-                : { background: "#0F172A", border: "1px solid #1F2937", opacity: 0.6 }
+                ? { background: "#111111", borderLeft: "3px solid #2563EB" }
+                : { background: "#111111", opacity: 0.6 }
               }
               onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
               onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
             >
-              <span className="text-sm font-opensans font-semibold tabular-nums w-12 flex-shrink-0" style={{ color: "#9CA3AF" }}>{time}</span>
+              <span className="text-sm font-opensans font-semibold tabular-nums w-11 flex-shrink-0" style={{ color: "#9CA3AF" }}>{time}</span>
 
               {apt ? (
                 <>
                   <div className="flex-1 min-w-0">
                     <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>{apt.client_name}</p>
-                    <p className="text-xs font-opensans flex items-center gap-1" style={{ color: "#9CA3AF" }}>
+                    <p className="text-xs font-opensans truncate" style={{ color: "#9CA3AF" }}>
                       {apt.service}
                       {apt.phone && (
-                        <span className="inline-flex items-center gap-0.5 ml-2">
-                          <Phone className="h-3 w-3" /> {apt.phone}
+                        <span className="inline-flex items-center gap-0.5 ml-1">
+                          <Phone className="h-3 w-3 inline" /> {apt.phone}
                         </span>
                       )}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 flex-shrink-0">
                     <button onClick={() => openEdit(apt)} className="h-8 w-8 flex items-center justify-center rounded-lg transition-colors" style={{ color: "#9CA3AF" }} onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(37,99,235,0.1)"; }} onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
                       <Edit2 className="h-3.5 w-3.5" />
                     </button>
@@ -176,7 +176,7 @@ export default function AdminAgenda() {
 
       {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md" style={{ background: "#0F172A", borderColor: "#1F2937" }}>
+        <DialogContent className="max-w-md" style={{ background: "#111111", borderColor: "#1F2937" }}>
           <DialogHeader>
             <DialogTitle className="font-montserrat" style={{ color: "#F9FAFB" }}>
               {editingId ? "Editar Agendamento" : "Novo Agendamento"}

@@ -80,17 +80,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       {/* Main content */}
       <div className="flex-1 md:ml-64">
-        {/* Mobile header */}
+        {/* Mobile header — menu LEFT, logo RIGHT */}
         <header className="md:hidden flex items-center justify-between px-4 py-3 sticky top-0 z-20" style={{ background: "#0F172A", borderBottom: "1px solid #1F2937" }}>
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
-              <Scissors className="h-4 w-4" style={{ color: "#3B82F6" }} />
-            </div>
-            <span className="font-montserrat font-bold text-sm" style={{ color: "#F9FAFB" }}>Admin</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{user?.name}</span>
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <button className="h-9 w-9 flex items-center justify-center rounded-lg" style={{ background: "#1F2937" }}>
@@ -101,6 +93,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 <NavContent onNavigate={() => setOpen(false)} />
               </SheetContent>
             </Sheet>
+            <span className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{user?.name}</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <span className="font-montserrat font-bold text-sm" style={{ color: "#F9FAFB" }}>Admin</span>
+            <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
+              <Scissors className="h-4 w-4" style={{ color: "#3B82F6" }} />
+            </div>
           </div>
         </header>
 
