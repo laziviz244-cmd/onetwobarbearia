@@ -75,7 +75,7 @@ export default function AdminDashboard() {
       {/* Stats — no borders, #111111 bg, rounded-2xl */}
       <div className="grid grid-cols-3 gap-3 mb-8">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl p-4 flex flex-col items-start gap-1" style={{ background: "#111111" }}>
+          <div key={stat.label} className="rounded-2xl p-4 flex flex-col items-start gap-1" style={{ background: "#111111", border: "none" }}>
             <stat.icon className="h-5 w-5 mb-1" style={{ color: "#2563EB" }} />
             <span className="font-montserrat font-bold text-xl tabular-nums" style={{ color: "#F9FAFB" }}>
               {stat.value}
