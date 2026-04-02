@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { motion } from "framer-motion";
-import { Scissors, Loader2 } from "lucide-react";
+import { ShieldCheck, Loader2 } from "lucide-react";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "#000000" }}>
+    <div className="min-h-screen w-full flex items-center justify-center px-4" style={{ background: "#000000" }}>
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -40,26 +40,23 @@ export default function AdminLogin() {
         <form
           onSubmit={handleSubmit}
           className="rounded-2xl p-8 sm:p-10 flex flex-col items-center gap-6"
-          style={{
-            background: "#111827",
-            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.05)",
-          }}
+          style={{ background: "#111111" }}
         >
-          {/* Icon */}
+          {/* Shield Icon */}
           <div
             className="h-16 w-16 rounded-2xl flex items-center justify-center"
             style={{ background: "rgba(37, 99, 235, 0.15)" }}
           >
-            <Scissors className="h-8 w-8" style={{ color: "#3B82F6" }} />
+            <ShieldCheck className="h-8 w-8" style={{ color: "#2563EB" }} />
           </div>
 
           {/* Title & Subtitle */}
           <div className="text-center">
             <h1
               className="font-montserrat font-bold text-2xl tracking-tight"
-              style={{ color: "#F9FAFB" }}
+              style={{ color: "#F9FAFB", letterSpacing: "0.04em" }}
             >
-              Painel do Barbeiro
+              Painel ONETWO
             </h1>
             <p
               className="text-sm font-opensans mt-1"
@@ -69,7 +66,7 @@ export default function AdminLogin() {
             </p>
           </div>
 
-          {/* Inputs */}
+          {/* Inputs — no border, dark bg */}
           <div className="w-full flex flex-col gap-4">
             <div>
               <label
@@ -85,12 +82,10 @@ export default function AdminLogin() {
                 onChange={(e) => { setUsername(e.target.value); setError(""); }}
                 className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all duration-200"
                 style={{
-                  background: "#111827",
-                  border: "1px solid #1F2937",
+                  background: "#1A1A1A",
+                  border: "none",
                   color: "#F9FAFB",
                 }}
-                onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"}
-                onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"}
                 autoComplete="username"
               />
             </div>
@@ -108,12 +103,10 @@ export default function AdminLogin() {
                 onChange={(e) => { setPassword(e.target.value); setError(""); }}
                 className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all duration-200"
                 style={{
-                  background: "#111827",
-                  border: "1px solid #1F2937",
+                  background: "#1A1A1A",
+                  border: "none",
                   color: "#F9FAFB",
                 }}
-                onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"}
-                onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"}
                 autoComplete="current-password"
               />
             </div>
@@ -132,8 +125,6 @@ export default function AdminLogin() {
             disabled={loading}
             className="w-full py-3.5 rounded-xl font-montserrat font-bold text-sm tracking-tight text-white disabled:opacity-50 flex items-center justify-center gap-2 transition-all duration-200 hover:brightness-110"
             style={{ background: "#2563EB" }}
-            onMouseEnter={(e) => e.currentTarget.style.background = "#3B82F6"}
-            onMouseLeave={(e) => e.currentTarget.style.background = "#2563EB"}
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {loading ? "Entrando..." : "Entrar"}
@@ -145,8 +136,6 @@ export default function AdminLogin() {
             onClick={() => navigate("/")}
             className="text-xs font-opensans transition-colors duration-200"
             style={{ color: "#6B7280" }}
-            onMouseEnter={(e) => e.currentTarget.style.color = "#9CA3AF"}
-            onMouseLeave={(e) => e.currentTarget.style.color = "#6B7280"}
           >
             ← Voltar ao site
           </button>
