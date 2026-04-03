@@ -97,128 +97,129 @@ export default function AdminAgenda() {
   return (
     <AdminLayout>
       <div className="max-w-[100vw] overflow-x-hidden">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-montserrat font-bold text-3xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
-        <button
-          onClick={() => openNew()}
-          className="flex items-center gap-3 px-8 py-5 rounded-2xl font-montserrat font-bold text-xl text-white transition-all hover:brightness-110 active:scale-95"
-          style={{ background: "#2563EB" }}
-        >
-          <Plus className="h-7 w-7" /> Novo
-        </button>
-      </div>
-
-      {/* Date selector */}
-      <div className="flex gap-3 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-        {dates.map((d) => (
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="font-montserrat font-bold text-[2.25rem] tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
           <button
-            key={d.value}
-            onClick={() => setSelectedDate(d.value)}
-            className="flex flex-col items-center min-w-[80px] py-4 px-5 rounded-2xl font-opensans transition-all flex-shrink-0"
-            style={selectedDate === d.value
-              ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
-              : { background: "#111111", color: "#9CA3AF" }
-            }
+            onClick={() => openNew()}
+            className="flex items-center gap-3 px-9 py-5 rounded-2xl font-montserrat font-bold text-xl text-white transition-all hover:brightness-110 active:scale-95 min-h-[56px]"
+            style={{ background: "#2563EB" }}
           >
-            <span className="uppercase text-sm font-semibold">{d.label}</span>
-            <span className="text-2xl font-montserrat font-bold mt-1">{d.day}</span>
+            <Plus className="h-8 w-8" /> Novo
           </button>
-        ))}
-      </div>
+        </div>
 
-      {/* Time slots */}
-      <div className="flex flex-col gap-3 w-full">
-        {TIME_SLOTS.map((time) => {
-          const apt = appointments.find(a => a.time === time);
-          return (
-            <div
-              key={time}
-              className="flex items-center w-full rounded-2xl px-4 py-5 transition-all overflow-hidden"
-              style={apt
-                ? { background: "#111111", borderLeft: "4px solid #2563EB" }
-                : { background: "#111111", opacity: 0.6 }
+        {/* Date selector */}
+        <div className="flex gap-3 overflow-x-auto pb-5 mb-8 scrollbar-hide">
+          {dates.map((d) => (
+            <button
+              key={d.value}
+              onClick={() => setSelectedDate(d.value)}
+              className="flex flex-col items-center min-w-[88px] py-5 px-5 rounded-2xl font-opensans transition-all flex-shrink-0 min-h-[80px]"
+              style={selectedDate === d.value
+                ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
+                : { background: "#111111", color: "#9CA3AF" }
               }
-              onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
-              onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
             >
-              <span className="text-lg font-opensans font-bold tabular-nums w-16 flex-shrink-0" style={{ color: "#9CA3AF" }}>
-                {time}
-              </span>
-
-              {apt ? (
-                <>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-opensans font-semibold text-lg truncate" style={{ color: "#F9FAFB" }}>
-                      {apt.client_name}
-                    </p>
-                    <p className="text-base font-opensans truncate" style={{ color: "#9CA3AF" }}>
-                      {apt.service}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 flex-shrink-0 ml-2">
-                    <button
-                      onClick={() => openEdit(apt)}
-                      className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
-                      style={{ color: "#9CA3AF" }}
-                    >
-                      <Edit2 className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(apt.id)}
-                      className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
-                    >
-                      <Trash2 className="h-5 w-5" style={{ color: "#EF4444" }} />
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <button onClick={() => openNew(time)} className="flex-1 text-left text-lg font-opensans font-medium transition-colors" style={{ color: "#9CA3AF" }}>
-                  Livre — agendar
-                </button>
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md mx-4" style={{ background: "#111111", borderColor: "#1F2937" }}>
-          <DialogHeader>
-            <DialogTitle className="font-montserrat" style={{ color: "#F9FAFB" }}>
-              {editingId ? "Editar Agendamento" : "Novo Agendamento"}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-col gap-4 mt-2">
-            <div>
-              <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Nome do Cliente *</label>
-              <input value={form.client_name} onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all" style={inputStyle} placeholder="Ex: João Silva" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
-            </div>
-            <div>
-              <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Telefone (opcional)</label>
-              <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all" style={inputStyle} placeholder="(00) 00000-0000" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
-            </div>
-            <div>
-              <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Serviço *</label>
-              <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all" style={inputStyle}>
-                {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Horário *</label>
-              <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all" style={inputStyle}>
-                <option value="">Selecione</option>
-                {TIME_SLOTS.map(t => (
-                  <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>{t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}</option>
-                ))}
-              </select>
-            </div>
-            <button onClick={handleSave} className="w-full py-3.5 rounded-xl font-montserrat font-bold text-sm text-white mt-2 transition-all hover:brightness-110" style={{ background: "#2563EB" }}>
-              {editingId ? "Salvar Alterações" : "Criar Agendamento"}
+              <span className="uppercase text-base font-semibold">{d.label}</span>
+              <span className="text-3xl font-montserrat font-bold mt-1">{d.day}</span>
             </button>
-          </div>
-        </DialogContent>
-      </Dialog>
+          ))}
+        </div>
+
+        {/* Time slots */}
+        <div className="flex flex-col gap-3 w-full">
+          {TIME_SLOTS.map((time) => {
+            const apt = appointments.find(a => a.time === time);
+            return (
+              <div
+                key={time}
+                className="flex items-center w-full rounded-2xl px-5 py-6 transition-all overflow-hidden min-h-[64px]"
+                style={apt
+                  ? { background: "#111111", borderLeft: "4px solid #2563EB" }
+                  : { background: "#111111", opacity: 0.6 }
+                }
+                onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
+                onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
+              >
+                <span className="text-xl font-opensans font-bold tabular-nums w-[4.5rem] flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                  {time}
+                </span>
+
+                {apt ? (
+                  <>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-opensans font-semibold text-xl truncate" style={{ color: "#F9FAFB" }}>
+                        {apt.client_name}
+                      </p>
+                      <p className="text-lg font-opensans truncate mt-0.5" style={{ color: "#9CA3AF" }}>
+                        {apt.service}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                      <button
+                        onClick={() => openEdit(apt)}
+                        className="min-h-[52px] min-w-[52px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                        style={{ color: "#9CA3AF" }}
+                      >
+                        <Edit2 className="h-6 w-6" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(apt.id)}
+                        className="min-h-[52px] min-w-[52px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                      >
+                        <Trash2 className="h-6 w-6" style={{ color: "#EF4444" }} />
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <button onClick={() => openNew(time)} className="flex-1 text-left text-xl font-opensans font-medium transition-colors min-h-[48px] flex items-center" style={{ color: "#9CA3AF" }}>
+                    Livre — agendar
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Dialog */}
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className="max-w-md mx-3" style={{ background: "#111111", borderColor: "#1F2937" }}>
+            <DialogHeader>
+              <DialogTitle className="font-montserrat text-xl" style={{ color: "#F9FAFB" }}>
+                {editingId ? "Editar Agendamento" : "Novo Agendamento"}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-5 mt-3">
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block" style={{ color: "#9CA3AF" }}>Nome do Cliente *</label>
+                <input value={form.client_name} onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-5 py-4 text-lg font-opensans outline-none transition-all" style={inputStyle} placeholder="Ex: João Silva" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
+              </div>
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block" style={{ color: "#9CA3AF" }}>Telefone (opcional)</label>
+                <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-5 py-4 text-lg font-opensans outline-none transition-all" style={inputStyle} placeholder="(00) 00000-0000" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
+              </div>
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block" style={{ color: "#9CA3AF" }}>Serviço *</label>
+                <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-5 py-4 text-lg font-opensans outline-none transition-all" style={inputStyle}>
+                  {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block" style={{ color: "#9CA3AF" }}>Horário *</label>
+                <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-5 py-4 text-lg font-opensans outline-none transition-all" style={inputStyle}>
+                  <option value="">Selecione</option>
+                  {TIME_SLOTS.map(t => (
+                    <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>{t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}</option>
+                  ))}
+                </select>
+              </div>
+              <button onClick={handleSave} className="w-full py-4.5 rounded-xl font-montserrat font-bold text-lg text-white mt-2 transition-all hover:brightness-110 min-h-[56px]" style={{ background: "#2563EB" }}>
+                {editingId ? "Salvar Alterações" : "Criar Agendamento"}
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </AdminLayout>
   );

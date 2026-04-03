@@ -68,50 +68,50 @@ export default function AdminDashboard() {
   return (
     <AdminLayout>
       {/* Hero title */}
-      <div className="mb-8">
-        <p className="text-lg font-opensans" style={{ color: "#9CA3AF" }}>
-          <span>{"Olá, Onetwo👋"}</span>
+      <div className="mb-10">
+        <p className="text-xl font-opensans" style={{ color: "#9CA3AF" }}>
+          {"Olá, Onetwo👋"}
         </p>
-        <h1 className="font-montserrat font-extrabold text-[2rem] md:text-3xl tracking-tight mt-2" style={{ color: "#F9FAFB" }}>
-          <span>Seus agendamentos hoje</span>
+        <h1 className="font-montserrat font-extrabold text-[2.5rem] leading-tight tracking-tight mt-3" style={{ color: "#F9FAFB" }}>
+          Seus agendamentos hoje
         </h1>
-        <p className="text-lg font-opensans mt-2" style={{ color: "#9CA3AF" }}>
-          <span>{format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}</span>
+        <p className="text-xl font-opensans mt-3" style={{ color: "#9CA3AF" }}>
+          {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
         </p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-3 gap-3 mb-10">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-3" style={{ background: "#111111", border: "none" }}>
-            <stat.icon className="h-7 w-7 mb-1" style={{ color: "#2563EB" }} />
-            <span className="font-montserrat font-bold text-2xl tabular-nums" style={{ color: "#F9FAFB" }}>
+          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-2" style={{ background: "#111111" }}>
+            <stat.icon className="h-8 w-8 mb-1" style={{ color: "#2563EB" }} />
+            <span className="font-montserrat font-bold text-[1.75rem] tabular-nums leading-tight" style={{ color: "#F9FAFB" }}>
               {stat.value}
             </span>
-            <span className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
+            <span className="text-base font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
           </div>
         ))}
       </div>
 
       {/* Today's appointments */}
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="font-montserrat font-bold text-lg tracking-tight" style={{ color: "#F9FAFB" }}>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="font-montserrat font-bold text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>
           Agenda do dia
         </h2>
         <button
           onClick={() => navigate("/admin/agenda")}
-          className="text-xs font-opensans font-semibold flex items-center gap-0.5"
+          className="text-base font-opensans font-semibold flex items-center gap-1 min-h-[48px]"
           style={{ color: "#2563EB" }}
         >
-          Ver tudo <ChevronRight className="h-3 w-3" />
+          Ver tudo <ChevronRight className="h-5 w-5" />
         </button>
       </div>
 
-      <div className="flex flex-col gap-3 pb-8">
+      <div className="flex flex-col gap-4 pb-8">
         {appointments.length === 0 ? (
-          <div className="rounded-2xl p-12 text-center" style={{ background: "#111111" }}>
-            <Clock className="h-8 w-8 mx-auto mb-2" style={{ color: "#9CA3AF" }} />
-            <p className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Nenhum agendamento hoje</p>
+          <div className="rounded-2xl p-14 text-center" style={{ background: "#111111" }}>
+            <Clock className="h-12 w-12 mx-auto mb-3" style={{ color: "#9CA3AF" }} />
+            <p className="text-xl font-opensans" style={{ color: "#9CA3AF" }}>Nenhum agendamento hoje</p>
           </div>
         ) : (
           <>
@@ -123,7 +123,7 @@ export default function AdminDashboard() {
                   key={apt.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative rounded-2xl px-5 py-7"
+                  className="relative rounded-2xl px-5 py-8"
                   style={{
                     background: "#111111",
                     border: isCurrent ? "1px solid #2563EB" : "none",
@@ -134,30 +134,30 @@ export default function AdminDashboard() {
                     <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "#2563EB" }} />
                   )}
                   <div className="flex items-center gap-4">
-                    <span className="text-lg font-opensans font-bold tabular-nums w-16 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                    <span className="text-xl font-opensans font-bold tabular-nums w-[4.5rem] flex-shrink-0" style={{ color: "#9CA3AF" }}>
                       {apt.time}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-opensans font-semibold text-lg truncate" style={{ color: "#F9FAFB" }}>
+                      <p className="font-opensans font-semibold text-xl truncate" style={{ color: "#F9FAFB" }}>
                         {apt.client_name}
                       </p>
-                      <p className="text-base font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
+                      <p className="text-lg font-opensans mt-1" style={{ color: "#9CA3AF" }}>{apt.service}</p>
                     </div>
-                    <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                      <div className="flex items-center gap-1">
+                    <div className="flex flex-col items-end gap-3 flex-shrink-0">
+                      <div className="flex items-center gap-2">
                         {isPast && (
-                          <span className="text-[11px] font-opensans" style={{ color: "#9CA3AF" }}>Concluído</span>
+                          <span className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Concluído</span>
                         )}
                         {isCurrent && (
-                          <span className="text-[11px] font-montserrat font-bold px-3 py-1 rounded-full" style={{ color: "#FFFFFF", background: "#2563EB" }}>AGORA</span>
+                          <span className="text-sm font-montserrat font-bold px-4 py-1.5 rounded-full" style={{ color: "#FFFFFF", background: "#2563EB" }}>AGORA</span>
                         )}
-                        <ChevronRight className="h-4 w-4" style={{ color: "#9CA3AF" }} />
+                        <ChevronRight className="h-5 w-5" style={{ color: "#9CA3AF" }} />
                       </div>
                       <button
                         onClick={() => handleDelete(apt.id)}
-                        className="p-1.5 rounded-lg transition-opacity hover:opacity-70"
+                        className="p-2 rounded-xl transition-opacity hover:opacity-70 min-h-[48px] min-w-[48px] flex items-center justify-center"
                       >
-                        <Trash2 className="h-4 w-4" strokeWidth={1.5} style={{ color: "#FF0000" }} />
+                        <Trash2 className="h-5 w-5" strokeWidth={1.5} style={{ color: "#FF0000" }} />
                       </button>
                     </div>
                   </div>
@@ -165,14 +165,13 @@ export default function AdminDashboard() {
               );
             })}
 
-            {/* Adicionar agendamento manual */}
             <button
               onClick={() => navigate("/admin/agenda")}
-              className="flex items-center gap-3 rounded-2xl px-4 py-4 w-full text-left transition-opacity hover:opacity-80"
+              className="flex items-center gap-4 rounded-2xl px-5 py-5 w-full text-left transition-opacity hover:opacity-80 min-h-[56px]"
               style={{ background: "#111111" }}
             >
-              <Clock className="h-5 w-5 flex-shrink-0" style={{ color: "#1a3a8f" }} />
-              <span className="font-opensans font-bold text-sm" style={{ color: "#F9FAFB" }}>
+              <Clock className="h-7 w-7 flex-shrink-0" style={{ color: "#1a3a8f" }} />
+              <span className="font-opensans font-bold text-lg" style={{ color: "#F9FAFB" }}>
                 Adicionar agendamento manual
               </span>
             </button>
