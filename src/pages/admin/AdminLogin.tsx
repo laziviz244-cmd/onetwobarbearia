@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield, Loader2, KeyRound } from "lucide-react";
 import { toast } from "sonner";
+import AdminHeadMeta from "@/components/AdminHeadMeta";
 
 const ROYAL_BLUE = "#1a3a8f";
 
@@ -83,6 +84,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center" style={{ background: "#000000" }}>
+      <AdminHeadMeta />
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
