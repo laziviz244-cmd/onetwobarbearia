@@ -4,7 +4,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Calendar, Users, DollarSign, Clock, ChevronRight, Trash2 } from "lucide-react";
+import { Calendar, Users, DollarSign, Clock, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -30,12 +30,6 @@ export default function AdminDashboard() {
     loadData();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("appointments").delete().eq("id", id);
-    if (error) { toast.error("Erro ao cancelar."); return; }
-    toast.success("Agendamento cancelado!");
-    loadData();
-  };
 
   const loadData = async () => {
     const { data: appts } = await supabase
@@ -143,8 +137,7 @@ export default function AdminDashboard() {
                       </p>
                       <p className="text-lg font-opensans mt-1" style={{ color: "#9CA3AF" }}>{apt.service}</p>
                     </div>
-                    <div className="flex flex-col items-end gap-3 flex-shrink-0">
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                         {isPast && (
                           <span className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Concluído</span>
                         )}
@@ -152,13 +145,6 @@ export default function AdminDashboard() {
                           <span className="text-sm font-montserrat font-bold px-4 py-1.5 rounded-full" style={{ color: "#FFFFFF", background: "#2563EB" }}>AGORA</span>
                         )}
                         <ChevronRight className="h-5 w-5" style={{ color: "#9CA3AF" }} />
-                      </div>
-                      <button
-                        onClick={() => handleDelete(apt.id)}
-                        className="p-2 rounded-xl transition-opacity hover:opacity-70 min-h-[48px] min-w-[48px] flex items-center justify-center"
-                      >
-                        <Trash2 className="h-5 w-5" strokeWidth={1.5} style={{ color: "#FF0000" }} />
-                      </button>
                     </div>
                   </div>
                 </motion.div>
