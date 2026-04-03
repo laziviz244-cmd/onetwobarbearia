@@ -62,13 +62,13 @@ export default function AdminDashboard() {
       {/* Hero title */}
       <div className="mb-8">
         <p className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>
-          Olá, Onetwo👋
+          <span>{"Olá, Onetwo👋"}</span>
         </p>
         <h1 className="font-montserrat font-bold text-2xl md:text-3xl tracking-tight mt-1" style={{ color: "#F9FAFB" }}>
-          Sua agenda tem <span style={{ color: "#2563EB" }}>{appointments.length}</span> agendamentos hoje
+          <span>Sua agenda tem </span><span style={{ color: "#2563EB" }}>{appointments.length}</span><span> agendamentos hoje</span>
         </h1>
         <p className="text-sm font-opensans mt-1" style={{ color: "#9CA3AF" }}>
-          {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
+          <span>{format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}</span>
         </p>
       </div>
 
