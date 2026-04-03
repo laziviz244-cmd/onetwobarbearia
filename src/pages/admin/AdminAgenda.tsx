@@ -109,7 +109,7 @@ export default function AdminAgenda() {
       </div>
 
       {/* Date selector */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 -mx-1 px-1 scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
         {dates.map((d) => (
           <button
             key={d.value}
