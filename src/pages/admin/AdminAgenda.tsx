@@ -127,52 +127,52 @@ export default function AdminAgenda() {
       </div>
 
       {/* Time slots */}
-      <div className="flex flex-col gap-2 w-full">
+      <div className="flex flex-col gap-3 w-full">
         {TIME_SLOTS.map((time) => {
           const apt = appointments.find(a => a.time === time);
           return (
             <div
               key={time}
-              className="flex items-center w-full rounded-2xl px-3 py-3 md:px-4 md:py-4 transition-all overflow-hidden"
+              className="flex items-center w-full rounded-2xl px-4 py-5 transition-all overflow-hidden"
               style={apt
-                ? { background: "#111111", borderLeft: "3px solid #2563EB" }
+                ? { background: "#111111", borderLeft: "4px solid #2563EB" }
                 : { background: "#111111", opacity: 0.6 }
               }
               onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
               onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
             >
-              <span className="text-base font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+              <span className="text-lg font-opensans font-bold tabular-nums w-16 flex-shrink-0" style={{ color: "#9CA3AF" }}>
                 {time}
               </span>
 
               {apt ? (
                 <>
                   <div className="flex-1 min-w-0">
-                    <p className="font-opensans font-semibold text-base truncate" style={{ color: "#F9FAFB" }}>
+                    <p className="font-opensans font-semibold text-lg truncate" style={{ color: "#F9FAFB" }}>
                       {apt.client_name}
                     </p>
-                    <p className="text-sm font-opensans truncate" style={{ color: "#9CA3AF" }}>
+                    <p className="text-base font-opensans truncate" style={{ color: "#9CA3AF" }}>
                       {apt.service}
                     </p>
                   </div>
                   <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                     <button
                       onClick={() => openEdit(apt)}
-                      className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                      className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
                       style={{ color: "#9CA3AF" }}
                     >
-                      <Edit2 className="h-4 w-4" />
+                      <Edit2 className="h-5 w-5" />
                     </button>
                     <button
                       onClick={() => handleDelete(apt.id)}
-                      className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                      className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
                     >
-                      <Trash2 className="h-4 w-4" style={{ color: "#EF4444" }} />
+                      <Trash2 className="h-5 w-5" style={{ color: "#EF4444" }} />
                     </button>
                   </div>
                 </>
               ) : (
-                <button onClick={() => openNew(time)} className="flex-1 text-left text-sm font-opensans transition-colors" style={{ color: "#9CA3AF" }}>
+                <button onClick={() => openNew(time)} className="flex-1 text-left text-lg font-opensans font-medium transition-colors" style={{ color: "#9CA3AF" }}>
                   Livre — agendar
                 </button>
               )}
