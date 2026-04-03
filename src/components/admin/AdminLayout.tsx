@@ -82,13 +82,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="flex-1 md:ml-64 flex flex-col min-h-[100dvh]">
         {/* Mobile header */}
         <header
-          className="md:hidden flex items-center justify-between px-3 py-6 sticky top-0 z-20"
-          style={{ background: "#000000", paddingTop: "max(env(safe-area-inset-top), 24px)" }}
+          className="md:hidden flex items-center justify-between px-4 py-3 sticky top-0 z-20"
+          style={{ background: "#000000", paddingTop: "max(env(safe-area-inset-top), 16px)" }}
         >
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <button className="h-16 w-16 flex items-center justify-center rounded-2xl" style={{ background: "#1F2937" }}>
-                <Menu className="h-9 w-9" style={{ color: "#F9FAFB" }} />
+              <button className="h-10 w-10 flex items-center justify-center rounded-xl" style={{ background: "#1F2937" }}>
+                <Menu className="h-5 w-5" style={{ color: "#F9FAFB" }} />
               </button>
             </SheetTrigger>
             <SheetContent side="left" className="w-72 p-0" style={{ background: "#000000", borderColor: "transparent" }}>
@@ -96,10 +96,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </SheetContent>
           </Sheet>
 
-          <div className="flex items-center gap-5 mr-3">
-            <span className="font-montserrat font-bold text-3xl" style={{ color: "#F9FAFB" }}>Admin</span>
-            <div className="h-16 w-16 rounded-2xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
-              <Scissors className="h-10 w-10" style={{ color: "#2563EB" }} />
+          <div className="flex items-center gap-3 mr-1">
+            <div className="flex flex-col">
+              <span className="font-montserrat font-bold text-lg leading-tight" style={{ color: "#F9FAFB" }}>Admin</span>
+              <span className="font-opensans text-xs" style={{ color: "#9CA3AF" }}>Barbearia</span>
+            </div>
+            <div className="h-9 w-9 rounded-xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
+              <Scissors className="h-4 w-4" style={{ color: "#2563EB" }} />
             </div>
           </div>
         </header>
