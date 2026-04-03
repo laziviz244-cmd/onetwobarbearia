@@ -72,7 +72,7 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      {/* Stats — no borders, #111111 bg, rounded-2xl */}
+      {/* Stats */}
       <div className="grid grid-cols-3 gap-3 mb-8">
         {stats.map((stat) => (
           <div key={stat.label} className="rounded-2xl p-4 flex flex-col items-start gap-1" style={{ background: "#111111", border: "none" }}>
@@ -80,7 +80,7 @@ export default function AdminDashboard() {
             <span className="font-montserrat font-bold text-xl tabular-nums" style={{ color: "#F9FAFB" }}>
               {stat.value}
             </span>
-            <span className="text-[10px] font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
+            <span className="text-[11px] font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
           </div>
         ))}
       </div>
@@ -114,19 +114,18 @@ export default function AdminDashboard() {
                 key={apt.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-2xl p-4 overflow-hidden"
+                className="relative rounded-2xl px-4 py-4"
                 style={{
                   background: "#111111",
                   border: isCurrent ? "1px solid #2563EB" : "none",
                   opacity: isPast ? 0.5 : 1,
                 }}
               >
-                {/* Blue progress bar on top for current */}
                 {isCurrent && (
                   <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "#2563EB" }} />
                 )}
                 <div className="flex items-center gap-4">
-                  <span className="text-sm font-opensans font-semibold tabular-nums w-12 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                  <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
                     {apt.time}
                   </span>
                   <div className="flex-1 min-w-0">
@@ -135,11 +134,17 @@ export default function AdminDashboard() {
                     </p>
                     <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
                   </div>
+                  {isPast && (
+                    <span className="text-[11px] font-opensans flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                      Concluído
+                    </span>
+                  )}
                   {isCurrent && (
-                    <span className="text-[10px] font-montserrat font-bold px-3 py-1 rounded-full" style={{ color: "#FFFFFF", background: "#2563EB" }}>
+                    <span className="text-[11px] font-montserrat font-bold px-3 py-1 rounded-full flex-shrink-0" style={{ color: "#FFFFFF", background: "#2563EB" }}>
                       AGORA
                     </span>
                   )}
+                  <ChevronRight className="h-4 w-4 flex-shrink-0" style={{ color: "#9CA3AF" }} />
                 </div>
               </motion.div>
             );
