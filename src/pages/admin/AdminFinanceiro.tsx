@@ -1,10 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { Plus, Trash2, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { adminCrud } from "@/lib/admin-api";
 
 interface Payment { id: string; client_name: string; service: string; amount: number; payment_method: string; date: string; created_at: string; }
 interface Expense { id: string; description: string; amount: number; date: string; }
@@ -26,10 +26,12 @@ export default function AdminFinanceiro() {
   const [expenseForm, setExpenseForm] = useState({ description: "", amount: "", date: format(new Date(), "yyyy-MM-dd") });
 
   const loadData = useCallback(async () => {
-    const { data: p } = await (supabase as any).from("payments").select("*").order("date", { ascending: false }).order("created_at", { ascending: false }).limit(100);
-    if (p) setPayments(p);
-    const { data: e } = await (supabase as any).from("expenses").select("*").order("date", { ascending: false }).limit(100);
-    if (e) setExpenses(e);
+    const [pRes, eRes] = await Promise.all([
+      adminCrud<Payment[]>("list_payments"),
+      adminCrud<Expense[]>("list_expenses"),
+    ]);
+    if (pRes.data) setPayments(pRes.data);
+    if (eRes.data) setExpenses(eRes.data);
   }, []);
 
   useEffect(() => { loadData(); }, [loadData]);
@@ -40,8 +42,14 @@ export default function AdminFinanceiro() {
 
   const handleSavePayment = async () => {
     if (!paymentForm.client_name.trim() || !paymentForm.amount) { toast.error("Preencha cliente e valor."); return; }
-    const { error } = await (supabase as any).from("payments").insert({ client_name: paymentForm.client_name.trim(), service: paymentForm.service, amount: parseFloat(paymentForm.amount), payment_method: paymentForm.payment_method, date: paymentForm.date });
-    if (error) { toast.error("Erro ao salvar pagamento."); return; }
+    const res = await adminCrud("add_payment", {
+      client_name: paymentForm.client_name.trim(),
+      service: paymentForm.service,
+      amount: paymentForm.amount,
+      payment_method: paymentForm.payment_method,
+      date: paymentForm.date,
+    });
+    if (res.error) { toast.error("Erro ao salvar pagamento."); return; }
     toast.success("Pagamento registrado!");
     setPaymentDialogOpen(false);
     setPaymentForm({ client_name: "", service: SERVICES[0], amount: "", payment_method: "pix", date: format(new Date(), "yyyy-MM-dd") });
@@ -50,16 +58,32 @@ export default function AdminFinanceiro() {
 
   const handleSaveExpense = async () => {
     if (!expenseForm.description.trim() || !expenseForm.amount) { toast.error("Preencha descrição e valor."); return; }
-    const { error } = await (supabase as any).from("expenses").insert({ description: expenseForm.description.trim(), amount: parseFloat(expenseForm.amount), date: expenseForm.date });
-    if (error) { toast.error("Erro ao salvar despesa."); return; }
+    const res = await adminCrud("add_expense", {
+      description: expenseForm.description.trim(),
+      amount: expenseForm.amount,
+      date: expenseForm.date,
+    });
+    if (res.error) { toast.error("Erro ao salvar despesa."); return; }
     toast.success("Despesa registrada!");
     setExpenseDialogOpen(false);
     setExpenseForm({ description: "", amount: "", date: format(new Date(), "yyyy-MM-dd") });
     loadData();
   };
 
-  const handleDeletePayment = async (id: string) => { await (supabase as any).from("payments").delete().eq("id", id); toast.success("Pagamento removido."); loadData(); };
-  const handleDeleteExpense = async (id: string) => { await (supabase as any).from("expenses").delete().eq("id", id); toast.success("Despesa removida."); loadData(); };
+  const handleDeletePayment = async (id: string) => {
+    const res = await adminCrud("delete_payment", { id });
+    if (res.error) { toast.error("Erro ao remover."); return; }
+    toast.success("Pagamento removido.");
+    loadData();
+  };
+
+  const handleDeleteExpense = async (id: string) => {
+    const res = await adminCrud("delete_expense", { id });
+    if (res.error) { toast.error("Erro ao remover."); return; }
+    toast.success("Despesa removida.");
+    loadData();
+  };
+
   const methodLabel = (m: string) => PAYMENT_METHODS.find(p => p.value === m)?.label || m;
 
   const inputStyle = { background: "#0F172A", border: "1px solid #1F2937", color: "#F9FAFB" };
