@@ -97,31 +97,31 @@ export default function AdminAgenda() {
   return (
     <AdminLayout>
       <div className="max-w-[100vw] overflow-x-hidden">
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="font-montserrat font-bold text-2xl sm:text-3xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="font-montserrat font-bold text-3xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
         <button
           onClick={() => openNew()}
-          className="flex items-center gap-2.5 px-7 py-4 rounded-2xl font-montserrat font-bold text-lg text-white transition-all hover:brightness-110 active:scale-95"
+          className="flex items-center gap-3 px-8 py-5 rounded-2xl font-montserrat font-bold text-xl text-white transition-all hover:brightness-110 active:scale-95"
           style={{ background: "#2563EB" }}
         >
-          <Plus className="h-6 w-6" /> Novo
+          <Plus className="h-7 w-7" /> Novo
         </button>
       </div>
 
       {/* Date selector */}
-      <div className="flex gap-2.5 overflow-x-auto pb-3 mb-5 scrollbar-hide">
+      <div className="flex gap-3 overflow-x-auto pb-4 mb-6 scrollbar-hide">
         {dates.map((d) => (
           <button
             key={d.value}
             onClick={() => setSelectedDate(d.value)}
-            className="flex flex-col items-center min-w-[62px] py-3.5 px-4 rounded-2xl text-sm font-opensans transition-all flex-shrink-0"
+            className="flex flex-col items-center min-w-[80px] py-4 px-5 rounded-2xl font-opensans transition-all flex-shrink-0"
             style={selectedDate === d.value
               ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
               : { background: "#111111", color: "#9CA3AF" }
             }
           >
-            <span className="uppercase text-xs">{d.label}</span>
-            <span className="text-xl font-montserrat font-bold">{d.day}</span>
+            <span className="uppercase text-sm font-semibold">{d.label}</span>
+            <span className="text-2xl font-montserrat font-bold mt-1">{d.day}</span>
           </button>
         ))}
       </div>
