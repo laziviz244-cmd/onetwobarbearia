@@ -69,26 +69,26 @@ export default function AdminDashboard() {
     <AdminLayout>
       {/* Hero title */}
       <div className="mb-8">
-        <p className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>
+        <p className="text-base font-opensans" style={{ color: "#9CA3AF" }}>
           <span>{"Olá, Onetwo👋"}</span>
         </p>
-        <h1 className="font-montserrat font-bold text-2xl md:text-3xl tracking-tight mt-1" style={{ color: "#F9FAFB" }}>
-          <span>​Seus agendamentos</span><span style={{ color: "#2563EB" }}>​</span><span> hoje</span>
+        <h1 className="font-montserrat font-extrabold text-[1.75rem] md:text-3xl tracking-tight mt-1.5" style={{ color: "#F9FAFB" }}>
+          <span>Seus agendamentos</span><span style={{ color: "#2563EB" }}> </span><span>hoje</span>
         </h1>
-        <p className="text-sm font-opensans mt-1" style={{ color: "#9CA3AF" }}>
+        <p className="text-base font-opensans mt-1.5" style={{ color: "#9CA3AF" }}>
           <span>{format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}</span>
         </p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-3 gap-3 mb-10 -mx-1 px-1">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-1.5" style={{ background: "#111111", border: "none" }}>
-            <stat.icon className="h-5 w-5 mb-1" style={{ color: "#2563EB" }} />
-            <span className="font-montserrat font-bold text-xl tabular-nums" style={{ color: "#F9FAFB" }}>
+          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-2" style={{ background: "#111111", border: "none" }}>
+            <stat.icon className="h-6 w-6 mb-1" style={{ color: "#2563EB" }} />
+            <span className="font-montserrat font-bold text-2xl tabular-nums" style={{ color: "#F9FAFB" }}>
               {stat.value}
             </span>
-            <span className="text-[11px] font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
+            <span className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
           </div>
         ))}
       </div>
