@@ -96,6 +96,7 @@ export default function AdminAgenda() {
 
   return (
     <AdminLayout>
+      <div className="max-w-[100vw] overflow-x-hidden">
       <div className="flex items-center justify-between mb-4">
         <h1 className="font-montserrat font-bold text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
         <button
