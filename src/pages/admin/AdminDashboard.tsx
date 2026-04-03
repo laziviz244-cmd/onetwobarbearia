@@ -123,7 +123,7 @@ export default function AdminDashboard() {
                   key={apt.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative rounded-2xl px-4 py-4"
+                  className="relative rounded-2xl px-5 py-5"
                   style={{
                     background: "#111111",
                     border: isCurrent ? "1px solid #2563EB" : "none",
