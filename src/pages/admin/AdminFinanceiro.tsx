@@ -70,35 +70,34 @@ export default function AdminFinanceiro() {
       <h1 className="font-montserrat font-bold text-[1.75rem] tracking-tight mb-6" style={{ color: "#F9FAFB" }}>Financeiro</h1>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-3 mb-8">
-        <div className="rounded-2xl p-5 flex flex-col gap-2 min-h-[120px] justify-center" style={cardStyle}>
-          <TrendingUp className="h-7 w-7 mb-1" style={{ color: "#22C55E" }} />
-          <span className="font-montserrat font-bold text-2xl tabular-nums" style={{ color: "#F9FAFB" }}>R$ {totalPayments.toFixed(0)}</span>
-          <span className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Receitas</span>
+      <div className="flex gap-2 mb-6">
+        <div className="flex-1 rounded-2xl p-4 flex flex-col gap-1.5" style={cardStyle}>
+          <TrendingUp className="h-5 w-5" style={{ color: "#22C55E" }} />
+          <span className="font-montserrat font-bold text-lg tabular-nums" style={{ color: "#F9FAFB" }}>R$ {totalPayments.toFixed(0)}</span>
+          <span className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>Receitas</span>
         </div>
-        <div className="rounded-2xl p-5 flex flex-col gap-2 min-h-[120px] justify-center" style={cardStyle}>
-          <TrendingDown className="h-7 w-7 mb-1" style={{ color: "#EF4444" }} />
-          <span className="font-montserrat font-bold text-2xl tabular-nums" style={{ color: "#F9FAFB" }}>R$ {totalExpenses.toFixed(0)}</span>
-          <span className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Despesas</span>
+        <div className="flex-1 rounded-2xl p-4 flex flex-col gap-1.5" style={cardStyle}>
+          <TrendingDown className="h-5 w-5" style={{ color: "#EF4444" }} />
+          <span className="font-montserrat font-bold text-lg tabular-nums" style={{ color: "#F9FAFB" }}>R$ {totalExpenses.toFixed(0)}</span>
+          <span className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>Despesas</span>
         </div>
-        <div className="rounded-2xl p-5 flex flex-col gap-2 min-h-[120px] justify-center" style={cardStyle}>
-          <DollarSign className="h-7 w-7 mb-1" style={{ color: "#2563EB" }} />
-          <span className="font-montserrat font-bold text-2xl tabular-nums" style={{ color: profit >= 0 ? "#F9FAFB" : "#EF4444" }}>R$ {profit.toFixed(0)}</span>
-          <span className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Lucro</span>
+        <div className="flex-1 rounded-2xl p-4 flex flex-col gap-1.5" style={cardStyle}>
+          <DollarSign className="h-5 w-5" style={{ color: "#2563EB" }} />
+          <span className="font-montserrat font-bold text-lg tabular-nums" style={{ color: profit >= 0 ? "#F9FAFB" : "#EF4444" }}>R$ {profit.toFixed(0)}</span>
+          <span className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>Lucro</span>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-3 mb-6">
+      <div className="flex gap-2 mb-6 px-0">
         {(["pagamentos", "despesas"] as const).map(t => (
-          <button key={t} onClick={() => setTab(t)} className="px-6 py-3 rounded-2xl font-montserrat font-semibold transition-all min-h-[48px]"
-            style={tab === t ? { background: "#2563EB", color: "#FFFFFF", fontSize: "16px" } : { background: "#0F172A", color: "#9CA3AF", border: "1px solid #1F2937", fontSize: "16px" }}>
+          <button key={t} onClick={() => setTab(t)} className="flex-1 py-3 rounded-2xl font-montserrat font-semibold transition-all min-h-[48px] text-sm"
+            style={tab === t ? { background: "#2563EB", color: "#FFFFFF" } : { background: "#0F172A", color: "#9CA3AF", border: "1px solid #1F2937" }}>
             {t === "pagamentos" ? "Pagamentos" : "Despesas"}
           </button>
         ))}
-        <div className="flex-1" />
-        <button onClick={() => tab === "pagamentos" ? setPaymentDialogOpen(true) : setExpenseDialogOpen(true)} className="flex items-center gap-2 px-6 py-3 rounded-2xl font-montserrat font-bold text-white transition-all hover:brightness-110 min-h-[48px]" style={{ background: "#2563EB", fontSize: "16px" }}>
-          <Plus className="h-6 w-6" /> Novo
+        <button onClick={() => tab === "pagamentos" ? setPaymentDialogOpen(true) : setExpenseDialogOpen(true)} className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl font-montserrat font-bold text-white transition-all hover:brightness-110 min-h-[48px] text-sm" style={{ background: "#2563EB" }}>
+          <Plus className="h-5 w-5" /> Novo
         </button>
       </div>
 
