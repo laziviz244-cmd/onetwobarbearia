@@ -101,7 +101,7 @@ export default function AdminAgenda() {
         <h1 className="font-montserrat font-bold text-xl sm:text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
         <button
           onClick={() => openNew()}
-          className="flex items-center gap-2 px-4 py-3 rounded-xl font-montserrat font-semibold text-sm text-white transition-all hover:brightness-110"
+          className="flex items-center gap-2 px-5 py-3 rounded-xl font-montserrat font-semibold text-base text-white transition-all hover:brightness-110"
           style={{ background: "#2563EB" }}
         >
           <Plus className="h-4 w-4" /> Novo
