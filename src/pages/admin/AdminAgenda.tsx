@@ -96,45 +96,47 @@ export default function AdminAgenda() {
 
   return (
     <AdminLayout>
-      <div style={{ paddingRight: "20px" }}>
+      <div className="w-full max-w-full overflow-x-hidden box-border">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 mt-4">
-          <h1 className="font-montserrat font-bold text-[2rem] tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
+        <div className="flex items-center justify-between mb-5 mt-3 px-1">
+          <h1 className="font-montserrat font-bold text-2xl tracking-tight text-foreground">Agenda</h1>
           <button
             onClick={() => openNew()}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-montserrat font-bold text-sm text-white transition-all hover:brightness-110 active:scale-95 min-h-[38px] shrink-0"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-montserrat font-bold text-sm text-white transition-all hover:brightness-110 active:scale-95 shrink-0"
             style={{ background: "#2563EB" }}
           >
             <Plus className="h-4 w-4" /> Novo
           </button>
         </div>
 
-        {/* Date selector - 5 visible in a row */}
-        <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-          {dates.map((d) => (
-            <button
-              key={d.value}
-              onClick={() => setSelectedDate(d.value)}
-              className="flex flex-col items-center w-[18%] min-w-0 py-3 px-1 rounded-xl font-opensans transition-all flex-shrink-0"
-              style={selectedDate === d.value
-                ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
-                : { background: "#111111", color: "#9CA3AF" }
-              }
-            >
-              <span className="uppercase text-[10px] font-semibold tracking-wide">{d.label}</span>
-              <span className="text-xl font-montserrat font-bold mt-0.5">{d.day}</span>
-            </button>
-          ))}
+        {/* Date selector - horizontal scroll */}
+        <div className="flex gap-2 overflow-x-auto pb-3 mb-5 px-1 scrollbar-hide -mx-1">
+          <div className="flex gap-2 px-1">
+            {dates.map((d) => (
+              <button
+                key={d.value}
+                onClick={() => setSelectedDate(d.value)}
+                className="flex flex-col items-center min-w-[4.2rem] py-2.5 px-3 rounded-xl font-opensans transition-all flex-shrink-0"
+                style={selectedDate === d.value
+                  ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
+                  : { background: "#111111", color: "#9CA3AF" }
+                }
+              >
+                <span className="uppercase text-[10px] font-semibold tracking-wide leading-tight">{d.label}</span>
+                <span className="text-lg font-montserrat font-bold mt-0.5">{d.day}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Time slots */}
-        <div className="flex flex-col gap-3 w-full">
+        <div className="flex flex-col gap-2.5 w-full px-1">
           {TIME_SLOTS.map((time) => {
             const apt = appointments.find(a => a.time === time);
             return (
               <div
                 key={time}
-                className="flex items-center w-full rounded-2xl px-5 py-6 transition-all overflow-hidden min-h-[64px]"
+                className="flex items-center w-full rounded-2xl px-4 py-4 transition-all min-h-[56px]"
                 style={apt
                   ? { background: "#111111", borderLeft: "4px solid #2563EB" }
                   : { background: "#111111", opacity: 0.6 }
@@ -142,38 +144,37 @@ export default function AdminAgenda() {
                 onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
                 onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
               >
-                <span className="text-xl font-opensans font-bold tabular-nums w-[4.5rem] flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                <span className="text-base font-opensans font-bold tabular-nums w-14 flex-shrink-0 text-muted-foreground">
                   {time}
                 </span>
 
                 {apt ? (
                   <>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-opensans font-semibold text-xl truncate" style={{ color: "#F9FAFB" }}>
+                    <div className="flex-1 min-w-0 ml-2">
+                      <p className="font-opensans font-semibold text-base truncate text-foreground">
                         {apt.client_name}
                       </p>
-                      <p className="text-lg font-opensans truncate mt-0.5" style={{ color: "#9CA3AF" }}>
+                      <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">
                         {apt.service}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                    <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
                       <button
                         onClick={() => openEdit(apt)}
-                        className="min-h-[52px] min-w-[52px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
-                        style={{ color: "#9CA3AF" }}
+                        className="h-10 w-10 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
                       >
-                        <Edit2 className="h-6 w-6" />
+                        <Edit2 className="h-5 w-5 text-muted-foreground" />
                       </button>
                       <button
                         onClick={() => handleDelete(apt.id)}
-                        className="min-h-[52px] min-w-[52px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                        className="h-10 w-10 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
                       >
-                        <Trash2 className="h-6 w-6" style={{ color: "#EF4444" }} />
+                        <Trash2 className="h-5 w-5 text-destructive" />
                       </button>
                     </div>
                   </>
                 ) : (
-                  <button onClick={() => openNew(time)} className="flex-1 text-left text-xl font-opensans font-medium transition-colors min-h-[48px] flex items-center" style={{ color: "#9CA3AF" }}>
+                  <button onClick={() => openNew(time)} className="flex-1 text-left text-base font-opensans font-medium transition-colors min-h-[44px] flex items-center ml-2 text-muted-foreground">
                     Livre — agendar
                   </button>
                 )}
@@ -184,37 +185,37 @@ export default function AdminAgenda() {
 
         {/* Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-w-md mx-3" style={{ background: "#111111", borderColor: "#1F2937" }}>
+          <DialogContent className="max-w-[calc(100vw-2rem)] mx-auto" style={{ background: "#111111", borderColor: "#1F2937" }}>
             <DialogHeader>
-              <DialogTitle className="font-montserrat text-xl" style={{ color: "#F9FAFB" }}>
+              <DialogTitle className="font-montserrat text-xl text-foreground">
                 {editingId ? "Editar Agendamento" : "Novo Agendamento"}
               </DialogTitle>
             </DialogHeader>
-            <div className="flex flex-col gap-5 mt-3">
+            <div className="flex flex-col gap-4 mt-3">
               <div>
-                <label className="text-sm font-opensans mb-1.5 block" style={{ color: "#9CA3AF" }}>Nome do Cliente *</label>
-                <input value={form.client_name} onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-5 py-4 text-lg font-opensans outline-none transition-all" style={inputStyle} placeholder="Ex: João Silva" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Nome do Cliente *</label>
+                <input value={form.client_name} onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} placeholder="Ex: João Silva" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
               </div>
               <div>
-                <label className="text-sm font-opensans mb-1.5 block" style={{ color: "#9CA3AF" }}>Telefone (opcional)</label>
-                <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-5 py-4 text-lg font-opensans outline-none transition-all" style={inputStyle} placeholder="(00) 00000-0000" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Telefone (opcional)</label>
+                <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} placeholder="(00) 00000-0000" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
               </div>
               <div>
-                <label className="text-sm font-opensans mb-1.5 block" style={{ color: "#9CA3AF" }}>Serviço *</label>
-                <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-5 py-4 text-lg font-opensans outline-none transition-all" style={inputStyle}>
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Serviço *</label>
+                <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
                   {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
               <div>
-                <label className="text-sm font-opensans mb-1.5 block" style={{ color: "#9CA3AF" }}>Horário *</label>
-                <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-5 py-4 text-lg font-opensans outline-none transition-all" style={inputStyle}>
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Horário *</label>
+                <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
                   <option value="">Selecione</option>
                   {TIME_SLOTS.map(t => (
                     <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>{t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}</option>
                   ))}
                 </select>
               </div>
-              <button onClick={handleSave} className="w-full py-4.5 rounded-xl font-montserrat font-bold text-lg text-white mt-2 transition-all hover:brightness-110 min-h-[56px]" style={{ background: "#2563EB" }}>
+              <button onClick={handleSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-white mt-1 transition-all hover:brightness-110 min-h-[52px]" style={{ background: "#2563EB" }}>
                 {editingId ? "Salvar Alterações" : "Criar Agendamento"}
               </button>
             </div>
