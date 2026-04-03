@@ -80,30 +80,30 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       {/* Main content */}
       <div className="flex-1 md:ml-64 flex flex-col min-h-[100dvh]">
         {/* Mobile header — menu LEFT, logo RIGHT */}
-        <header className="md:hidden flex items-center justify-between px-5 py-4 sticky top-0 z-20" style={{ background: "#000000" }}>
+        <header className="md:hidden flex items-center justify-between px-5 py-5 pt-[env(safe-area-inset-top,20px)] sticky top-0 z-20" style={{ background: "#000000" }}>
           <div className="flex items-center gap-3">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
-                <button className="h-9 w-9 flex items-center justify-center rounded-lg" style={{ background: "#1F2937" }}>
-                  <Menu className="h-5 w-5" style={{ color: "#F9FAFB" }} />
+                <button className="h-11 w-11 flex items-center justify-center rounded-xl" style={{ background: "#1F2937" }}>
+                  <Menu className="h-6 w-6" style={{ color: "#F9FAFB" }} />
                 </button>
               </SheetTrigger>
               <SheetContent side="left" className="w-64 p-0" style={{ background: "#000000", borderColor: "transparent" }}>
                 <NavContent onNavigate={() => setOpen(false)} />
               </SheetContent>
             </Sheet>
-            <span className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{user?.name}</span>
+            <span className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>{user?.name}</span>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="font-montserrat font-bold text-base" style={{ color: "#F9FAFB" }}>Admin</span>
-            <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
-              <Scissors className="h-4 w-4" style={{ color: "#2563EB" }} />
+          <div className="flex items-center gap-3 mr-4">
+            <span className="font-montserrat font-bold text-lg" style={{ color: "#F9FAFB" }}>Admin</span>
+            <div className="h-11 w-11 rounded-xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
+              <Scissors className="h-6 w-6" style={{ color: "#2563EB" }} />
             </div>
           </div>
         </header>
 
-        <main className="flex-1 p-5 md:p-8 max-w-6xl mx-auto w-full">
+        <main className="flex-1 px-4 py-5 md:p-8 pb-24 max-w-6xl mx-auto w-full">
           {children}
         </main>
       </div>
