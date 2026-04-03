@@ -78,9 +78,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 md:ml-64">
+      <div className="flex-1 md:ml-64 flex flex-col min-h-[100dvh]">
         {/* Mobile header — menu LEFT, logo RIGHT */}
-        <header className="md:hidden flex items-center justify-between px-4 py-3 sticky top-0 z-20" style={{ background: "#000000" }}>
+        <header className="md:hidden flex items-center justify-between px-5 py-4 sticky top-0 z-20" style={{ background: "#000000" }}>
           <div className="flex items-center gap-3">
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
