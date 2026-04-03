@@ -5,7 +5,7 @@ const PUBLISHED_URL = "https://onetwobarbearia.lovable.app";
 const ADMIN_META = {
   title: "Onetwo — Acesso Administrativo",
   description: "Painel exclusivo para gestão de horários e segurança do sistema.",
-  image: `${PUBLISHED_URL}/og-admin.jpg?v=${Date.now()}`,
+  image: `${PUBLISHED_URL}/og-admin.png?v=${Date.now()}`,
 };
 
 function setMeta(property: string, content: string) {

@@ -23,14 +23,41 @@ if (isPreviewHost || isInIframe) {
   });
 }
 
-// Dynamic manifest: swap to admin manifest when on /admin routes
+// Dynamic manifest & icons: swap to admin versions when on /admin routes
 const isAdminRoute = window.location.pathname.startsWith("/admin");
-const manifestLink = document.querySelector('link[rel="manifest"]');
-if (isAdminRoute && manifestLink) {
-  manifestLink.setAttribute("href", "/manifest-admin.json");
-} else if (isAdminRoute && !manifestLink) {
-  const link = document.createElement("link");
-  link.rel = "manifest";
-  link.href = "/manifest-admin.json";
-  document.head.appendChild(link);
+
+if (isAdminRoute) {
+  // Swap manifest
+  const manifestLink = document.querySelector('link[rel="manifest"]');
+  if (manifestLink) {
+    manifestLink.setAttribute("href", "/manifest-admin.json");
+  } else {
+    const link = document.createElement("link");
+    link.rel = "manifest";
+    link.href = "/manifest-admin.json";
+    document.head.appendChild(link);
+  }
+
+  // Swap favicon
+  const favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null;
+  if (favicon) {
+    favicon.href = "/icon-admin-512x512.png";
+  } else {
+    const fi = document.createElement("link");
+    fi.rel = "icon";
+    fi.type = "image/png";
+    fi.href = "/icon-admin-512x512.png";
+    document.head.appendChild(fi);
+  }
+
+  // Swap apple-touch-icon
+  const appleIcon = document.querySelector('link[rel="apple-touch-icon"]') as HTMLLinkElement | null;
+  if (appleIcon) {
+    appleIcon.href = "/icon-admin-512x512.png";
+  } else {
+    const ai = document.createElement("link");
+    ai.rel = "apple-touch-icon";
+    ai.href = "/icon-admin-512x512.png";
+    document.head.appendChild(ai);
+  }
 }
