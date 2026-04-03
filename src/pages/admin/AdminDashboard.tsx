@@ -53,14 +53,15 @@ export default function AdminDashboard() {
   const today = getTodayDate();
 
   const loadData = useCallback(async () => {
-    const res = await adminCrud<{ appointments: Appointment[]; todayRevenue: number }>("dashboard_data", { date: today });
-    if (res.data) {
-      const appts = res.data.appointments || (res as any).appointments || [];
-      const revenue = res.data.todayRevenue ?? (res as any).todayRevenue ?? 0;
-      setAppointments(appts);
-      setTodayClients(new Set(appts.map((a: any) => a.client_name)).size);
-      setTodayRevenue(revenue);
-    }
+    const res = await adminCrud("dashboard_data", { date: today });
+    if (res.error) return;
+    // res is { appointments: [...], todayRevenue: number } directly from the edge function
+    const raw = res as any;
+    const appts: Appointment[] = raw.appointments || raw.data?.appointments || [];
+    const revenue: number = raw.todayRevenue ?? raw.data?.todayRevenue ?? 0;
+    setAppointments(appts);
+    setTodayClients(new Set(appts.map((a: Appointment) => a.client_name)).size);
+    setTodayRevenue(revenue);
   }, [today]);
 
   useEffect(() => {
