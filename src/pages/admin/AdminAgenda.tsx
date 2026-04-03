@@ -219,6 +219,7 @@ export default function AdminAgenda() {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
     </AdminLayout>
   );
 }
