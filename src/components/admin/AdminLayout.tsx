@@ -99,7 +99,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-3">
             <span className="font-montserrat font-bold text-sm" style={{ color: "#F9FAFB" }}>Admin</span>
             <div className="h-8 w-8 rounded-lg flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
-              <Scissors className="h-4 w-4" style={{ color: "#3B82F6" }} />
+              <Scissors className="h-4 w-4" style={{ color: "#2563EB" }} />
             </div>
           </div>
         </header>

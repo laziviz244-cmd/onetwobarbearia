@@ -93,7 +93,7 @@ export default function AdminDashboard() {
         <button
           onClick={() => navigate("/admin/agenda")}
           className="text-xs font-opensans font-semibold flex items-center gap-0.5"
-          style={{ color: "#3B82F6" }}
+          style={{ color: "#2563EB" }}
         >
           Ver tudo <ChevronRight className="h-3 w-3" />
         </button>
