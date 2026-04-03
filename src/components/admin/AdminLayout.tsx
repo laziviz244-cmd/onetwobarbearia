@@ -96,7 +96,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             </SheetContent>
           </Sheet>
 
-          <div className="flex items-center gap-2 pr-1">
+          <div className="flex items-center gap-2 pr-6">
             <span className="font-montserrat font-semibold text-sm tracking-wide" style={{ color: "#F9FAFB" }}>Admin</span>
             <div className="h-9 w-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
               <Scissors className="h-4 w-4 rotate-180" style={{ color: "#2563EB" }} />
