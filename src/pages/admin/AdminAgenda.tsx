@@ -96,9 +96,9 @@ export default function AdminAgenda() {
 
   return (
     <AdminLayout>
-      <div className="max-w-full overflow-x-hidden">
+      <div style={{ paddingRight: "20px" }}>
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 mt-4 pr-6">
+        <div className="flex items-center justify-between mb-6 mt-4">
           <h1 className="font-montserrat font-bold text-[2rem] tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
           <button
             onClick={() => openNew()}
