@@ -69,13 +69,13 @@ export default function AdminDashboard() {
     <AdminLayout>
       {/* Hero title */}
       <div className="mb-8">
-        <p className="text-base font-opensans" style={{ color: "#9CA3AF" }}>
+        <p className="text-lg font-opensans" style={{ color: "#9CA3AF" }}>
           <span>{"Olá, Onetwo👋"}</span>
         </p>
-        <h1 className="font-montserrat font-extrabold text-[1.75rem] md:text-3xl tracking-tight mt-1.5" style={{ color: "#F9FAFB" }}>
-          <span>Seus agendamentos</span><span style={{ color: "#2563EB" }}> </span><span>hoje</span>
+        <h1 className="font-montserrat font-extrabold text-[2rem] md:text-3xl tracking-tight mt-2" style={{ color: "#F9FAFB" }}>
+          <span>Seus agendamentos hoje</span>
         </h1>
-        <p className="text-base font-opensans mt-1.5" style={{ color: "#9CA3AF" }}>
+        <p className="text-lg font-opensans mt-2" style={{ color: "#9CA3AF" }}>
           <span>{format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}</span>
         </p>
       </div>
