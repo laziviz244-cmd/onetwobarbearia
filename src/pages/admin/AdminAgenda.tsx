@@ -96,13 +96,13 @@ export default function AdminAgenda() {
 
   return (
     <AdminLayout>
-      <div className="max-w-[100vw] overflow-x-hidden">
+      <div className="max-w-full overflow-x-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 mt-4 pr-4">
+        <div className="flex items-center justify-between mb-6 mt-4 pr-6">
           <h1 className="font-montserrat font-bold text-[2rem] tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
           <button
             onClick={() => openNew()}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-montserrat font-bold text-sm text-white transition-all hover:brightness-110 active:scale-95 min-h-[40px]"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl font-montserrat font-bold text-sm text-white transition-all hover:brightness-110 active:scale-95 min-h-[38px] shrink-0"
             style={{ background: "#2563EB" }}
           >
             <Plus className="h-4 w-4" /> Novo
