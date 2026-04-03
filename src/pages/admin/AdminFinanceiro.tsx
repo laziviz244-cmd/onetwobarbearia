@@ -89,16 +89,15 @@ export default function AdminFinanceiro() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-3 mb-6">
+      <div className="flex gap-2 mb-6 px-0">
         {(["pagamentos", "despesas"] as const).map(t => (
-          <button key={t} onClick={() => setTab(t)} className="px-6 py-3 rounded-2xl font-montserrat font-semibold transition-all min-h-[48px]"
-            style={tab === t ? { background: "#2563EB", color: "#FFFFFF", fontSize: "16px" } : { background: "#0F172A", color: "#9CA3AF", border: "1px solid #1F2937", fontSize: "16px" }}>
+          <button key={t} onClick={() => setTab(t)} className="flex-1 py-3 rounded-2xl font-montserrat font-semibold transition-all min-h-[48px] text-sm"
+            style={tab === t ? { background: "#2563EB", color: "#FFFFFF" } : { background: "#0F172A", color: "#9CA3AF", border: "1px solid #1F2937" }}>
             {t === "pagamentos" ? "Pagamentos" : "Despesas"}
           </button>
         ))}
-        <div className="flex-1" />
-        <button onClick={() => tab === "pagamentos" ? setPaymentDialogOpen(true) : setExpenseDialogOpen(true)} className="flex items-center gap-2 px-6 py-3 rounded-2xl font-montserrat font-bold text-white transition-all hover:brightness-110 min-h-[48px]" style={{ background: "#2563EB", fontSize: "16px" }}>
-          <Plus className="h-6 w-6" /> Novo
+        <button onClick={() => tab === "pagamentos" ? setPaymentDialogOpen(true) : setExpenseDialogOpen(true)} className="flex-1 flex items-center justify-center gap-1.5 py-3 rounded-2xl font-montserrat font-bold text-white transition-all hover:brightness-110 min-h-[48px] text-sm" style={{ background: "#2563EB" }}>
+          <Plus className="h-5 w-5" /> Novo
         </button>
       </div>
 
