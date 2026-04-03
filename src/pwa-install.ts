@@ -22,3 +22,15 @@ if (isPreviewHost || isInIframe) {
     registrations.forEach((r) => r.unregister());
   });
 }
+
+// Dynamic manifest: swap to admin manifest when on /admin routes
+const isAdminRoute = window.location.pathname.startsWith("/admin");
+const manifestLink = document.querySelector('link[rel="manifest"]');
+if (isAdminRoute && manifestLink) {
+  manifestLink.setAttribute("href", "/manifest-admin.json");
+} else if (isAdminRoute && !manifestLink) {
+  const link = document.createElement("link");
+  link.rel = "manifest";
+  link.href = "/manifest-admin.json";
+  document.head.appendChild(link);
+}
