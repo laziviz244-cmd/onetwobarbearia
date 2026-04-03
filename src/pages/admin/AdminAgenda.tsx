@@ -98,10 +98,10 @@ export default function AdminAgenda() {
     <AdminLayout>
       <div className="max-w-[100vw] overflow-x-hidden">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="font-montserrat font-bold text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
+        <h1 className="font-montserrat font-bold text-xl sm:text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
         <button
           onClick={() => openNew()}
-          className="flex items-center gap-2 px-4 py-3 rounded-xl font-montserrat font-semibold text-sm text-white transition-all hover:brightness-110"
+          className="flex items-center gap-2 px-5 py-3 rounded-xl font-montserrat font-semibold text-base text-white transition-all hover:brightness-110"
           style={{ background: "#2563EB" }}
         >
           <Plus className="h-4 w-4" /> Novo
@@ -114,13 +114,13 @@ export default function AdminAgenda() {
           <button
             key={d.value}
             onClick={() => setSelectedDate(d.value)}
-            className="flex flex-col items-center min-w-[48px] py-2 px-2.5 rounded-xl text-xs font-opensans transition-all flex-shrink-0"
+            className="flex flex-col items-center min-w-[52px] py-2.5 px-3 rounded-xl text-sm font-opensans transition-all flex-shrink-0"
             style={selectedDate === d.value
               ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
               : { background: "#111111", color: "#9CA3AF" }
             }
           >
-            <span className="uppercase text-[11px]">{d.label}</span>
+            <span className="uppercase text-xs">{d.label}</span>
             <span className="text-lg font-montserrat font-bold">{d.day}</span>
           </button>
         ))}
@@ -141,17 +141,17 @@ export default function AdminAgenda() {
               onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
               onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
             >
-              <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+              <span className="text-base font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
                 {time}
               </span>
 
               {apt ? (
                 <>
                   <div className="flex-1 min-w-0">
-                    <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
+                    <p className="font-opensans font-semibold text-base truncate" style={{ color: "#F9FAFB" }}>
                       {apt.client_name}
                     </p>
-                    <p className="text-xs font-opensans truncate" style={{ color: "#9CA3AF" }}>
+                    <p className="text-sm font-opensans truncate" style={{ color: "#9CA3AF" }}>
                       {apt.service}
                     </p>
                   </div>
@@ -172,7 +172,7 @@ export default function AdminAgenda() {
                   </div>
                 </>
               ) : (
-                <button onClick={() => openNew(time)} className="flex-1 text-left text-xs font-opensans transition-colors" style={{ color: "#9CA3AF" }}>
+                <button onClick={() => openNew(time)} className="flex-1 text-left text-sm font-opensans transition-colors" style={{ color: "#9CA3AF" }}>
                   Livre — agendar
                 </button>
               )}
