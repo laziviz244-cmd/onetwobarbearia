@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Calendar, Users, DollarSign, Clock, ChevronRight, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
 interface Appointment {
