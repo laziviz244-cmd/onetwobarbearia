@@ -30,6 +30,20 @@ function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+// Redirect to admin if barber session exists and user lands on client home
+function SmartRedirect() {
+  const stored = localStorage.getItem("barber_admin_session");
+  if (stored) {
+    try {
+      const parsed = JSON.parse(atob(stored));
+      if (parsed.exp > Date.now()) {
+        return <Navigate to="/admin" replace />;
+      }
+    } catch { /* invalid session, continue to welcome */ }
+  }
+  return <WelcomePage />;
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -38,7 +52,7 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <Routes>
-            <Route path="/" element={<WelcomePage />} />
+            <Route path="/" element={<SmartRedirect />} />
             <Route path="/vitrine" element={<WelcomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/cliente" element={<ClientHomePage />} />

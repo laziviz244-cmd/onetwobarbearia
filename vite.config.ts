@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => ({
       },
       includeAssets: ["placeholder.svg", "robots.txt", "icon-192x192.png", "icon-512x512.png"],
       manifest: {
+        id: "/cliente",
         name: "OneTwo Barbearia",
         short_name: "OneTwo",
         description: "Barbearia premium - Agende seu corte",
@@ -30,6 +31,7 @@ export default defineConfig(({ mode }) => ({
         background_color: "#000000",
         display: "standalone",
         start_url: "/cliente",
+        scope: "/",
         icons: [
           {
             src: "/icon-192x192.png",
