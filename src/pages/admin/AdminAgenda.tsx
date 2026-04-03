@@ -158,18 +158,18 @@ export default function AdminAgenda() {
                         {apt.service}
                       </p>
                     </div>
-                    <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
+                    <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                       <button
                         onClick={() => openEdit(apt)}
-                        className="h-10 w-10 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
                       >
-                        <Edit2 className="h-5 w-5 text-muted-foreground" />
+                        <Edit2 className="h-[22px] w-[22px]" style={{ color: "#9CA3AF" }} strokeWidth={1.8} />
                       </button>
                       <button
                         onClick={() => handleDelete(apt.id)}
-                        className="h-10 w-10 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
                       >
-                        <Trash2 className="h-5 w-5 text-destructive" />
+                        <Trash2 className="h-[22px] w-[22px]" style={{ color: "#EF4444" }} strokeWidth={1.8} />
                       </button>
                     </div>
                   </>
