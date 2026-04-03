@@ -134,14 +134,14 @@ export default function AdminDashboard() {
                     <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "#2563EB" }} />
                   )}
                   <div className="flex items-center gap-4">
-                    <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                    <span className="text-lg font-opensans font-bold tabular-nums w-16 flex-shrink-0" style={{ color: "#9CA3AF" }}>
                       {apt.time}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
+                      <p className="font-opensans font-semibold text-lg truncate" style={{ color: "#F9FAFB" }}>
                         {apt.client_name}
                       </p>
-                      <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
+                      <p className="text-base font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
                     </div>
                     <div className="flex flex-col items-end gap-2 flex-shrink-0">
                       <div className="flex items-center gap-1">
