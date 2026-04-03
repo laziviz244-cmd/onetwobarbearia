@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield, Loader2, KeyRound } from "lucide-react";
 import { toast } from "sonner";
+import AdminHeadMeta from "@/components/AdminHeadMeta";
 
 const ROYAL_BLUE = "#1a3a8f";
 
