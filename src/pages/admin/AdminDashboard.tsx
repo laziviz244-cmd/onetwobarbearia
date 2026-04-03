@@ -114,55 +114,69 @@ export default function AdminDashboard() {
             <p className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Nenhum agendamento hoje</p>
           </div>
         ) : (
-          appointments.map((apt) => {
-            const isPast = apt.time < now;
-            const isCurrent = !isPast && appointments.filter(a => a.time <= now).length > 0 && apt.time === appointments.filter(a => a.time >= now)[0]?.time;
-            return (
-              <motion.div
-                key={apt.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-2xl px-4 py-4"
-                style={{
-                  background: "#111111",
-                  border: isCurrent ? "1px solid #2563EB" : "none",
-                  opacity: isPast ? 0.5 : 1,
-                }}
-              >
-                {isCurrent && (
-                  <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "#2563EB" }} />
-                )}
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
-                    {apt.time}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
-                      {apt.client_name}
-                    </p>
-                    <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
-                  </div>
-                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
-                    <div className="flex items-center gap-1">
-                      {isPast && (
-                        <span className="text-[11px] font-opensans" style={{ color: "#9CA3AF" }}>Concluído</span>
-                      )}
-                      {isCurrent && (
-                        <span className="text-[11px] font-montserrat font-bold px-3 py-1 rounded-full" style={{ color: "#FFFFFF", background: "#2563EB" }}>AGORA</span>
-                      )}
-                      <ChevronRight className="h-4 w-4" style={{ color: "#9CA3AF" }} />
+          <>
+            {appointments.map((apt) => {
+              const isPast = apt.time < now;
+              const isCurrent = !isPast && appointments.filter(a => a.time <= now).length > 0 && apt.time === appointments.filter(a => a.time >= now)[0]?.time;
+              return (
+                <motion.div
+                  key={apt.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="relative rounded-2xl px-4 py-4"
+                  style={{
+                    background: "#111111",
+                    border: isCurrent ? "1px solid #2563EB" : "none",
+                    opacity: isPast ? 0.5 : 1,
+                  }}
+                >
+                  {isCurrent && (
+                    <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "#2563EB" }} />
+                  )}
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                      {apt.time}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
+                        {apt.client_name}
+                      </p>
+                      <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
                     </div>
-                    <button
-                      onClick={() => handleDelete(apt.id)}
-                      className="p-1.5 rounded-lg transition-opacity hover:opacity-70"
-                    >
-                      <Trash2 className="h-4 w-4" strokeWidth={1.5} style={{ color: "#FF0000" }} />
-                    </button>
+                    <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                      <div className="flex items-center gap-1">
+                        {isPast && (
+                          <span className="text-[11px] font-opensans" style={{ color: "#9CA3AF" }}>Concluído</span>
+                        )}
+                        {isCurrent && (
+                          <span className="text-[11px] font-montserrat font-bold px-3 py-1 rounded-full" style={{ color: "#FFFFFF", background: "#2563EB" }}>AGORA</span>
+                        )}
+                        <ChevronRight className="h-4 w-4" style={{ color: "#9CA3AF" }} />
+                      </div>
+                      <button
+                        onClick={() => handleDelete(apt.id)}
+                        className="p-1.5 rounded-lg transition-opacity hover:opacity-70"
+                      >
+                        <Trash2 className="h-4 w-4" strokeWidth={1.5} style={{ color: "#FF0000" }} />
+                      </button>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            );
-          })
+                </motion.div>
+              );
+            })}
+
+            {/* Adicionar agendamento manual */}
+            <button
+              onClick={() => navigate("/admin/agenda")}
+              className="flex items-center gap-3 rounded-2xl px-4 py-4 w-full text-left transition-opacity hover:opacity-80"
+              style={{ background: "#111111" }}
+            >
+              <Clock className="h-5 w-5 flex-shrink-0" style={{ color: "#1a3a8f" }} />
+              <span className="font-opensans font-bold text-sm" style={{ color: "#F9FAFB" }}>
+                Adicionar agendamento manual
+              </span>
+            </button>
+          </>
         )}
       </div>
     </AdminLayout>
