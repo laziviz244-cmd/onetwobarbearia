@@ -6,6 +6,7 @@ import { ptBR } from "date-fns/locale";
 import { Calendar, Users, DollarSign, Clock, ChevronRight, Edit2, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { adminCrud } from "@/lib/admin-api";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -41,59 +42,79 @@ function getTodayDate(): string {
   return `${y}-${m}-${d}`;
 }
 
+async function fetchDashboardData(today: string) {
+  const res = await adminCrud("dashboard_data", { date: today });
+  if (res.error) throw new Error(res.error);
+  const raw = res as any;
+  const appointments: Appointment[] = raw.appointments || raw.data?.appointments || [];
+  const todayRevenue: number = raw.todayRevenue ?? raw.data?.todayRevenue ?? 0;
+  return { appointments, todayRevenue };
+}
+
 export default function AdminDashboard() {
   const { user } = useAdminAuth();
   const navigate = useNavigate();
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [todayRevenue, setTodayRevenue] = useState(0);
-  const [todayClients, setTodayClients] = useState(0);
+  const queryClient = useQueryClient();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editingApt, setEditingApt] = useState<Appointment | null>(null);
   const [editForm, setEditForm] = useState({ client_name: "", service: "", time: "", phone: "" });
   const today = getTodayDate();
 
-  const loadData = useCallback(async () => {
-    const res = await adminCrud("dashboard_data", { date: today });
-    if (res.error) return;
-    // res is { appointments: [...], todayRevenue: number } directly from the edge function
-    const raw = res as any;
-    const appts: Appointment[] = raw.appointments || raw.data?.appointments || [];
-    const revenue: number = raw.todayRevenue ?? raw.data?.todayRevenue ?? 0;
-    setAppointments(appts);
-    setTodayClients(new Set(appts.map((a: Appointment) => a.client_name)).size);
-    setTodayRevenue(revenue);
-  }, [today]);
+  const { data, isLoading } = useQuery({
+    queryKey: ["admin-dashboard", today],
+    queryFn: () => fetchDashboardData(today),
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+  });
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const appointments = data?.appointments ?? [];
+  const todayRevenue = data?.todayRevenue ?? 0;
+  const todayClients = new Set(appointments.map((a) => a.client_name)).size;
 
-  // Realtime subscription
+  // Realtime subscription with reconnection
   useEffect(() => {
     const channel = supabase
-      .channel("dashboard-appointments")
+      .channel("dashboard-appointments-rt")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "appointments" },
         () => {
-          loadData();
+          queryClient.invalidateQueries({ queryKey: ["admin-dashboard", today] });
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR") {
+          // Reconnect on error
+          setTimeout(() => {
+            supabase.removeChannel(channel);
+            // Re-subscribing will happen on next render cycle
+            queryClient.invalidateQueries({ queryKey: ["admin-dashboard", today] });
+          }, 1000);
+        }
+      });
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [loadData]);
+  }, [queryClient, today]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
+    // Optimistic: remove from cache
+    queryClient.setQueryData(["admin-dashboard", today], (old: any) => {
+      if (!old) return old;
+      return {
+        ...old,
+        appointments: old.appointments.filter((a: Appointment) => a.id !== deleteId),
+      };
+    });
     const res = await adminCrud("delete_appointment", { id: deleteId });
     if (res.error) {
       toast.error("Erro ao excluir agendamento.");
+      queryClient.invalidateQueries({ queryKey: ["admin-dashboard", today] });
     } else {
       toast.success("Agendamento excluído!");
-      loadData();
     }
     setDeleteId(null);
   };
@@ -109,6 +130,17 @@ export default function AdminDashboard() {
       toast.error("Preencha nome e horário.");
       return;
     }
+    // Optimistic update
+    const updatedApt = { ...editingApt, ...editForm, client_name: editForm.client_name.trim() };
+    queryClient.setQueryData(["admin-dashboard", today], (old: any) => {
+      if (!old) return old;
+      return {
+        ...old,
+        appointments: old.appointments.map((a: Appointment) => a.id === editingApt.id ? updatedApt : a),
+      };
+    });
+    setEditingApt(null);
+
     const res = await adminCrud("update_appointment", {
       id: editingApt.id,
       client_name: editForm.client_name.trim(),
@@ -118,11 +150,10 @@ export default function AdminDashboard() {
     });
     if (res.error) {
       toast.error("Erro ao atualizar.");
+      queryClient.invalidateQueries({ queryKey: ["admin-dashboard", today] });
     } else {
       toast.success("Agendamento atualizado!");
-      loadData();
     }
-    setEditingApt(null);
   };
 
   const stats = [
@@ -132,19 +163,19 @@ export default function AdminDashboard() {
   ];
 
   const now = format(new Date(), "HH:mm");
-  const inputStyle = { background: "#111111", border: "1px solid #1F2937", color: "#F9FAFB" };
+  const inputStyle = { background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", color: "hsl(var(--foreground))" };
 
   return (
     <AdminLayout>
       {/* Hero title */}
       <div className="mb-10">
-        <p className="text-xl font-opensans" style={{ color: "#9CA3AF" }}>
+        <p className="text-xl font-opensans text-muted-foreground">
           {"Olá, Onetwo👋"}
         </p>
-        <h1 className="font-montserrat font-extrabold text-[2.5rem] leading-tight tracking-tight mt-3" style={{ color: "#F9FAFB" }}>
+        <h1 className="font-montserrat font-extrabold text-[2.5rem] leading-tight tracking-tight mt-3 text-foreground">
           Seus agendamentos 
         </h1>
-        <p className="text-xl font-opensans mt-3" style={{ color: "#9CA3AF" }}>
+        <p className="text-xl font-opensans mt-3 text-muted-foreground">
           {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
         </p>
       </div>
@@ -152,35 +183,39 @@ export default function AdminDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3 mb-10">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-2" style={{ background: "#111111" }}>
-            <stat.icon className="h-8 w-8 mb-1" style={{ color: "#2563EB" }} />
-            <span className="font-montserrat font-bold text-[1.75rem] tabular-nums leading-tight" style={{ color: "#F9FAFB" }}>
+          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-2 bg-card">
+            <stat.icon className="h-8 w-8 mb-1 text-primary" />
+            <span className="font-montserrat font-bold text-[1.75rem] tabular-nums leading-tight text-foreground">
               {stat.value}
             </span>
-            <span className="text-base font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
+            <span className="text-base font-opensans text-muted-foreground">{stat.sub}</span>
           </div>
         ))}
       </div>
 
       {/* Today's appointments */}
       <div className="flex items-center justify-between mb-5">
-        <h2 className="font-montserrat font-bold text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>
+        <h2 className="font-montserrat font-bold text-2xl tracking-tight text-foreground">
           Agenda do dia
         </h2>
         <button
           onClick={() => navigate("/admin/agenda")}
-          className="text-base font-opensans font-semibold flex items-center gap-1 min-h-[48px]"
-          style={{ color: "#2563EB" }}
+          className="text-base font-opensans font-semibold flex items-center gap-1 min-h-[48px] text-primary"
         >
           Ver tudo <ChevronRight className="h-5 w-5" />
         </button>
       </div>
 
       <div className="flex flex-col gap-4 pb-8">
-        {appointments.length === 0 ? (
-          <div className="rounded-2xl p-14 text-center" style={{ background: "#111111" }}>
-            <Clock className="h-12 w-12 mx-auto mb-3" style={{ color: "#9CA3AF" }} />
-            <p className="text-xl font-opensans" style={{ color: "#9CA3AF" }}>Nenhum agendamento hoje</p>
+        {isLoading ? (
+          <div className="rounded-2xl p-14 text-center bg-card">
+            <Clock className="h-12 w-12 mx-auto mb-3 text-muted-foreground animate-pulse" />
+            <p className="text-xl font-opensans text-muted-foreground">Carregando...</p>
+          </div>
+        ) : appointments.length === 0 ? (
+          <div className="rounded-2xl p-14 text-center bg-card">
+            <Clock className="h-12 w-12 mx-auto mb-3 text-muted-foreground" />
+            <p className="text-xl font-opensans text-muted-foreground">Nenhum agendamento hoje</p>
           </div>
         ) : (
           <>
@@ -192,39 +227,34 @@ export default function AdminDashboard() {
                   key={apt.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative rounded-2xl px-5 py-6"
-                  style={{
-                    background: "#111111",
-                    border: isCurrent ? "1px solid #2563EB" : "none",
-                    opacity: isPast ? 0.5 : 1,
-                  }}
+                  className={`relative rounded-2xl px-5 py-6 bg-card ${isCurrent ? "border border-primary" : ""} ${isPast ? "opacity-50" : ""}`}
                 >
                   {isCurrent && (
-                    <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "#2563EB" }} />
+                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-primary rounded-t-2xl" />
                   )}
                   <div className="flex items-center gap-3">
-                    <span className="text-lg font-opensans font-bold tabular-nums w-[3.5rem] flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                    <span className="text-lg font-opensans font-bold tabular-nums w-[3.5rem] flex-shrink-0 text-muted-foreground">
                       {apt.time}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-opensans font-semibold text-lg truncate" style={{ color: "#F9FAFB" }}>
+                      <p className="font-opensans font-semibold text-lg truncate text-foreground">
                         {apt.client_name}
                       </p>
-                      <p className="text-base font-opensans mt-0.5" style={{ color: "#9CA3AF" }}>{apt.service}</p>
+                      <p className="text-base font-opensans mt-0.5 text-muted-foreground">{apt.service}</p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
                       {isCurrent && (
-                        <span className="text-xs font-montserrat font-bold px-3 py-1 rounded-full mr-1" style={{ color: "#FFFFFF", background: "#2563EB" }}>AGORA</span>
+                        <span className="text-xs font-montserrat font-bold px-3 py-1 rounded-full mr-1 text-primary-foreground bg-primary">AGORA</span>
                       )}
                       <button
                         onClick={() => openEdit(apt)}
-                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-accent"
                       >
                         <Edit2 className="h-[20px] w-[20px] text-primary" strokeWidth={1.8} />
                       </button>
                       <button
                         onClick={() => setDeleteId(apt.id)}
-                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-accent"
                       >
                         <Trash2 className="h-[20px] w-[20px] text-destructive" strokeWidth={1.8} />
                       </button>
@@ -236,11 +266,10 @@ export default function AdminDashboard() {
 
             <button
               onClick={() => navigate("/admin/agenda")}
-              className="flex items-center gap-4 rounded-2xl px-5 py-5 w-full text-left transition-opacity hover:opacity-80 min-h-[56px]"
-              style={{ background: "#111111" }}
+              className="flex items-center gap-4 rounded-2xl px-5 py-5 w-full text-left transition-opacity hover:opacity-80 min-h-[56px] bg-card"
             >
-              <Clock className="h-7 w-7 flex-shrink-0" style={{ color: "#1a3a8f" }} />
-              <span className="font-opensans font-bold text-lg" style={{ color: "#F9FAFB" }}>
+              <Clock className="h-7 w-7 flex-shrink-0 text-primary" />
+              <span className="font-opensans font-bold text-lg text-foreground">
                 Adicionar agendamento manual
               </span>
             </button>
@@ -250,7 +279,7 @@ export default function AdminDashboard() {
 
       {/* Delete confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => { if (!open) setDeleteId(null); }}>
-        <AlertDialogContent style={{ background: "#111111", borderColor: "#1F2937" }}>
+        <AlertDialogContent className="bg-card border-border">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-montserrat text-foreground">Excluir agendamento?</AlertDialogTitle>
             <AlertDialogDescription>
@@ -268,7 +297,7 @@ export default function AdminDashboard() {
 
       {/* Edit dialog */}
       <Dialog open={!!editingApt} onOpenChange={(open) => { if (!open) setEditingApt(null); }}>
-        <DialogContent className="max-w-[calc(100vw-2rem)] mx-auto" style={{ background: "#111111", borderColor: "#1F2937" }}>
+        <DialogContent className="max-w-[calc(100vw-2rem)] mx-auto bg-card border-border">
           <DialogHeader>
             <DialogTitle className="font-montserrat text-xl text-foreground">Editar Agendamento</DialogTitle>
           </DialogHeader>
@@ -291,7 +320,7 @@ export default function AdminDashboard() {
               <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Horário *</label>
               <input value={editForm.time} onChange={(e) => setEditForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} placeholder="HH:MM" />
             </div>
-            <button onClick={handleEditSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-white mt-1 transition-all hover:brightness-110 min-h-[52px]" style={{ background: "#2563EB" }}>
+            <button onClick={handleEditSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-primary-foreground mt-1 transition-all hover:brightness-110 min-h-[52px] bg-primary">
               Salvar Alterações
             </button>
           </div>
