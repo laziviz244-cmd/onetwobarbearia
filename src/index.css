@@ -61,6 +61,14 @@
   body {
     @apply bg-background text-foreground font-opensans antialiased;
     font-feature-settings: "cv11", "ss01";
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   h1, h2, h3, h4, h5, h6 {
