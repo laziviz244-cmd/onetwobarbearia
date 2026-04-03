@@ -120,7 +120,7 @@ export default function AdminAgenda() {
               : { background: "#111111", color: "#9CA3AF" }
             }
           >
-            <span className="uppercase text-[11px]">{d.label}</span>
+            <span className="uppercase text-xs">{d.label}</span>
             <span className="text-lg font-montserrat font-bold">{d.day}</span>
           </button>
         ))}
