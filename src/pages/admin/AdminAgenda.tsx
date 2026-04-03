@@ -3,7 +3,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Plus, Edit2, Trash2, Phone } from "lucide-react";
+import { Plus, Edit2, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
@@ -100,7 +100,7 @@ export default function AdminAgenda() {
         <h1 className="font-montserrat font-bold text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
         <button
           onClick={() => openNew()}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-montserrat font-semibold text-sm text-white transition-all hover:brightness-110"
+          className="flex items-center gap-2 px-4 py-3 rounded-xl font-montserrat font-semibold text-sm text-white transition-all hover:brightness-110"
           style={{ background: "#2563EB" }}
         >
           <Plus className="h-4 w-4" /> Novo
@@ -119,20 +119,20 @@ export default function AdminAgenda() {
               : { background: "#111111", color: "#9CA3AF" }
             }
           >
-            <span className="uppercase text-[10px]">{d.label}</span>
+            <span className="uppercase text-[11px]">{d.label}</span>
             <span className="text-lg font-montserrat font-bold">{d.day}</span>
           </button>
         ))}
       </div>
 
-      {/* Time slots — compact, no horizontal scroll */}
-      <div className="flex flex-col gap-1.5 overflow-hidden w-full">
+      {/* Time slots */}
+      <div className="flex flex-col gap-2 w-full">
         {TIME_SLOTS.map((time) => {
           const apt = appointments.find(a => a.time === time);
           return (
             <div
               key={time}
-              className="flex items-center gap-1.5 sm:gap-2 rounded-2xl p-2 sm:p-3 transition-all overflow-hidden w-full max-w-full"
+              className="flex items-center w-full rounded-2xl px-3 py-3 md:px-4 md:py-4 transition-all"
               style={apt
                 ? { background: "#111111", borderLeft: "3px solid #2563EB" }
                 : { background: "#111111", opacity: 0.6 }
@@ -140,27 +140,38 @@ export default function AdminAgenda() {
               onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
               onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
             >
-              <span className="text-xs sm:text-sm font-opensans font-semibold tabular-nums w-10 sm:w-11 flex-shrink-0" style={{ color: "#9CA3AF" }}>{time}</span>
+              <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                {time}
+              </span>
 
               {apt ? (
                 <>
-                  <div className="flex-1 min-w-0 overflow-hidden">
-                    <p className="font-opensans font-semibold text-xs sm:text-sm truncate" style={{ color: "#F9FAFB" }}>{apt.client_name}</p>
-                    <p className="text-[10px] sm:text-xs font-opensans truncate" style={{ color: "#9CA3AF" }}>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
+                      {apt.client_name}
+                    </p>
+                    <p className="text-xs font-opensans truncate" style={{ color: "#9CA3AF" }}>
                       {apt.service}
                     </p>
                   </div>
-                  <div className="flex items-center gap-0.5 flex-shrink-0">
-                    <button onClick={() => openEdit(apt)} className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center rounded-lg transition-colors" style={{ color: "#9CA3AF" }}>
-                      <Edit2 className="h-3.5 w-3.5" />
+                  <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                    <button
+                      onClick={() => openEdit(apt)}
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                      style={{ color: "#9CA3AF" }}
+                    >
+                      <Edit2 className="h-4 w-4" />
                     </button>
-                    <button onClick={() => handleDelete(apt.id)} className="h-7 w-7 sm:h-8 sm:w-8 flex items-center justify-center rounded-lg transition-colors">
-                      <Trash2 className="h-3.5 w-3.5" style={{ color: "#EF4444" }} />
+                    <button
+                      onClick={() => handleDelete(apt.id)}
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
+                    >
+                      <Trash2 className="h-4 w-4" style={{ color: "#EF4444" }} />
                     </button>
                   </div>
                 </>
               ) : (
-                <button onClick={() => openNew(time)} className="flex-1 text-left text-[10px] sm:text-xs font-opensans transition-colors truncate" style={{ color: "#9CA3AF" }}>
+                <button onClick={() => openNew(time)} className="flex-1 text-left text-xs font-opensans transition-colors" style={{ color: "#9CA3AF" }}>
                   Livre — agendar
                 </button>
               )}
@@ -171,7 +182,7 @@ export default function AdminAgenda() {
 
       {/* Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md" style={{ background: "#111111", borderColor: "#1F2937" }}>
+        <DialogContent className="max-w-md mx-4" style={{ background: "#111111", borderColor: "#1F2937" }}>
           <DialogHeader>
             <DialogTitle className="font-montserrat" style={{ color: "#F9FAFB" }}>
               {editingId ? "Editar Agendamento" : "Novo Agendamento"}
@@ -180,28 +191,28 @@ export default function AdminAgenda() {
           <div className="flex flex-col gap-4 mt-2">
             <div>
               <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Nome do Cliente *</label>
-              <input value={form.client_name} onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none transition-all" style={inputStyle} placeholder="Ex: João Silva" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
+              <input value={form.client_name} onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all" style={inputStyle} placeholder="Ex: João Silva" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
             </div>
             <div>
               <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Telefone (opcional)</label>
-              <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none transition-all" style={inputStyle} placeholder="(00) 00000-0000" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
+              <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all" style={inputStyle} placeholder="(00) 00000-0000" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
             </div>
             <div>
               <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Serviço *</label>
-              <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none transition-all" style={inputStyle}>
+              <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all" style={inputStyle}>
                 {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div>
               <label className="text-xs font-opensans mb-1 block" style={{ color: "#9CA3AF" }}>Horário *</label>
-              <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3 text-sm font-opensans outline-none transition-all" style={inputStyle}>
+              <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-sm font-opensans outline-none transition-all" style={inputStyle}>
                 <option value="">Selecione</option>
                 {TIME_SLOTS.map(t => (
                   <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>{t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}</option>
                 ))}
               </select>
             </div>
-            <button onClick={handleSave} className="w-full py-3 rounded-xl font-montserrat font-bold text-sm text-white mt-2 transition-all hover:brightness-110" style={{ background: "#2563EB" }}>
+            <button onClick={handleSave} className="w-full py-3.5 rounded-xl font-montserrat font-bold text-sm text-white mt-2 transition-all hover:brightness-110" style={{ background: "#2563EB" }}>
               {editingId ? "Salvar Alterações" : "Criar Agendamento"}
             </button>
           </div>
