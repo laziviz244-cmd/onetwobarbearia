@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Calendar, Users, DollarSign, Clock, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { adminCrud } from "@/lib/admin-api";
 
 interface Appointment {
   id: string;
@@ -30,24 +29,15 @@ export default function AdminDashboard() {
     loadData();
   }, []);
 
-
   const loadData = async () => {
-    const { data: appts } = await supabase
-      .from("appointments")
-      .select("*")
-      .eq("date", today)
-      .order("time");
-    if (appts) {
-      setAppointments(appts as Appointment[]);
+    const res = await adminCrud<{ appointments: Appointment[]; todayRevenue: number }>("dashboard_data", { date: today });
+    if (res.data) {
+      // Handle both response shapes (direct data or nested)
+      const appts = res.data.appointments || (res as any).appointments || [];
+      const revenue = res.data.todayRevenue ?? (res as any).todayRevenue ?? 0;
+      setAppointments(appts);
       setTodayClients(new Set(appts.map((a: any) => a.client_name)).size);
-    }
-
-    const { data: payments } = await (supabase as any)
-      .from("payments")
-      .select("amount")
-      .eq("date", today);
-    if (payments) {
-      setTodayRevenue(payments.reduce((sum: number, p: any) => sum + Number(p.amount), 0));
+      setTodayRevenue(revenue);
     }
   };
 

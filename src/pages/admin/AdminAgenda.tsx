@@ -1,12 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { supabase } from "@/integrations/supabase/client";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { adminCrud } from "@/lib/admin-api";
 
 interface Appointment {
   id: string;
@@ -38,18 +38,13 @@ export default function AdminAgenda() {
   const dateLabel = format(new Date(selectedDate + "T12:00:00"), "EEE, d MMM", { locale: ptBR });
 
   const loadAppointments = useCallback(async () => {
-    const { data } = await supabase.from("appointments").select("*").eq("date", selectedDate).order("time");
-    if (data) setAppointments(data as Appointment[]);
+    const res = await adminCrud<Appointment[]>("list_appointments", { date: selectedDate });
+    if (res.data) setAppointments(res.data);
   }, [selectedDate]);
 
   useEffect(() => {
     loadAppointments();
-    const channel = supabase
-      .channel(`admin-agenda-${selectedDate}`)
-      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => { loadAppointments(); })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [loadAppointments, selectedDate]);
+  }, [loadAppointments]);
 
   const occupiedTimes = new Set(appointments.map(a => a.time));
 
@@ -70,12 +65,27 @@ export default function AdminAgenda() {
     if (!editingId && occupiedTimes.has(form.time)) { toast.error("Esse horário já está ocupado."); return; }
 
     if (editingId) {
-      const { error } = await supabase.from("appointments").update({ client_name: form.client_name.trim(), service: form.service, time: form.time, phone: form.phone || null } as any).eq("id", editingId);
-      if (error) { toast.error("Erro ao atualizar."); return; }
+      const res = await adminCrud("update_appointment", {
+        id: editingId,
+        client_name: form.client_name.trim(),
+        service: form.service,
+        time: form.time,
+        phone: form.phone || null,
+      });
+      if (res.error) { toast.error("Erro ao atualizar."); return; }
       toast.success("Agendamento atualizado!");
     } else {
-      const { error } = await supabase.from("appointments").insert({ client_name: form.client_name.trim(), service: form.service, date: selectedDate, date_label: dateLabel, time: form.time, status: "Confirmado", user_id: form.client_name.trim(), phone: form.phone || null } as any);
-      if (error) { toast.error("Erro ao salvar."); return; }
+      const res = await adminCrud("add_appointment", {
+        client_name: form.client_name.trim(),
+        service: form.service,
+        date: selectedDate,
+        date_label: dateLabel,
+        time: form.time,
+        status: "Confirmado",
+        user_id: form.client_name.trim(),
+        phone: form.phone || null,
+      });
+      if (res.error) { toast.error("Erro ao salvar."); return; }
       toast.success("Agendamento criado!");
     }
     setDialogOpen(false);
@@ -83,8 +93,8 @@ export default function AdminAgenda() {
   };
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("appointments").delete().eq("id", id);
-    if (error) { toast.error("Erro ao cancelar."); return; }
+    const res = await adminCrud("delete_appointment", { id });
+    if (res.error) { toast.error("Erro ao cancelar."); return; }
     toast.success("Agendamento cancelado!");
     loadAppointments();
   };
@@ -99,7 +109,7 @@ export default function AdminAgenda() {
   return (
     <AdminLayout>
       <div className="w-full max-w-full overflow-x-hidden box-border">
-        {/* Top bar with back button */}
+        {/* Top bar */}
         <div className="flex items-center justify-between mb-4 mt-3 px-1">
           <h1 className="font-montserrat font-bold text-2xl tracking-tight text-foreground">Agenda</h1>
           <div className="flex items-center gap-3">
@@ -118,7 +128,7 @@ export default function AdminAgenda() {
           </div>
         </div>
 
-        {/* Date selector - horizontal scroll */}
+        {/* Date selector */}
         <div className="flex gap-2 overflow-x-auto pb-3 mb-5 px-1 scrollbar-hide -mx-1">
           <div className="flex gap-2 px-1">
             {dates.map((d) => (
