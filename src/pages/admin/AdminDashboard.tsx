@@ -81,14 +81,14 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-10 -mx-1 px-1">
+      <div className="grid grid-cols-3 gap-4 mb-10">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-2" style={{ background: "#111111", border: "none" }}>
-            <stat.icon className="h-6 w-6 mb-1" style={{ color: "#2563EB" }} />
+          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-3" style={{ background: "#111111", border: "none" }}>
+            <stat.icon className="h-7 w-7 mb-1" style={{ color: "#2563EB" }} />
             <span className="font-montserrat font-bold text-2xl tabular-nums" style={{ color: "#F9FAFB" }}>
               {stat.value}
             </span>
-            <span className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
+            <span className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
           </div>
         ))}
       </div>
