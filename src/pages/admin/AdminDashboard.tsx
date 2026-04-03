@@ -73,7 +73,7 @@ export default function AdminDashboard() {
           {"Olá, Onetwo👋"}
         </p>
         <h1 className="font-montserrat font-extrabold text-[2.5rem] leading-tight tracking-tight mt-3" style={{ color: "#F9FAFB" }}>
-          Seus agendamentos hoje
+          Seus agendamentos 
         </h1>
         <p className="text-xl font-opensans mt-3" style={{ color: "#9CA3AF" }}>
           {format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}
