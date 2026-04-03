@@ -69,26 +69,26 @@ export default function AdminDashboard() {
     <AdminLayout>
       {/* Hero title */}
       <div className="mb-8">
-        <p className="text-base font-opensans" style={{ color: "#9CA3AF" }}>
+        <p className="text-lg font-opensans" style={{ color: "#9CA3AF" }}>
           <span>{"Olá, Onetwo👋"}</span>
         </p>
-        <h1 className="font-montserrat font-extrabold text-[1.75rem] md:text-3xl tracking-tight mt-1.5" style={{ color: "#F9FAFB" }}>
-          <span>Seus agendamentos</span><span style={{ color: "#2563EB" }}> </span><span>hoje</span>
+        <h1 className="font-montserrat font-extrabold text-[2rem] md:text-3xl tracking-tight mt-2" style={{ color: "#F9FAFB" }}>
+          <span>Seus agendamentos hoje</span>
         </h1>
-        <p className="text-base font-opensans mt-1.5" style={{ color: "#9CA3AF" }}>
+        <p className="text-lg font-opensans mt-2" style={{ color: "#9CA3AF" }}>
           <span>{format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })}</span>
         </p>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-10 -mx-1 px-1">
+      <div className="grid grid-cols-3 gap-4 mb-10">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-2" style={{ background: "#111111", border: "none" }}>
-            <stat.icon className="h-6 w-6 mb-1" style={{ color: "#2563EB" }} />
+          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-3" style={{ background: "#111111", border: "none" }}>
+            <stat.icon className="h-7 w-7 mb-1" style={{ color: "#2563EB" }} />
             <span className="font-montserrat font-bold text-2xl tabular-nums" style={{ color: "#F9FAFB" }}>
               {stat.value}
             </span>
-            <span className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
+            <span className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>{stat.sub}</span>
           </div>
         ))}
       </div>
@@ -123,7 +123,7 @@ export default function AdminDashboard() {
                   key={apt.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative rounded-2xl px-5 py-6"
+                  className="relative rounded-2xl px-5 py-7"
                   style={{
                     background: "#111111",
                     border: isCurrent ? "1px solid #2563EB" : "none",
@@ -134,14 +134,14 @@ export default function AdminDashboard() {
                     <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "#2563EB" }} />
                   )}
                   <div className="flex items-center gap-4">
-                    <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                    <span className="text-lg font-opensans font-bold tabular-nums w-16 flex-shrink-0" style={{ color: "#9CA3AF" }}>
                       {apt.time}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
+                      <p className="font-opensans font-semibold text-lg truncate" style={{ color: "#F9FAFB" }}>
                         {apt.client_name}
                       </p>
-                      <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
+                      <p className="text-base font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
                     </div>
                     <div className="flex flex-col items-end gap-2 flex-shrink-0">
                       <div className="flex items-center gap-1">
