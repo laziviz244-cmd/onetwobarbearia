@@ -98,7 +98,7 @@ export default function AdminAgenda() {
     <AdminLayout>
       <div className="max-w-[100vw] overflow-x-hidden">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="font-montserrat font-bold text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
+        <h1 className="font-montserrat font-bold text-xl sm:text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
         <button
           onClick={() => openNew()}
           className="flex items-center gap-2 px-4 py-3 rounded-xl font-montserrat font-semibold text-sm text-white transition-all hover:brightness-110"
