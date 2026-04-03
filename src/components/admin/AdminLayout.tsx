@@ -86,7 +86,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                   <Menu className="h-5 w-5" style={{ color: "#F9FAFB" }} />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-64 p-0" style={{ background: "#0F172A", borderColor: "#1F2937" }}>
+              <SheetContent side="left" className="w-64 p-0" style={{ background: "#000000", borderColor: "transparent" }}>
                 <NavContent onNavigate={() => setOpen(false)} />
               </SheetContent>
             </Sheet>
