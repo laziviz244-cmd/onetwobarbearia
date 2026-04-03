@@ -81,9 +81,9 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-8">
+      <div className="grid grid-cols-3 gap-4 mb-10">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl p-4 flex flex-col items-start gap-1" style={{ background: "#111111", border: "none" }}>
+          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-1.5" style={{ background: "#111111", border: "none" }}>
             <stat.icon className="h-5 w-5 mb-1" style={{ color: "#2563EB" }} />
             <span className="font-montserrat font-bold text-xl tabular-nums" style={{ color: "#F9FAFB" }}>
               {stat.value}
@@ -107,9 +107,9 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {appointments.length === 0 ? (
-          <div className="rounded-2xl p-8 text-center" style={{ background: "#111111" }}>
+          <div className="rounded-2xl p-10 text-center" style={{ background: "#111111" }}>
             <Clock className="h-8 w-8 mx-auto mb-2" style={{ color: "#9CA3AF" }} />
             <p className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Nenhum agendamento hoje</p>
           </div>
@@ -123,7 +123,7 @@ export default function AdminDashboard() {
                   key={apt.id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="relative rounded-2xl px-4 py-4"
+                  className="relative rounded-2xl px-5 py-5"
                   style={{
                     background: "#111111",
                     border: isCurrent ? "1px solid #2563EB" : "none",
