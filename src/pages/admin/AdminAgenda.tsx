@@ -96,6 +96,7 @@ export default function AdminAgenda() {
 
   return (
     <AdminLayout>
+      <div className="max-w-[100vw] overflow-x-hidden">
       <div className="flex items-center justify-between mb-4">
         <h1 className="font-montserrat font-bold text-2xl tracking-tight" style={{ color: "#F9FAFB" }}>Agenda</h1>
         <button
@@ -108,12 +109,12 @@ export default function AdminAgenda() {
       </div>
 
       {/* Date selector */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 -mx-1 px-1 scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
         {dates.map((d) => (
           <button
             key={d.value}
             onClick={() => setSelectedDate(d.value)}
-            className="flex flex-col items-center min-w-[52px] py-2 px-3 rounded-xl text-xs font-opensans transition-all"
+            className="flex flex-col items-center min-w-[48px] py-2 px-2.5 rounded-xl text-xs font-opensans transition-all flex-shrink-0"
             style={selectedDate === d.value
               ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
               : { background: "#111111", color: "#9CA3AF" }
@@ -132,7 +133,7 @@ export default function AdminAgenda() {
           return (
             <div
               key={time}
-              className="flex items-center w-full rounded-2xl px-3 py-3 md:px-4 md:py-4 transition-all"
+              className="flex items-center w-full rounded-2xl px-3 py-3 md:px-4 md:py-4 transition-all overflow-hidden"
               style={apt
                 ? { background: "#111111", borderLeft: "3px solid #2563EB" }
                 : { background: "#111111", opacity: 0.6 }
@@ -218,6 +219,7 @@ export default function AdminAgenda() {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
     </AdminLayout>
   );
 }
