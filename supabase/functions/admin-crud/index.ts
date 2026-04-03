@@ -153,6 +153,27 @@ Deno.serve(async (req) => {
         })
       }
 
+      // --- REPORTS ---
+      case 'report_daily': {
+        const { date } = params
+        if (!date) return jsonResponse({ error: 'Data obrigatória' }, 400)
+        const [pRes, aRes] = await Promise.all([
+          supabase.from('payments').select('*').eq('date', date).order('created_at'),
+          supabase.from('appointments').select('*').eq('date', date).order('time'),
+        ])
+        return jsonResponse({ payments: pRes.data || [], appointments: aRes.data || [] })
+      }
+      case 'report_monthly': {
+        const { start, end } = params
+        if (!start || !end) return jsonResponse({ error: 'Período obrigatório' }, 400)
+        const [pRes, eRes, aRes] = await Promise.all([
+          supabase.from('payments').select('*').gte('date', start).lte('date', end),
+          supabase.from('expenses').select('*').gte('date', start).lte('date', end),
+          supabase.from('appointments').select('*').gte('date', start).lte('date', end),
+        ])
+        return jsonResponse({ payments: pRes.data || [], expenses: eRes.data || [], appointments: aRes.data || [] })
+      }
+
       default:
         return jsonResponse({ error: 'Ação desconhecida' }, 400)
     }

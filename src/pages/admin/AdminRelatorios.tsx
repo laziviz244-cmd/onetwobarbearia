@@ -1,9 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { supabase } from "@/integrations/supabase/client";
 import { format, startOfMonth, endOfMonth } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { Calendar, TrendingUp, Users, Scissors, DollarSign } from "lucide-react";
+import { adminCrud } from "@/lib/admin-api";
 
 interface Payment { id: string; client_name: string; service: string; amount: number; payment_method: string; date: string; }
 interface Expense { id: string; description: string; amount: number; date: string; }
@@ -20,22 +19,23 @@ export default function AdminRelatorios() {
   const [monthlyAppointments, setMonthlyAppointments] = useState<Appointment[]>([]);
 
   const loadDaily = useCallback(async () => {
-    const { data: p } = await (supabase as any).from("payments").select("*").eq("date", selectedDate).order("created_at");
-    if (p) setDailyPayments(p);
-    const { data: a } = await supabase.from("appointments").select("*").eq("date", selectedDate).order("time");
-    if (a) setDailyAppointments(a as Appointment[]);
+    const res = await adminCrud<{ payments: Payment[]; appointments: Appointment[] }>("report_daily", { date: selectedDate });
+    if (res.data) {
+      setDailyPayments(res.data.payments || []);
+      setDailyAppointments(res.data.appointments || []);
+    }
   }, [selectedDate]);
 
   const loadMonthly = useCallback(async () => {
     const monthDate = new Date(selectedMonth + "-01T12:00:00");
     const start = format(startOfMonth(monthDate), "yyyy-MM-dd");
     const end = format(endOfMonth(monthDate), "yyyy-MM-dd");
-    const { data: p } = await (supabase as any).from("payments").select("*").gte("date", start).lte("date", end);
-    if (p) setMonthlyPayments(p);
-    const { data: e } = await (supabase as any).from("expenses").select("*").gte("date", start).lte("date", end);
-    if (e) setMonthlyExpenses(e);
-    const { data: a } = await supabase.from("appointments").select("*").gte("date", start).lte("date", end);
-    if (a) setMonthlyAppointments(a as Appointment[]);
+    const res = await adminCrud<{ payments: Payment[]; expenses: Expense[]; appointments: Appointment[] }>("report_monthly", { start, end });
+    if (res.data) {
+      setMonthlyPayments(res.data.payments || []);
+      setMonthlyExpenses(res.data.expenses || []);
+      setMonthlyAppointments(res.data.appointments || []);
+    }
   }, [selectedMonth]);
 
   useEffect(() => { loadDaily(); }, [loadDaily]);
