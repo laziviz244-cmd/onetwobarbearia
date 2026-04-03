@@ -71,6 +71,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex overflow-x-hidden max-w-[100vw]" style={{ background: "#000000" }}>
+      <AdminHeadMeta />
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 z-30" style={{ background: "#000000" }}>
         <NavContent />
