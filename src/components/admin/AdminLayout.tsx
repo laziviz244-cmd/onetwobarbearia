@@ -4,6 +4,7 @@ import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { LayoutDashboard, Calendar, DollarSign, BarChart3, LogOut, Menu, Scissors } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
+import AdminHeadMeta from "@/components/AdminHeadMeta";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
