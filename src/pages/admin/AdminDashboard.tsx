@@ -107,9 +107,9 @@ export default function AdminDashboard() {
         </button>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 pb-8">
         {appointments.length === 0 ? (
-          <div className="rounded-2xl p-10 text-center" style={{ background: "#111111" }}>
+          <div className="rounded-2xl p-12 text-center" style={{ background: "#111111" }}>
             <Clock className="h-8 w-8 mx-auto mb-2" style={{ color: "#9CA3AF" }} />
             <p className="text-sm font-opensans" style={{ color: "#9CA3AF" }}>Nenhum agendamento hoje</p>
           </div>
