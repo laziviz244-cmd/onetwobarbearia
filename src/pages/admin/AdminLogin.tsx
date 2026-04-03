@@ -2,7 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { motion } from "framer-motion";
-import { ShieldCheck, Loader2 } from "lucide-react";
+import { Shield, Loader2 } from "lucide-react";
+
+const ROYAL_BLUE = "#1a3a8f";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -30,24 +32,24 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center px-4" style={{ background: "#000000" }}>
+    <div className="min-h-screen w-full flex items-center justify-center" style={{ background: "#000000" }}>
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-md"
+        className="w-full min-h-screen sm:min-h-0 sm:max-w-md"
       >
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl p-8 sm:p-10 flex flex-col items-center gap-6"
-          style={{ background: "#111111" }}
+          className="min-h-screen sm:min-h-0 sm:rounded-2xl px-6 sm:px-10 py-16 sm:py-10 flex flex-col items-center justify-center gap-6"
+          style={{ background: "#000000" }}
         >
           {/* Shield Icon */}
           <div
             className="h-16 w-16 rounded-2xl flex items-center justify-center"
-            style={{ background: "rgba(37, 99, 235, 0.15)" }}
+            style={{ background: `${ROYAL_BLUE}22` }}
           >
-            <ShieldCheck className="h-8 w-8" style={{ color: "#2563EB" }} />
+            <Shield className="h-8 w-8" fill={ROYAL_BLUE} style={{ color: ROYAL_BLUE }} />
           </div>
 
           {/* Title & Subtitle */}
@@ -66,7 +68,7 @@ export default function AdminLogin() {
             </p>
           </div>
 
-          {/* Inputs — no border, dark bg */}
+          {/* Inputs */}
           <div className="w-full flex flex-col gap-4">
             <div>
               <label
@@ -124,7 +126,7 @@ export default function AdminLogin() {
             type="submit"
             disabled={loading}
             className="w-full py-3.5 rounded-xl font-montserrat font-bold text-sm tracking-tight text-white disabled:opacity-50 flex items-center justify-center gap-2 transition-all duration-200 hover:brightness-110"
-            style={{ background: "#2563EB" }}
+            style={{ background: ROYAL_BLUE }}
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
             {loading ? "Entrando..." : "Entrar"}
