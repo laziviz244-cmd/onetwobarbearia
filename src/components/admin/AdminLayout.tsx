@@ -21,7 +21,7 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
     <div className="flex flex-col h-full" style={{ background: "#0F172A" }}>
       <div className="flex items-center gap-3 px-6 py-6" style={{ borderBottom: "1px solid #1F2937" }}>
         <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
-          <Scissors className="h-5 w-5" style={{ color: "#3B82F6" }} />
+          <Scissors className="h-5 w-5" style={{ color: "#2563EB" }} />
         </div>
         <div>
           <h2 className="font-montserrat font-bold text-sm tracking-tight" style={{ color: "#F9FAFB" }}>Painel Admin</h2>
