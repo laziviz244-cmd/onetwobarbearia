@@ -109,9 +109,9 @@ const App = () => (
             <Route path="/admin/relatorios" element={<ProtectedAdmin><AdminRelatorios /></ProtectedAdmin>} />
 
             <Route path="/" element={<SmartRedirect />} />
-            <Route path="/vitrine" element={<RedirectLoggedAdmin><WelcomePage /></RedirectLoggedAdmin>} />
-            <Route path="/login" element={<RedirectLoggedAdmin><LoginPage /></RedirectLoggedAdmin>} />
-            <Route path="/cliente" element={<RedirectLoggedAdmin><ClientHomePage /></RedirectLoggedAdmin>} />
+            <Route path="/vitrine" element={<WelcomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/cliente" element={<ClientHomePage />} />
             <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
             <Route path="/agendar" element={<BookingPage />} />
             <Route path="/planos" element={<PlanosPage />} />
