@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => ({
       devOptions: {
         enabled: false,
       },
-      includeAssets: ["placeholder.svg", "robots.txt"],
+      includeAssets: ["placeholder.svg", "robots.txt", "icon-192x192.png", "icon-512x512.png"],
       manifest: {
         name: "OneTwo Barbearia",
         short_name: "OneTwo",
@@ -32,14 +32,14 @@ export default defineConfig(({ mode }) => ({
         start_url: "/cliente",
         icons: [
           {
-            src: "/placeholder.svg",
+            src: "/icon-192x192.png",
             sizes: "192x192",
-            type: "image/svg+xml",
+            type: "image/png",
           },
           {
-            src: "/placeholder.svg",
+            src: "/icon-512x512.png",
             sizes: "512x512",
-            type: "image/svg+xml",
+            type: "image/png",
           },
         ],
       },
