@@ -52,7 +52,7 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <Routes>
-            <Route path="/" element={<WelcomePage />} />
+            <Route path="/" element={<SmartRedirect />} />
             <Route path="/vitrine" element={<WelcomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/cliente" element={<ClientHomePage />} />
