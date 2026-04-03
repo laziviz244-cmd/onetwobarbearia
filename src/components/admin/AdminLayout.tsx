@@ -69,7 +69,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const { user } = useAdminAuth();
 
   return (
-    <div className="min-h-screen flex" style={{ background: "#000000" }}>
+    <div className="min-h-screen flex overflow-x-hidden max-w-[100vw]" style={{ background: "#000000" }}>
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 z-30" style={{ background: "#000000" }}>
         <NavContent />
