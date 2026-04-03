@@ -18,14 +18,14 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   const { logout } = useAdminAuth();
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "#0F172A" }}>
-      <div className="flex items-center gap-3 px-6 py-6" style={{ borderBottom: "1px solid #1F2937" }}>
+    <div className="flex flex-col h-full" style={{ background: "#000000" }}>
+      <div className="flex items-center gap-3 px-6 py-6">
         <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
           <Scissors className="h-5 w-5" style={{ color: "#2563EB" }} />
         </div>
         <div>
-          <h2 className="font-montserrat font-bold text-sm tracking-tight" style={{ color: "#F9FAFB" }}>Painel Admin</h2>
-          <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>Barbearia</p>
+          <h2 className="font-montserrat font-bold text-sm tracking-tight" style={{ color: "#FFFFFF" }}>Painel Admin</h2>
+          <p className="text-xs font-opensans" style={{ color: "#D1D5DB" }}>Barbearia</p>
         </div>
       </div>
 
@@ -36,30 +36,27 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
             <button
               key={item.path}
               onClick={() => { navigate(item.path); onNavigate?.(); }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-opensans font-medium transition-all"
-              style={isActive
-                ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 600 }
-                : { color: "#9CA3AF" }
-              }
-              onMouseEnter={(e) => { if (!isActive) { e.currentTarget.style.background = "rgba(37, 99, 235, 0.1)"; e.currentTarget.style.color = "#F9FAFB"; } }}
-              onMouseLeave={(e) => { if (!isActive) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#9CA3AF"; } }}
+              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-opensans font-medium transition-all min-h-[44px]"
+              style={{
+                background: "transparent",
+                color: isActive ? "#FFFFFF" : "#D1D5DB",
+                fontWeight: isActive ? 600 : 500,
+              }}
             >
-              <item.icon className="h-5 w-5" />
+              <item.icon className="h-5 w-5" style={{ color: "#2563EB" }} />
               {item.label}
             </button>
           );
         })}
       </nav>
 
-      <div className="px-3 py-4" style={{ borderTop: "1px solid #1F2937" }}>
+      <div className="px-3 py-4">
         <button
           onClick={() => { logout(); navigate("/admin/login"); }}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-opensans transition-colors"
-          style={{ color: "#9CA3AF" }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = "#EF4444"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = "#9CA3AF"; }}
+          className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-opensans font-medium transition-colors min-h-[44px]"
+          style={{ color: "#D1D5DB" }}
         >
-          <LogOut className="h-5 w-5" />
+          <LogOut className="h-5 w-5" style={{ color: "#2563EB" }} />
           Sair
         </button>
       </div>
