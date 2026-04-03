@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Plus, Edit2, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 
@@ -32,6 +33,7 @@ export default function AdminAgenda() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "" });
+  const navigate = useNavigate();
 
   const dateLabel = format(new Date(selectedDate + "T12:00:00"), "EEE, d MMM", { locale: ptBR });
 
@@ -97,16 +99,23 @@ export default function AdminAgenda() {
   return (
     <AdminLayout>
       <div className="w-full max-w-full overflow-x-hidden box-border">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-5 mt-3 px-1">
+        {/* Top bar with back button */}
+        <div className="flex items-center justify-between mb-4 mt-3 px-1">
           <h1 className="font-montserrat font-bold text-2xl tracking-tight text-foreground">Agenda</h1>
-          <button
-            onClick={() => openNew()}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-montserrat font-bold text-sm text-white transition-all hover:brightness-110 active:scale-95 shrink-0"
-            style={{ background: "#2563EB" }}
-          >
-            <Plus className="h-4 w-4" /> Novo
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => openNew()}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl font-montserrat font-bold text-sm text-white transition-all hover:brightness-110 active:scale-95 shrink-0 bg-primary"
+            >
+              <Plus className="h-4 w-4" /> Novo
+            </button>
+            <button
+              onClick={() => navigate("/admin")}
+              className="flex items-center gap-1 px-3 py-2 rounded-xl font-opensans font-semibold text-sm text-muted-foreground transition-all active:scale-95 hover:text-foreground min-h-[44px]"
+            >
+              ← Início
+            </button>
+          </div>
         </div>
 
         {/* Date selector - horizontal scroll */}
