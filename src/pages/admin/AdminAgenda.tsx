@@ -148,10 +148,10 @@ export default function AdminAgenda() {
               {apt ? (
                 <>
                   <div className="flex-1 min-w-0">
-                    <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
+                    <p className="font-opensans font-semibold text-base truncate" style={{ color: "#F9FAFB" }}>
                       {apt.client_name}
                     </p>
-                    <p className="text-xs font-opensans truncate" style={{ color: "#9CA3AF" }}>
+                    <p className="text-sm font-opensans truncate" style={{ color: "#9CA3AF" }}>
                       {apt.service}
                     </p>
                   </div>
