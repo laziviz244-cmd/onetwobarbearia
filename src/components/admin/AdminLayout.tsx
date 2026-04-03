@@ -20,44 +20,44 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <div className="flex flex-col h-full" style={{ background: "#000000" }}>
-      <div className="flex items-center gap-3 px-6 py-6">
-        <div className="h-10 w-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
-          <Scissors className="h-5 w-5" style={{ color: "#2563EB" }} />
+      <div className="flex items-center gap-4 px-6 py-8">
+        <div className="h-14 w-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
+          <Scissors className="h-7 w-7" style={{ color: "#2563EB" }} />
         </div>
         <div>
-          <h2 className="font-montserrat font-bold text-sm tracking-tight" style={{ color: "#FFFFFF" }}>Painel Admin</h2>
-          <p className="text-xs font-opensans" style={{ color: "#D1D5DB" }}>Barbearia</p>
+          <h2 className="font-montserrat font-bold text-lg tracking-tight" style={{ color: "#FFFFFF" }}>Painel Admin</h2>
+          <p className="text-sm font-opensans" style={{ color: "#D1D5DB" }}>Barbearia</p>
         </div>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <button
               key={item.path}
               onClick={() => { navigate(item.path); onNavigate?.(); }}
-              className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-opensans font-medium transition-all min-h-[44px]"
+              className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-lg font-opensans font-medium transition-all min-h-[56px]"
               style={{
                 background: "transparent",
                 color: isActive ? "#FFFFFF" : "#D1D5DB",
                 fontWeight: isActive ? 600 : 500,
               }}
             >
-              <item.icon className="h-5 w-5" style={{ color: "#2563EB" }} />
+              <item.icon className="h-6 w-6" style={{ color: "#2563EB" }} />
               {item.label}
             </button>
           );
         })}
       </nav>
 
-      <div className="px-3 py-4">
+      <div className="px-3 py-6">
         <button
           onClick={() => { logout(); navigate("/admin/login"); }}
-          className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-opensans font-medium transition-colors min-h-[44px]"
+          className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-lg font-opensans font-medium transition-colors min-h-[56px]"
           style={{ color: "#D1D5DB" }}
         >
-          <LogOut className="h-5 w-5" style={{ color: "#2563EB" }} />
+          <LogOut className="h-6 w-6" style={{ color: "#2563EB" }} />
           Sair
         </button>
       </div>
@@ -70,7 +70,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const { user } = useAdminAuth();
 
   return (
-    <div className="min-h-screen flex overflow-x-hidden max-w-[100vw]" style={{ background: "#000000" }}>
+    <div className="min-h-[100dvh] flex overflow-x-hidden max-w-[100vw]" style={{ background: "#000000" }}>
       <AdminHeadMeta />
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 z-30" style={{ background: "#000000" }}>
@@ -79,30 +79,31 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
       {/* Main content */}
       <div className="flex-1 md:ml-64 flex flex-col min-h-[100dvh]">
-        {/* Mobile header — menu LEFT, logo RIGHT */}
-        <header className="md:hidden flex items-center justify-between px-4 py-5 pt-[max(env(safe-area-inset-top),20px)] sticky top-0 z-20" style={{ background: "#000000" }}>
-          <div className="flex items-center gap-3">
-            <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger asChild>
-                <button className="h-14 w-14 flex items-center justify-center rounded-2xl" style={{ background: "#1F2937" }}>
-                  <Menu className="h-7 w-7" style={{ color: "#F9FAFB" }} />
-                </button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-64 p-0" style={{ background: "#000000", borderColor: "transparent" }}>
-                <NavContent onNavigate={() => setOpen(false)} />
-              </SheetContent>
-            </Sheet>
-          </div>
+        {/* Mobile header */}
+        <header
+          className="md:hidden flex items-center justify-between px-3 py-6 sticky top-0 z-20"
+          style={{ background: "#000000", paddingTop: "max(env(safe-area-inset-top), 24px)" }}
+        >
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <button className="h-16 w-16 flex items-center justify-center rounded-2xl" style={{ background: "#1F2937" }}>
+                <Menu className="h-9 w-9" style={{ color: "#F9FAFB" }} />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 p-0" style={{ background: "#000000", borderColor: "transparent" }}>
+              <NavContent onNavigate={() => setOpen(false)} />
+            </SheetContent>
+          </Sheet>
 
-          <div className="flex items-center gap-4 mr-2">
-            <span className="font-montserrat font-bold text-2xl" style={{ color: "#F9FAFB" }}>Admin</span>
-            <div className="h-14 w-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
-              <Scissors className="h-8 w-8" style={{ color: "#2563EB" }} />
+          <div className="flex items-center gap-5 mr-3">
+            <span className="font-montserrat font-bold text-3xl" style={{ color: "#F9FAFB" }}>Admin</span>
+            <div className="h-16 w-16 rounded-2xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
+              <Scissors className="h-10 w-10" style={{ color: "#2563EB" }} />
             </div>
           </div>
         </header>
 
-        <main className="flex-1 px-3 py-5 md:p-8 pb-32 max-w-6xl mx-auto w-full">
+        <main className="flex-1 px-3 py-4 md:p-8 pb-40 max-w-6xl mx-auto w-full">
           {children}
         </main>
       </div>
