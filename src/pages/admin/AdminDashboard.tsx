@@ -124,27 +124,37 @@ export default function AdminDashboard() {
                 {isCurrent && (
                   <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "#2563EB" }} />
                 )}
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
-                    {apt.time}
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
-                      {apt.client_name}
-                    </p>
-                    <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                      {apt.time}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>
+                        {apt.client_name}
+                      </p>
+                      <p className="text-xs font-opensans" style={{ color: "#9CA3AF" }}>{apt.service}</p>
+                    </div>
+                    {isPast && (
+                      <span className="text-[11px] font-opensans flex-shrink-0" style={{ color: "#9CA3AF" }}>
+                        <span>Concluído</span>
+                      </span>
+                    )}
+                    {isCurrent && (
+                      <span className="text-[11px] font-montserrat font-bold px-3 py-1 rounded-full flex-shrink-0" style={{ color: "#FFFFFF", background: "#2563EB" }}>
+                        <span>AGORA</span>
+                      </span>
+                    )}
+                    <ChevronRight className="h-4 w-4 flex-shrink-0" style={{ color: "#9CA3AF" }} />
                   </div>
-                  {isPast && (
-                    <span className="text-[11px] font-opensans flex-shrink-0" style={{ color: "#9CA3AF" }}>
-                      Concluído
-                    </span>
-                  )}
-                  {isCurrent && (
-                    <span className="text-[11px] font-montserrat font-bold px-3 py-1 rounded-full flex-shrink-0" style={{ color: "#FFFFFF", background: "#2563EB" }}>
-                      AGORA
-                    </span>
-                  )}
-                  <ChevronRight className="h-4 w-4 flex-shrink-0" style={{ color: "#9CA3AF" }} />
+                  <div className="flex justify-end">
+                    <button
+                      onClick={() => handleDelete(apt.id)}
+                      className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-opacity hover:opacity-80"
+                    >
+                      <Trash2 className="h-5 w-5" style={{ color: "#FF0000" }} />
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             );
