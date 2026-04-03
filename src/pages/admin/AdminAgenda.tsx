@@ -133,7 +133,7 @@ export default function AdminAgenda() {
           return (
             <div
               key={time}
-              className="flex items-center w-full rounded-2xl px-3 py-3 md:px-4 md:py-4 transition-all"
+              className="flex items-center w-full rounded-2xl px-3 py-3 md:px-4 md:py-4 transition-all overflow-hidden"
               style={apt
                 ? { background: "#111111", borderLeft: "3px solid #2563EB" }
                 : { background: "#111111", opacity: 0.6 }
