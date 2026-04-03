@@ -84,6 +84,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center" style={{ background: "#000000" }}>
+      <AdminHeadMeta />
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
