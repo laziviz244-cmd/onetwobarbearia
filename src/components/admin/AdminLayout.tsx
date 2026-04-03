@@ -19,45 +19,46 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   const { logout } = useAdminAuth();
 
   return (
-    <div className="flex flex-col h-full" style={{ background: "#000000" }}>
-      <div className="flex items-center gap-4 px-6 py-8">
-        <div className="h-14 w-14 rounded-2xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
-          <Scissors className="h-7 w-7" style={{ color: "#2563EB" }} />
+    <div className="flex flex-col min-h-[100dvh]" style={{ background: "#000000" }}>
+      <div className="flex items-center gap-5 px-6 py-8">
+        <div className="h-16 w-16 rounded-2xl flex items-center justify-center" style={{ background: "rgba(37, 99, 235, 0.15)" }}>
+          <Scissors className="h-8 w-8" style={{ color: "#2563EB" }} />
         </div>
         <div>
-          <h2 className="font-montserrat font-bold text-lg tracking-tight" style={{ color: "#FFFFFF" }}>Painel Admin</h2>
-          <p className="text-sm font-opensans" style={{ color: "#D1D5DB" }}>Barbearia</p>
+          <h2 className="font-montserrat font-bold text-xl tracking-tight" style={{ color: "#FFFFFF" }}>Painel Admin</h2>
+          <p className="text-base font-opensans" style={{ color: "#D1D5DB" }}>Barbearia</p>
         </div>
       </div>
 
-      <nav className="flex-1 px-3 py-4 space-y-2">
+      <nav className="flex-1 px-3 py-4 space-y-4">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <button
               key={item.path}
               onClick={() => { navigate(item.path); onNavigate?.(); }}
-              className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-lg font-opensans font-medium transition-all min-h-[56px]"
+              className="w-full flex items-center gap-5 px-5 py-5 rounded-2xl font-opensans font-medium transition-all min-h-[60px]"
               style={{
-                background: "transparent",
+                background: isActive ? "rgba(37, 99, 235, 0.1)" : "transparent",
                 color: isActive ? "#FFFFFF" : "#D1D5DB",
                 fontWeight: isActive ? 600 : 500,
+                fontSize: "18px",
               }}
             >
-              <item.icon className="h-6 w-6" style={{ color: "#2563EB" }} />
+              <item.icon className="h-7 w-7" style={{ color: "#2563EB" }} />
               {item.label}
             </button>
           );
         })}
       </nav>
 
-      <div className="px-3 py-6">
+      <div className="px-3 py-6 mt-auto border-t" style={{ borderColor: "#1F2937" }}>
         <button
           onClick={() => { logout(); navigate("/admin/login"); }}
-          className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-lg font-opensans font-medium transition-colors min-h-[56px]"
-          style={{ color: "#D1D5DB" }}
+          className="w-full flex items-center gap-5 px-5 py-5 rounded-2xl font-opensans font-medium transition-colors min-h-[60px]"
+          style={{ color: "#D1D5DB", fontSize: "18px" }}
         >
-          <LogOut className="h-6 w-6" style={{ color: "#2563EB" }} />
+          <LogOut className="h-7 w-7" style={{ color: "#EF4444" }} />
           Sair
         </button>
       </div>
