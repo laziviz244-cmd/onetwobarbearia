@@ -31,7 +31,9 @@ export function applyRoutePwaIdentity(pathname: string) {
 
   const assets = pathname.startsWith("/admin") ? ADMIN_PWA_ASSETS : CLIENT_PWA_ASSETS;
 
-  upsertHeadLink("manifest", assets.manifest);
+  // Cache-bust so the browser re-reads the correct manifest on install
+  const bust = `?v=${Date.now()}`;
+  upsertHeadLink("manifest", assets.manifest + bust);
   upsertHeadLink("icon", assets.favicon, "image/png");
   upsertHeadLink("apple-touch-icon", assets.appleTouchIcon);
 }

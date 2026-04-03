@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => ({
         theme_color: "#000000",
         background_color: "#000000",
         display: "standalone",
-        start_url: "/cliente",
+        start_url: "/",
         scope: "/",
         icons: [
           {
