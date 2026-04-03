@@ -141,7 +141,7 @@ export default function AdminAgenda() {
               onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
               onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
             >
-              <span className="text-sm font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
+              <span className="text-base font-opensans font-semibold tabular-nums w-14 flex-shrink-0" style={{ color: "#9CA3AF" }}>
                 {time}
               </span>
 
