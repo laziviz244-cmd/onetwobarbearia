@@ -29,6 +29,13 @@ export default function AdminDashboard() {
     loadData();
   }, []);
 
+  const handleDelete = async (id: string) => {
+    const { error } = await supabase.from("appointments").delete().eq("id", id);
+    if (error) { toast.error("Erro ao cancelar."); return; }
+    toast.success("Agendamento cancelado!");
+    loadData();
+  };
+
   const loadData = async () => {
     const { data: appts } = await supabase
       .from("appointments")
