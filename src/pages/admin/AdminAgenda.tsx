@@ -172,7 +172,7 @@ export default function AdminAgenda() {
                   </div>
                 </>
               ) : (
-                <button onClick={() => openNew(time)} className="flex-1 text-left text-xs font-opensans transition-colors" style={{ color: "#9CA3AF" }}>
+                <button onClick={() => openNew(time)} className="flex-1 text-left text-sm font-opensans transition-colors" style={{ color: "#9CA3AF" }}>
                   Livre — agendar
                 </button>
               )}
