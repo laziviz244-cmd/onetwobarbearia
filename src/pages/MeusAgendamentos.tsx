@@ -147,7 +147,7 @@ export default function MeusAgendamentos() {
             transition={{ duration: 0.4, delay: 0.15 }}
             className="flex items-center gap-2 mb-4"
           >
-            <Calendar className="w-4 h-4 text-foreground" />
+            <Calendar className="w-4 h-4" style={{ color: "#C5A059" }} />
             <h2 className="font-montserrat font-bold text-sm text-foreground">Meus Horários Marcados</h2>
           </motion.div>
 
