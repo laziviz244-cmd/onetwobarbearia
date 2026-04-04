@@ -139,9 +139,9 @@ export default function BookingPage() {
 
     // Always open WhatsApp with booking details
     const msg = encodeURIComponent(
-      `*NOVO AGENDAMENTO*\n\n*Meu nome:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${dateLabel}\n*Horário:* ${selectedTime}\n\nVi seu site e quero marcar um horário!`
+      `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${selectedTime}\n\n✅ *Agendamento realizado pelo App!*`
     );
-    window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`, "_blank", "noopener,noreferrer");
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
 
     setConfirmed(true);
   };
