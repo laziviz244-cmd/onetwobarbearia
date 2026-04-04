@@ -157,7 +157,7 @@ export default function MeusAgendamentos() {
             transition={{ duration: 0.4, delay: 0.2 }}
             className="mb-4 flex items-center gap-2"
           >
-            <Scissors className="w-4 h-4 text-foreground" />
+            <Scissors className="w-4 h-4" style={{ color: "#C5A059" }} />
             <span className="font-montserrat text-sm font-semibold text-foreground">Cortes</span>
           </motion.div>
 
