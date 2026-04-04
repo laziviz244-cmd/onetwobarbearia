@@ -75,6 +75,14 @@ function AdminLoginEntry() {
 }
 
 function SmartRedirect() {
+  // If client has a saved session, skip vitrine/login → go straight to /cliente
+  const hasClientSession = Boolean(
+    localStorage.getItem("onetwo_user") || localStorage.getItem("last_logged_user")
+  );
+  if (hasClientSession) {
+    return <Navigate to="/cliente" replace />;
+  }
+
   return (
     <RedirectLoggedAdmin>
       <WelcomePage />
