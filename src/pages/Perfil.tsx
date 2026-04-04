@@ -18,6 +18,18 @@ export default function Perfil() {
       const parsed = JSON.parse(user);
       setIsLoggedIn(true);
       setSavedName(parsed.username);
+      return;
+    }
+    const guestName = localStorage.getItem("onetwo_guest_name")?.trim();
+    if (guestName) {
+      setIsLoggedIn(true);
+      setSavedName(guestName);
+      return;
+    }
+    const lastUser = localStorage.getItem("last_logged_user")?.trim();
+    if (lastUser) {
+      setIsLoggedIn(true);
+      setSavedName(lastUser);
     }
   }, []);
 
