@@ -99,7 +99,7 @@ export default function AdminAgenda() {
     loadAppointments();
   };
 
-  const dates = Array.from({ length: 14 }, (_, i) => {
+  const dates = Array.from({ length: 30 }, (_, i) => {
     const d = addDays(new Date(), i);
     return { value: format(d, "yyyy-MM-dd"), label: format(d, "EEE", { locale: ptBR }), day: format(d, "d") };
   });
