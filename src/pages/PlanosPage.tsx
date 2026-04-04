@@ -86,25 +86,24 @@ export default function PlanosPage() {
             </p>
 
             {/* Price centered */}
-            <div className="flex items-center justify-center my-4">
+            <div className="flex items-center justify-center my-5">
               <span
-                className="font-montserrat font-extrabold text-3xl"
-                style={{ color: "#C5A059" }}
+                className="font-montserrat font-extrabold text-4xl"
+                style={{ color: "#FFFFFF" }}
               >
                 R$ {plan.price}
               </span>
             </div>
 
-            {/* WhatsApp button — black bg, green border & text */}
+            {/* WhatsApp button — green filled */}
             <motion.button
               whileTap={{ scale: 0.96 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               onClick={() => handleWhatsApp(plan.whatsappMsg)}
-              className="w-full py-3 rounded-2xl font-montserrat font-bold text-sm tracking-tight"
+              className="w-full py-3.5 rounded-xl font-montserrat font-bold text-sm tracking-tight"
               style={{
-                background: "#000000",
-                color: "#25D366",
-                border: "1.5px solid #25D366",
+                background: "#25D366",
+                color: "#FFFFFF",
               }}
             >
               ASSINAR VIA WHATSAPP
