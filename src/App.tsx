@@ -54,16 +54,6 @@ function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-function RedirectLoggedAdmin({ children }: { children: React.ReactNode }) {
-  const { user } = useAdminAuth();
-
-  if (user || getStoredAdminSession()) {
-    return <Navigate to="/admin" replace />;
-  }
-
-  return <>{children}</>;
-}
-
 function AdminLoginEntry() {
   const { user, isLoading } = useAdminAuth();
   const hasStoredSession = Boolean(getStoredAdminSession());
@@ -75,7 +65,6 @@ function AdminLoginEntry() {
 }
 
 function SmartRedirect() {
-  // If client has a saved session, skip vitrine/login → go straight to /cliente
   const hasClientSession = Boolean(
     localStorage.getItem("onetwo_user") || localStorage.getItem("last_logged_user")
   );
@@ -83,11 +72,7 @@ function SmartRedirect() {
     return <Navigate to="/cliente" replace />;
   }
 
-  return (
-    <RedirectLoggedAdmin>
-      <WelcomePage />
-    </RedirectLoggedAdmin>
-  );
+  return <WelcomePage />;
 }
 
 function RoutePwaIdentitySync() {
