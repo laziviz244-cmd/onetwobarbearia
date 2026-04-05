@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState, memo } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { adminCrud } from "@/lib/admin-api";
 import corteImg from "@/assets/corte.jpg";
 import barbaImg from "@/assets/barba.jpg";
 import nevouImg from "@/assets/nevou.jpg";
