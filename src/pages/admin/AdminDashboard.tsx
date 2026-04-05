@@ -63,9 +63,10 @@ export default function AdminDashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-dashboard", today],
     queryFn: () => fetchDashboardData(today),
-    staleTime: 0,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const appointments = data?.appointments ?? [];
@@ -207,7 +208,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="flex flex-col gap-4 pb-8">
-        {isLoading ? (
+        {isLoading && !data ? (
           <div className="rounded-2xl p-14 text-center bg-card">
             <Clock className="h-12 w-12 mx-auto mb-3 text-muted-foreground animate-pulse" />
             <p className="text-xl font-opensans text-muted-foreground">Carregando...</p>
