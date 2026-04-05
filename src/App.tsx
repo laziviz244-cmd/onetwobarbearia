@@ -23,7 +23,17 @@ import AdminAgenda from "./pages/admin/AdminAgenda";
 import AdminFinanceiro from "./pages/admin/AdminFinanceiro";
 import AdminRelatorios from "./pages/admin/AdminRelatorios";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+      gcTime: Infinity,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+    },
+  },
+});
 const ADMIN_SESSION_KEY = "barber_admin_session";
 
 function getStoredAdminSession() {
