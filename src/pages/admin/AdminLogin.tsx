@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveAdminPath } from "@/lib/emergency-route-recovery";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield, Loader2, KeyRound } from "lucide-react";
 import { toast } from "sonner";
@@ -13,7 +14,7 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAdminAuth();
-  const redirectTo = (location.state as any)?.from || "/admin";
+  const redirectTo = resolveAdminPath((location.state as { from?: string } | null)?.from || "/admin");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

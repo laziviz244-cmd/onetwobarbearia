@@ -6,6 +6,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminAuthProvider, useAdminAuth } from "@/contexts/AdminAuthContext";
+import { isAdminLikePath, normalizePathname, resolveAdminPath } from "@/lib/emergency-route-recovery";
 import { applyRoutePwaIdentity } from "@/lib/pwa-route-identity";
 import WelcomePage from "./pages/WelcomePage";
 import ClientHomePage from "./pages/ClientHomePage";
@@ -54,24 +55,6 @@ function getStoredAdminSession() {
   return null;
 }
 
-function normalizePathname(pathname: string) {
-  if (pathname === "/") return "/";
-
-  const normalized = pathname.replace(/\/+$/, "").toLowerCase();
-  return normalized || "/";
-}
-
-function isAdminLikePath(pathname: string) {
-  const normalized = normalizePathname(pathname);
-
-  return (
-    normalized === "/admin" ||
-    normalized.startsWith("/admin/") ||
-    normalized === "/dashboard" ||
-    normalized.startsWith("/dashboard/")
-  );
-}
-
 function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAdminAuth();
   const hasStoredSession = Boolean(getStoredAdminSession());
@@ -108,11 +91,11 @@ function RoutePwaIdentitySync() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    applyRoutePwaIdentity(normalizePathname(location.pathname));
+    applyRoutePwaIdentity(resolveAdminPath(location.pathname));
   }, [location.pathname]);
 
   useLayoutEffect(() => {
-    const normalizedPath = normalizePathname(location.pathname);
+    const normalizedPath = resolveAdminPath(location.pathname);
 
     if (location.pathname !== normalizedPath) {
       navigate(normalizedPath + location.search + location.hash, { replace: true });
@@ -126,7 +109,7 @@ function RouteFallback() {
   const location = useLocation();
   const { user, isLoading } = useAdminAuth();
   const hasStoredSession = Boolean(getStoredAdminSession());
-  const normalizedPath = normalizePathname(location.pathname);
+  const normalizedPath = resolveAdminPath(location.pathname);
 
   if (location.pathname !== normalizedPath) {
     return <Navigate to={normalizedPath + location.search + location.hash} replace />;
@@ -137,7 +120,7 @@ function RouteFallback() {
 
     return user || hasStoredSession
       ? <Navigate to="/admin" replace />
-      : <Navigate to="/admin/login" state={{ from: "/admin" }} replace />;
+      : <Navigate to="/admin/login" state={{ from: normalizedPath }} replace />;
   }
 
   return <Navigate to="/" replace />;
@@ -158,6 +141,9 @@ const App = () => (
             <Route path="/admin/agenda" element={<ProtectedAdmin><AdminAgenda /></ProtectedAdmin>} />
             <Route path="/admin/financeiro" element={<ProtectedAdmin><AdminFinanceiro /></ProtectedAdmin>} />
             <Route path="/admin/relatorios" element={<ProtectedAdmin><AdminRelatorios /></ProtectedAdmin>} />
+            <Route path="/agenda" element={<Navigate to="/admin/agenda" replace />} />
+            <Route path="/financeiro" element={<Navigate to="/admin/financeiro" replace />} />
+            <Route path="/relatorios" element={<Navigate to="/admin/relatorios" replace />} />
 
             <Route path="/" element={<SmartRedirect />} />
             <Route path="/vitrine" element={<WelcomePage />} />
