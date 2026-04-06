@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,7 +11,9 @@ const ROYAL_BLUE = "#1a3a8f";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAdminAuth();
+  const redirectTo = (location.state as any)?.from || "/admin";
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -39,7 +41,7 @@ export default function AdminLogin() {
     if (result.error) {
       setError(result.error);
     } else {
-      navigate("/admin", { replace: true });
+      navigate(redirectTo, { replace: true });
     }
   };
 

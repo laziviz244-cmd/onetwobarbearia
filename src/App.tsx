@@ -1,7 +1,7 @@
 // Versão Final OneTwo - Force Deploy
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -58,9 +58,10 @@ function getStoredAdminSession() {
 function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAdminAuth();
   const hasStoredSession = Boolean(getStoredAdminSession());
+  const location = useLocation();
 
   if (isLoading) return null;
-  if (!user && !hasStoredSession) return <Navigate to="/admin/login" replace />;
+  if (!user && !hasStoredSession) return <Navigate to="/admin/login" state={{ from: location.pathname }} replace />;
   return <>{children}</>;
 }
 
@@ -87,10 +88,19 @@ function SmartRedirect() {
 
 function RoutePwaIdentitySync() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     applyRoutePwaIdentity(location.pathname);
   }, [location.pathname]);
+
+  // Case-insensitive route normalizer (e.g. /Admin → /admin)
+  useEffect(() => {
+    const lower = location.pathname.toLowerCase();
+    if (location.pathname !== lower) {
+      navigate(lower + location.search + location.hash, { replace: true });
+    }
+  }, [location.pathname, location.search, location.hash, navigate]);
 
   return null;
 }
