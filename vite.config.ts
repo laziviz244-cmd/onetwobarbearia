@@ -7,6 +7,15 @@ import { VitePWA } from "vite-plugin-pwa";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   base: "/",
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: "assets/[name]-[hash].js",
+        chunkFileNames: "assets/[name]-[hash].js",
+        assetFileNames: "assets/[name]-[hash][extname]",
+      },
+    },
+  },
   define: {
     'import.meta.env.VITE_BUILD_TIMESTAMP': JSON.stringify(Date.now().toString()),
   },
