@@ -1,5 +1,5 @@
 // Versão Final OneTwo - Force Deploy
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -16,7 +16,6 @@ import BarberDashboard from "./pages/BarberDashboard";
 import MeusAgendamentos from "./pages/MeusAgendamentos";
 import Perfil from "./pages/Perfil";
 import PlanosPage from "./pages/PlanosPage";
-import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminAgenda from "./pages/admin/AdminAgenda";
@@ -55,6 +54,24 @@ function getStoredAdminSession() {
   return null;
 }
 
+function normalizePathname(pathname: string) {
+  if (pathname === "/") return "/";
+
+  const normalized = pathname.replace(/\/+$/, "").toLowerCase();
+  return normalized || "/";
+}
+
+function isAdminLikePath(pathname: string) {
+  const normalized = normalizePathname(pathname);
+
+  return (
+    normalized === "/admin" ||
+    normalized.startsWith("/admin/") ||
+    normalized === "/dashboard" ||
+    normalized.startsWith("/dashboard/")
+  );
+}
+
 function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAdminAuth();
   const hasStoredSession = Boolean(getStoredAdminSession());
@@ -91,18 +108,39 @@ function RoutePwaIdentitySync() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    applyRoutePwaIdentity(location.pathname);
+    applyRoutePwaIdentity(normalizePathname(location.pathname));
   }, [location.pathname]);
 
-  // Case-insensitive route normalizer (e.g. /Admin → /admin)
-  useEffect(() => {
-    const lower = location.pathname.toLowerCase();
-    if (location.pathname !== lower) {
-      navigate(lower + location.search + location.hash, { replace: true });
+  useLayoutEffect(() => {
+    const normalizedPath = normalizePathname(location.pathname);
+
+    if (location.pathname !== normalizedPath) {
+      navigate(normalizedPath + location.search + location.hash, { replace: true });
     }
   }, [location.pathname, location.search, location.hash, navigate]);
 
   return null;
+}
+
+function RouteFallback() {
+  const location = useLocation();
+  const { user, isLoading } = useAdminAuth();
+  const hasStoredSession = Boolean(getStoredAdminSession());
+  const normalizedPath = normalizePathname(location.pathname);
+
+  if (location.pathname !== normalizedPath) {
+    return <Navigate to={normalizedPath + location.search + location.hash} replace />;
+  }
+
+  if (isAdminLikePath(normalizedPath)) {
+    if (isLoading) return null;
+
+    return user || hasStoredSession
+      ? <Navigate to="/admin" replace />
+      : <Navigate to="/admin/login" state={{ from: "/admin" }} replace />;
+  }
+
+  return <Navigate to="/" replace />;
 }
 
 const App = () => (
@@ -132,7 +170,7 @@ const App = () => (
             <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
             <Route path="/perfil" element={<Perfil />} />
 
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<RouteFallback />} />
           </Routes>
         </AdminAuthProvider>
       </BrowserRouter>
