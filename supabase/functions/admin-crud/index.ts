@@ -174,6 +174,29 @@ Deno.serve(async (req) => {
         return jsonResponse({ payments: pRes.data || [], expenses: eRes.data || [], appointments: aRes.data || [] })
       }
 
+      // --- APP SETTINGS ---
+      case 'get_settings': {
+        const { data, error } = await supabase
+          .from('app_settings')
+          .select('key, value, updated_at')
+        if (error) return jsonResponse({ error: error.message }, 500)
+        const settings: Record<string, any> = {}
+        for (const row of data || []) {
+          settings[row.key] = row.value
+        }
+        return jsonResponse({ data: settings })
+      }
+      case 'update_setting': {
+        const { key, value } = params
+        if (!key || value === undefined) return jsonResponse({ error: 'Key e value obrigatórios' }, 400)
+        const { error } = await supabase
+          .from('app_settings')
+          .update({ value, updated_at: new Date().toISOString() })
+          .eq('key', key)
+        if (error) return jsonResponse({ error: error.message }, 500)
+        return jsonResponse({ success: true })
+      }
+
       default:
         return jsonResponse({ error: 'Ação desconhecida' }, 400)
     }
