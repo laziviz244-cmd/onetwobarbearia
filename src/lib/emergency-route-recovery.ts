@@ -4,6 +4,7 @@ export const ADMIN_ROUTE_ALIASES: Record<string, string> = {
   "/agenda": "/admin/agenda",
   "/financeiro": "/admin/financeiro",
   "/relatorios": "/admin/relatorios",
+  "/configuracoes": "/admin/configuracoes",
 };
 
 const HARD_RELOAD_PREFIX = "onetwo_hard_reload";
