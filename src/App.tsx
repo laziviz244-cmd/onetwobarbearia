@@ -58,9 +58,9 @@ function getStoredAdminSession() {
 function ProtectedAdmin({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAdminAuth();
   const hasStoredSession = Boolean(getStoredAdminSession());
+  const location = useLocation();
 
   if (isLoading) return null;
-  const location = useLocation();
   if (!user && !hasStoredSession) return <Navigate to="/admin/login" state={{ from: location.pathname }} replace />;
   return <>{children}</>;
 }
