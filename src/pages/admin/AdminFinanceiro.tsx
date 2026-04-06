@@ -1,10 +1,11 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { format } from "date-fns";
-import { Plus, Trash2, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
+import { Plus, Trash2, DollarSign, TrendingUp, TrendingDown, Search, X } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { adminCrud } from "@/lib/admin-api";
+import { Input } from "@/components/ui/input";
 
 interface Payment { id: string; client_name: string; service: string; amount: number; payment_method: string; date: string; created_at: string; }
 interface Expense { id: string; description: string; amount: number; date: string; }
@@ -86,6 +87,23 @@ export default function AdminFinanceiro() {
 
   const methodLabel = (m: string) => PAYMENT_METHODS.find(p => p.value === m)?.label || m;
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterMethod, setFilterMethod] = useState("");
+
+  const filteredPayments = useMemo(() => {
+    return payments.filter(p => {
+      const matchesSearch = !searchQuery || p.client_name.toLowerCase().includes(searchQuery.toLowerCase()) || p.service.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesMethod = !filterMethod || p.payment_method === filterMethod;
+      return matchesSearch && matchesMethod;
+    });
+  }, [payments, searchQuery, filterMethod]);
+
+  const filteredExpenses = useMemo(() => {
+    return expenses.filter(e => {
+      return !searchQuery || e.description.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }, [expenses, searchQuery]);
+
   const inputStyle = { background: "#0F172A", border: "1px solid #1F2937", color: "#F9FAFB" };
   const cardStyle = { background: "#0F172A", border: "1px solid #1F2937" };
 
@@ -125,12 +143,42 @@ export default function AdminFinanceiro() {
         </button>
       </div>
 
+      {/* Search & Filter */}
+      <div className="flex gap-2 mb-4">
+        <div className="flex-1 relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "#6B7280" }} />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={tab === "pagamentos" ? "Buscar cliente ou serviço..." : "Buscar descrição..."}
+            className="pl-9 h-10 rounded-xl border-0 text-sm"
+            style={{ background: "#0F172A", color: "#F9FAFB" }}
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2">
+              <X className="h-4 w-4" style={{ color: "#6B7280" }} />
+            </button>
+          )}
+        </div>
+        {tab === "pagamentos" && (
+          <select
+            value={filterMethod}
+            onChange={(e) => setFilterMethod(e.target.value)}
+            className="rounded-xl px-3 py-2 text-sm font-opensans outline-none"
+            style={{ background: "#0F172A", color: "#F9FAFB", border: "1px solid #1F2937" }}
+          >
+            <option value="">Todos</option>
+            {PAYMENT_METHODS.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+          </select>
+        )}
+      </div>
+
       {/* List */}
       {tab === "pagamentos" ? (
         <div className="flex flex-col gap-2">
           {payments.length === 0 ? (
             <p className="text-sm text-center py-8 font-opensans" style={{ color: "#9CA3AF" }}>Nenhum pagamento registrado</p>
-          ) : payments.map(p => (
+          ) : filteredPayments.map(p => (
             <div key={p.id} className="rounded-xl p-4 flex items-center gap-3" style={cardStyle}>
               <div className="flex-1 min-w-0">
                 <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>{p.client_name}</p>
@@ -147,7 +195,7 @@ export default function AdminFinanceiro() {
         <div className="flex flex-col gap-2">
           {expenses.length === 0 ? (
             <p className="text-sm text-center py-8 font-opensans" style={{ color: "#9CA3AF" }}>Nenhuma despesa registrada</p>
-          ) : expenses.map(e => (
+          ) : filteredExpenses.map(e => (
             <div key={e.id} className="rounded-xl p-4 flex items-center gap-3" style={cardStyle}>
               <div className="flex-1 min-w-0">
                 <p className="font-opensans font-semibold text-sm truncate" style={{ color: "#F9FAFB" }}>{e.description}</p>

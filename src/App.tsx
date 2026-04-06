@@ -22,6 +22,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminAgenda from "./pages/admin/AdminAgenda";
 import AdminFinanceiro from "./pages/admin/AdminFinanceiro";
 import AdminRelatorios from "./pages/admin/AdminRelatorios";
+import AdminConfiguracoes from "./pages/admin/AdminConfiguracoes";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -141,6 +142,7 @@ const App = () => (
             <Route path="/admin/agenda" element={<ProtectedAdmin><AdminAgenda /></ProtectedAdmin>} />
             <Route path="/admin/financeiro" element={<ProtectedAdmin><AdminFinanceiro /></ProtectedAdmin>} />
             <Route path="/admin/relatorios" element={<ProtectedAdmin><AdminRelatorios /></ProtectedAdmin>} />
+            <Route path="/admin/configuracoes" element={<ProtectedAdmin><AdminConfiguracoes /></ProtectedAdmin>} />
             <Route path="/agenda" element={<Navigate to="/admin/agenda" replace />} />
             <Route path="/financeiro" element={<Navigate to="/admin/financeiro" replace />} />
             <Route path="/relatorios" element={<Navigate to="/admin/relatorios" replace />} />

@@ -1,9 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Plus, Edit2, Trash2 } from "lucide-react";
+import { Plus, Edit2, Trash2, Search, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { adminCrud } from "@/lib/admin-api";
@@ -46,7 +47,18 @@ export default function AdminAgenda() {
     loadAppointments();
   }, [loadAppointments]);
 
+  const [searchQuery, setSearchQuery] = useState("");
+
   const occupiedTimes = new Set(appointments.map(a => a.time));
+
+  const filteredSlots = useMemo(() => {
+    if (!searchQuery) return TIME_SLOTS;
+    const q = searchQuery.toLowerCase();
+    const matchedTimes = appointments
+      .filter(a => a.client_name.toLowerCase().includes(q) || a.service.toLowerCase().includes(q))
+      .map(a => a.time);
+    return TIME_SLOTS.filter(t => matchedTimes.includes(t));
+  }, [searchQuery, appointments]);
 
   const openNew = (time?: string) => {
     setEditingId(null);
@@ -148,9 +160,26 @@ export default function AdminAgenda() {
           </div>
         </div>
 
+        {/* Search filter */}
+        <div className="relative mb-4 px-1">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4" style={{ color: "#6B7280" }} />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar cliente ou serviço..."
+            className="pl-9 h-10 rounded-xl border-0 text-sm"
+            style={{ background: "#111111", color: "#F9FAFB" }}
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2">
+              <X className="h-4 w-4" style={{ color: "#6B7280" }} />
+            </button>
+          )}
+        </div>
+
         {/* Time slots */}
         <div className="flex flex-col gap-2.5 w-full px-1">
-          {TIME_SLOTS.map((time) => {
+          {filteredSlots.map((time) => {
             const apt = appointments.find(a => a.time === time);
             return (
               <div
