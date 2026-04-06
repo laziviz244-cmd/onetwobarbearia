@@ -25,4 +25,11 @@ if (isPreviewHost || isInIframe) {
   });
 }
 
+// Force SW update check on every page load (fixes stale cache on phones)
+if ("serviceWorker" in navigator && !isPreviewHost && !isInIframe) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((r) => r.update());
+  });
+}
+
 applyRoutePwaIdentity(window.location.pathname);
