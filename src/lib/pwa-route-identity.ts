@@ -26,10 +26,18 @@ function upsertHeadLink(rel: string, href: string, type?: string) {
   link.href = href;
 }
 
+function normalizePathname(pathname: string) {
+  if (pathname === "/") return "/";
+
+  const normalized = pathname.replace(/\/+$/, "").toLowerCase();
+  return normalized || "/";
+}
+
 export function applyRoutePwaIdentity(pathname: string) {
   if (typeof document === "undefined") return;
 
-  const assets = pathname.startsWith("/admin") ? ADMIN_PWA_ASSETS : CLIENT_PWA_ASSETS;
+  const normalizedPath = normalizePathname(pathname);
+  const assets = normalizedPath.startsWith("/admin") ? ADMIN_PWA_ASSETS : CLIENT_PWA_ASSETS;
 
   // Cache-bust so the browser re-reads the correct manifest on install
   const bust = `?v=${Date.now()}`;
