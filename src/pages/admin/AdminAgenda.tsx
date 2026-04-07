@@ -36,6 +36,7 @@ export default function AdminAgenda() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "" });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const dateLabel = format(new Date(selectedDate + "T12:00:00"), "EEE, d MMM", { locale: ptBR });
 
