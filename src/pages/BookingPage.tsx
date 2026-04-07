@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getCurrentAppointmentUserId } from "@/lib/appointment-user";
+import { tagOneSignalUser } from "@/lib/onesignal";
 import {
   Dialog,
   DialogContent,
@@ -199,6 +200,14 @@ export default function BookingPage() {
       });
       return;
     }
+
+    // Tag user in OneSignal for push notifications
+    tagOneSignalUser(userId);
+
+    // Schedule 10-min reminder notification
+    supabase.functions.invoke("schedule-notification", {
+      body: { clientName, serviceName, dateLabel, time: selectedTime, date: selectedDate },
+    }).catch((err) => console.warn("Notification scheduling failed:", err));
 
     // Always open WhatsApp with booking details
     const msg = encodeURIComponent(
