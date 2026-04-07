@@ -113,6 +113,7 @@ export default function AdminAgenda() {
     if (res.error) { toast.error("Erro ao cancelar."); return; }
     toast.success("Agendamento cancelado!");
     loadAppointments();
+    queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
 
   const dates = Array.from({ length: 30 }, (_, i) => {
