@@ -301,48 +301,75 @@ export default function BookingPage() {
 
       {/* Time slots */}
       <div className="px-6 mt-8">
-        <h2 className="font-montserrat font-bold text-foreground tracking-tighter mb-3">
-          Horários disponíveis
-        </h2>
-        <div className="grid grid-cols-3 gap-2">
-          {timeSlots.map((time) => {
-            const isReserved = reservedSlots.includes(time);
-            return (
-              <motion.button
-                key={time}
-                whileTap={isReserved ? undefined : { scale: 0.95 }}
-                onClick={() => {
-                  if (isReserved) {
-                    toast({
-                      title: "Putz! Horário indisponível",
-                      description: "Este horário já foi reservado por outro cliente. Por favor, marque outro.",
-                      variant: "destructive",
-                    });
-                    return;
-                  }
-                  setSelectedTime(time);
-                }}
-                disabled={isReserved}
-                className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
-                  isReserved
-                    ? "surface-card opacity-40 cursor-not-allowed"
-                    : selectedTime === time
-                      ? "btn-primary-glow text-primary-foreground font-semibold"
-                      : "surface-card text-foreground font-semibold"
-                }`}
-              >
-                {isReserved ? (
-                  <span className="flex flex-col items-center leading-tight">
-                    <span style={{ color: "#808080" }}>{time}</span>
-                    <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
-                  </span>
-                ) : (
-                  time
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
+        <AnimatePresence mode="wait">
+          {isDayClosed ? (
+            <motion.div
+              key="closed"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="flex flex-col items-center justify-center py-16 rounded-2xl surface-card gap-3"
+            >
+              <CalendarOff className="h-10 w-10 text-dimmed" />
+              <p className="font-montserrat font-bold text-foreground text-lg">Fechado para agendamentos</p>
+              <p className="text-dimmed font-opensans text-sm text-center px-4">
+                Este dia não está disponível. Selecione outra data.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="open"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h2 className="font-montserrat font-bold text-foreground tracking-tighter mb-3">
+                Horários disponíveis
+              </h2>
+              <div className="grid grid-cols-3 gap-2">
+                {timeSlots.map((time) => {
+                  const isReserved = reservedSlots.includes(time);
+                  return (
+                    <motion.button
+                      key={time}
+                      whileTap={isReserved ? undefined : { scale: 0.95 }}
+                      onClick={() => {
+                        if (isReserved) {
+                          toast({
+                            title: "Putz! Horário indisponível",
+                            description: "Este horário já foi reservado por outro cliente. Por favor, marque outro.",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        setSelectedTime(time);
+                      }}
+                      disabled={isReserved}
+                      className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
+                        isReserved
+                          ? "surface-card opacity-40 cursor-not-allowed"
+                          : selectedTime === time
+                            ? "btn-primary-glow text-primary-foreground font-semibold"
+                            : "surface-card text-foreground font-semibold"
+                      }`}
+                    >
+                      {isReserved ? (
+                        <span className="flex flex-col items-center leading-tight">
+                          <span style={{ color: "#808080" }}>{time}</span>
+                          <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
+                        </span>
+                      ) : (
+                        time
+                      )}
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Confirm */}
