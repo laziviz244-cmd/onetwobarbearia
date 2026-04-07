@@ -104,6 +104,8 @@ export default function AdminAgenda() {
     }
     setDialogOpen(false);
     loadAppointments();
+    // Invalidate dashboard cache so it shows new data immediately
+    queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
 
   const handleDelete = async (id: string) => {
