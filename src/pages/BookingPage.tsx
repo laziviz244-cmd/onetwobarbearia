@@ -73,8 +73,56 @@ export default function BookingPage() {
   const [guestName, setGuestName] = useState("");
 
   const [reservedSlots, setReservedSlots] = useState<string[]>([]);
+  const [businessHours, setBusinessHours] = useState<Record<string, DaySchedule> | null>(null);
 
   const monthLabel = weekDays.find((d) => d.full === selectedDate)?.monthLabel ?? "";
+
+  // Get schedule for selected date
+  const selectedDaySchedule = useMemo(() => {
+    if (!businessHours || !selectedDate) return null;
+    const d = new Date(selectedDate + "T12:00:00");
+    const dow = getDay(d);
+    const key = DOW_TO_KEY[dow];
+    return businessHours[key] ?? null;
+  }, [businessHours, selectedDate]);
+
+  const isDayClosed = selectedDaySchedule ? !selectedDaySchedule.enabled : false;
+
+  // Filter time slots based on business hours
+  const timeSlots = useMemo(() => {
+    if (!selectedDaySchedule || !selectedDaySchedule.enabled) return ALL_TIME_SLOTS;
+    const { open, close } = selectedDaySchedule;
+    return ALL_TIME_SLOTS.filter((t) => t >= open && t < close);
+  }, [selectedDaySchedule]);
+
+  // Fetch business hours + subscribe to realtime
+  useEffect(() => {
+    const fetchHours = async () => {
+      const { data } = await supabase
+        .from("app_settings")
+        .select("value")
+        .eq("key", "business_hours")
+        .single();
+      if (data?.value) setBusinessHours(data.value as unknown as Record<string, DaySchedule>);
+    };
+    fetchHours();
+
+    const channel = supabase
+      .channel("business-hours-realtime")
+      .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "app_settings",
+        filter: "key=eq.business_hours",
+      }, (payload) => {
+        if (payload.new?.value) {
+          setBusinessHours(payload.new.value as unknown as Record<string, DaySchedule>);
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   useEffect(() => {
     if (!selectedDate) return;
@@ -99,6 +147,11 @@ export default function BookingPage() {
       supabase.removeChannel(channel);
     };
   }, [selectedDate]);
+
+  // Clear selected time when day becomes closed
+  useEffect(() => {
+    if (isDayClosed && selectedTime) setSelectedTime(null);
+  }, [isDayClosed, selectedTime]);
 
   const handleConfirm = () => {
     if (!selectedTime) return;
