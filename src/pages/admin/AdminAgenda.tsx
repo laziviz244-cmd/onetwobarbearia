@@ -4,6 +4,7 @@ import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Plus, Edit2, Trash2, Search, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -35,6 +36,7 @@ export default function AdminAgenda() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "" });
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const dateLabel = format(new Date(selectedDate + "T12:00:00"), "EEE, d MMM", { locale: ptBR });
 
@@ -102,6 +104,8 @@ export default function AdminAgenda() {
     }
     setDialogOpen(false);
     loadAppointments();
+    // Invalidate dashboard cache so it shows new data immediately
+    queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
 
   const handleDelete = async (id: string) => {
@@ -109,6 +113,7 @@ export default function AdminAgenda() {
     if (res.error) { toast.error("Erro ao cancelar."); return; }
     toast.success("Agendamento cancelado!");
     loadAppointments();
+    queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
 
   const dates = Array.from({ length: 30 }, (_, i) => {

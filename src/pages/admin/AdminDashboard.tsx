@@ -63,10 +63,9 @@ export default function AdminDashboard() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-dashboard", today],
     queryFn: () => fetchDashboardData(today),
-    staleTime: Infinity,
+    staleTime: 30_000,
     gcTime: Infinity,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 
   const appointments = data?.appointments ?? [];
