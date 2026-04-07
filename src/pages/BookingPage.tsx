@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
-import { ArrowLeft, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Check, CalendarOff } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getCurrentAppointmentUserId } from "@/lib/appointment-user";
@@ -13,15 +13,25 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { addDays, format, isAfter, isBefore, startOfDay, getDay } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { addDays, format, startOfDay, getDay } from "date-fns";
 
-const timeSlots = [
+const ALL_TIME_SLOTS = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
   "11:00", "11:30", "12:00", "12:30",
   "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
   "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
 ];
+
+const DOW_TO_KEY: Record<number, string> = {
+  0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday",
+  4: "thursday", 5: "friday", 6: "saturday",
+};
+
+interface DaySchedule {
+  open: string;
+  close: string;
+  enabled: boolean;
+}
 
 const DAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const MONTH_LABELS = [
