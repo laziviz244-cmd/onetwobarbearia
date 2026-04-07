@@ -1,7 +1,7 @@
-import { motion } from "framer-motion";
-import { ArrowLeft, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Check, CalendarOff } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getCurrentAppointmentUserId } from "@/lib/appointment-user";
@@ -13,15 +13,25 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { addDays, format, isAfter, isBefore, startOfDay, getDay } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { addDays, format, startOfDay, getDay } from "date-fns";
 
-const timeSlots = [
+const ALL_TIME_SLOTS = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
   "11:00", "11:30", "12:00", "12:30",
   "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
   "17:00", "17:30", "18:00", "18:30", "19:00", "19:30",
 ];
+
+const DOW_TO_KEY: Record<number, string> = {
+  0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday",
+  4: "thursday", 5: "friday", 6: "saturday",
+};
+
+interface DaySchedule {
+  open: string;
+  close: string;
+  enabled: boolean;
+}
 
 const DAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 const MONTH_LABELS = [
@@ -63,8 +73,56 @@ export default function BookingPage() {
   const [guestName, setGuestName] = useState("");
 
   const [reservedSlots, setReservedSlots] = useState<string[]>([]);
+  const [businessHours, setBusinessHours] = useState<Record<string, DaySchedule> | null>(null);
 
   const monthLabel = weekDays.find((d) => d.full === selectedDate)?.monthLabel ?? "";
+
+  // Get schedule for selected date
+  const selectedDaySchedule = useMemo(() => {
+    if (!businessHours || !selectedDate) return null;
+    const d = new Date(selectedDate + "T12:00:00");
+    const dow = getDay(d);
+    const key = DOW_TO_KEY[dow];
+    return businessHours[key] ?? null;
+  }, [businessHours, selectedDate]);
+
+  const isDayClosed = selectedDaySchedule ? !selectedDaySchedule.enabled : false;
+
+  // Filter time slots based on business hours
+  const timeSlots = useMemo(() => {
+    if (!selectedDaySchedule || !selectedDaySchedule.enabled) return ALL_TIME_SLOTS;
+    const { open, close } = selectedDaySchedule;
+    return ALL_TIME_SLOTS.filter((t) => t >= open && t < close);
+  }, [selectedDaySchedule]);
+
+  // Fetch business hours + subscribe to realtime
+  useEffect(() => {
+    const fetchHours = async () => {
+      const { data } = await supabase
+        .from("app_settings")
+        .select("value")
+        .eq("key", "business_hours")
+        .single();
+      if (data?.value) setBusinessHours(data.value as unknown as Record<string, DaySchedule>);
+    };
+    fetchHours();
+
+    const channel = supabase
+      .channel("business-hours-realtime")
+      .on("postgres_changes", {
+        event: "UPDATE",
+        schema: "public",
+        table: "app_settings",
+        filter: "key=eq.business_hours",
+      }, (payload) => {
+        if (payload.new?.value) {
+          setBusinessHours(payload.new.value as unknown as Record<string, DaySchedule>);
+        }
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   useEffect(() => {
     if (!selectedDate) return;
@@ -89,6 +147,11 @@ export default function BookingPage() {
       supabase.removeChannel(channel);
     };
   }, [selectedDate]);
+
+  // Clear selected time when day becomes closed
+  useEffect(() => {
+    if (isDayClosed && selectedTime) setSelectedTime(null);
+  }, [isDayClosed, selectedTime]);
 
   const handleConfirm = () => {
     if (!selectedTime) return;
@@ -238,48 +301,75 @@ export default function BookingPage() {
 
       {/* Time slots */}
       <div className="px-6 mt-8">
-        <h2 className="font-montserrat font-bold text-foreground tracking-tighter mb-3">
-          Horários disponíveis
-        </h2>
-        <div className="grid grid-cols-3 gap-2">
-          {timeSlots.map((time) => {
-            const isReserved = reservedSlots.includes(time);
-            return (
-              <motion.button
-                key={time}
-                whileTap={isReserved ? undefined : { scale: 0.95 }}
-                onClick={() => {
-                  if (isReserved) {
-                    toast({
-                      title: "Putz! Horário indisponível",
-                      description: "Este horário já foi reservado por outro cliente. Por favor, marque outro.",
-                      variant: "destructive",
-                    });
-                    return;
-                  }
-                  setSelectedTime(time);
-                }}
-                disabled={isReserved}
-                className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
-                  isReserved
-                    ? "surface-card opacity-40 cursor-not-allowed"
-                    : selectedTime === time
-                      ? "btn-primary-glow text-primary-foreground font-semibold"
-                      : "surface-card text-foreground font-semibold"
-                }`}
-              >
-                {isReserved ? (
-                  <span className="flex flex-col items-center leading-tight">
-                    <span style={{ color: "#808080" }}>{time}</span>
-                    <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
-                  </span>
-                ) : (
-                  time
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
+        <AnimatePresence mode="wait">
+          {isDayClosed ? (
+            <motion.div
+              key="closed"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="flex flex-col items-center justify-center py-16 rounded-2xl surface-card gap-3"
+            >
+              <CalendarOff className="h-10 w-10 text-dimmed" />
+              <p className="font-montserrat font-bold text-foreground text-lg">Fechado para agendamentos</p>
+              <p className="text-dimmed font-opensans text-sm text-center px-4">
+                Este dia não está disponível. Selecione outra data.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="open"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h2 className="font-montserrat font-bold text-foreground tracking-tighter mb-3">
+                Horários disponíveis
+              </h2>
+              <div className="grid grid-cols-3 gap-2">
+                {timeSlots.map((time) => {
+                  const isReserved = reservedSlots.includes(time);
+                  return (
+                    <motion.button
+                      key={time}
+                      whileTap={isReserved ? undefined : { scale: 0.95 }}
+                      onClick={() => {
+                        if (isReserved) {
+                          toast({
+                            title: "Putz! Horário indisponível",
+                            description: "Este horário já foi reservado por outro cliente. Por favor, marque outro.",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        setSelectedTime(time);
+                      }}
+                      disabled={isReserved}
+                      className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
+                        isReserved
+                          ? "surface-card opacity-40 cursor-not-allowed"
+                          : selectedTime === time
+                            ? "btn-primary-glow text-primary-foreground font-semibold"
+                            : "surface-card text-foreground font-semibold"
+                      }`}
+                    >
+                      {isReserved ? (
+                        <span className="flex flex-col items-center leading-tight">
+                          <span style={{ color: "#808080" }}>{time}</span>
+                          <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
+                        </span>
+                      ) : (
+                        time
+                      )}
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Confirm */}
