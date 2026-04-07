@@ -4,6 +4,7 @@ import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Plus, Edit2, Trash2, Search, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
