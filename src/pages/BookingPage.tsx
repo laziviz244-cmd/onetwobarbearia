@@ -175,14 +175,30 @@ export default function BookingPage() {
     finalizeBooking(name);
   };
 
-  const finalizeBooking = async (clientName: string) => {
+  const finalizeBooking = (clientName: string) => {
     if (!selectedTime) return;
 
     const d = new Date(selectedDate + "T00:00:00");
     const dateLabel = `${format(d, "dd")}/${format(d, "MM")}`;
     const userId = getCurrentAppointmentUserId() ?? clientName.trim();
 
-    const { error } = await supabase.from("appointments").insert({
+    // 1) Redirect to WhatsApp FIRST (synchronous, in user-click context for iOS)
+    const msg = encodeURIComponent(
+      `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${selectedTime}\n\n✅ *Agendamento realizado pelo App!*`
+    );
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`;
+
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches
+      || (navigator as any).standalone === true;
+
+    if (isStandalone && window.top) {
+      window.top.location.href = whatsappUrl;
+    } else {
+      window.location.href = whatsappUrl;
+    }
+
+    // 2) Fire-and-forget: save appointment + tag + notification (runs in background)
+    supabase.from("appointments").insert({
       service: serviceName,
       date: selectedDate,
       date_label: dateLabel,
@@ -190,39 +206,15 @@ export default function BookingPage() {
       status: "Confirmado",
       client_name: clientName,
       user_id: userId,
-    } as never);
+    } as never).then(({ error }) => {
+      if (error) console.error("Booking insert failed:", error);
+    });
 
-    if (error) {
-      toast({
-        title: "Não foi possível concluir o agendamento",
-        description: "Tente novamente em alguns instantes.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Tag user in OneSignal for push notifications
     tagOneSignalUser(userId);
 
-    // Schedule 10-min reminder notification
     supabase.functions.invoke("schedule-notification", {
       body: { clientName, serviceName, dateLabel, time: selectedTime, date: selectedDate },
     }).catch((err) => console.warn("Notification scheduling failed:", err));
-
-    // Always open WhatsApp with booking details (use location.assign for iOS compatibility)
-    const msg = encodeURIComponent(
-      `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${selectedTime}\n\n✅ *Agendamento realizado pelo App!*`
-    );
-    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
-
-    // iOS Safari/PWA blocks window.open — use a temporary <a> link click instead
-    const a = document.createElement("a");
-    a.href = whatsappUrl;
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
 
     setConfirmed(true);
   };
