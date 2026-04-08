@@ -209,11 +209,20 @@ export default function BookingPage() {
       body: { clientName, serviceName, dateLabel, time: selectedTime, date: selectedDate },
     }).catch((err) => console.warn("Notification scheduling failed:", err));
 
-    // Always open WhatsApp with booking details
+    // Always open WhatsApp with booking details (use location.assign for iOS compatibility)
     const msg = encodeURIComponent(
       `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${selectedTime}\n\n✅ *Agendamento realizado pelo App!*`
     );
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+
+    // iOS Safari/PWA blocks window.open — use a temporary <a> link click instead
+    const a = document.createElement("a");
+    a.href = whatsappUrl;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
     setConfirmed(true);
   };

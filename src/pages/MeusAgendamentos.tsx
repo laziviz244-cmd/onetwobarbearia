@@ -67,10 +67,15 @@ export default function MeusAgendamentos() {
 
     window.addEventListener("focus", syncCurrentUser);
     window.addEventListener("storage", syncCurrentUser);
+    window.addEventListener("pageshow", syncCurrentUser);
+    const onVisChange = () => { if (!document.hidden) syncCurrentUser(); };
+    document.addEventListener("visibilitychange", onVisChange);
 
     return () => {
       window.removeEventListener("focus", syncCurrentUser);
       window.removeEventListener("storage", syncCurrentUser);
+      window.removeEventListener("pageshow", syncCurrentUser);
+      document.removeEventListener("visibilitychange", onVisChange);
     };
   }, []);
 
