@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Plus, Edit2, Trash2 } from "lucide-react";
+import { Plus, Edit2, Trash2, BellRing } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
