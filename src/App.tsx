@@ -1,5 +1,5 @@
 // Versão Final OneTwo - Force Deploy
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -11,18 +11,20 @@ import { applyRoutePwaIdentity } from "@/lib/pwa-route-identity";
 import WelcomePage from "./pages/WelcomePage";
 import ClientHomePage from "./pages/ClientHomePage";
 import LoginPage from "./pages/LoginPage";
-import BarberShopDetailPage from "./pages/BarberShopDetailPage";
 import BookingPage from "./pages/BookingPage";
-import BarberDashboard from "./pages/BarberDashboard";
 import MeusAgendamentos from "./pages/MeusAgendamentos";
-import Perfil from "./pages/Perfil";
-import PlanosPage from "./pages/PlanosPage";
-import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminAgenda from "./pages/admin/AdminAgenda";
-import AdminFinanceiro from "./pages/admin/AdminFinanceiro";
-import AdminRelatorios from "./pages/admin/AdminRelatorios";
-import AdminConfiguracoes from "./pages/admin/AdminConfiguracoes";
+
+// Lazy-loaded pages (reduces initial bundle)
+const BarberShopDetailPage = lazy(() => import("./pages/BarberShopDetailPage"));
+const BarberDashboard = lazy(() => import("./pages/BarberDashboard"));
+const Perfil = lazy(() => import("./pages/Perfil"));
+const PlanosPage = lazy(() => import("./pages/PlanosPage"));
+const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminAgenda = lazy(() => import("./pages/admin/AdminAgenda"));
+const AdminFinanceiro = lazy(() => import("./pages/admin/AdminFinanceiro"));
+const AdminRelatorios = lazy(() => import("./pages/admin/AdminRelatorios"));
+const AdminConfiguracoes = lazy(() => import("./pages/admin/AdminConfiguracoes"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -135,31 +137,33 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <RoutePwaIdentitySync />
-          <Routes>
-            {/* Admin routes */}
-            <Route path="/admin/login" element={<AdminLoginEntry />} />
-            <Route path="/admin" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
-            <Route path="/admin/agenda" element={<ProtectedAdmin><AdminAgenda /></ProtectedAdmin>} />
-            <Route path="/admin/financeiro" element={<ProtectedAdmin><AdminFinanceiro /></ProtectedAdmin>} />
-            <Route path="/admin/relatorios" element={<ProtectedAdmin><AdminRelatorios /></ProtectedAdmin>} />
-            <Route path="/admin/configuracoes" element={<ProtectedAdmin><AdminConfiguracoes /></ProtectedAdmin>} />
-            <Route path="/agenda" element={<Navigate to="/admin/agenda" replace />} />
-            <Route path="/financeiro" element={<Navigate to="/admin/financeiro" replace />} />
-            <Route path="/relatorios" element={<Navigate to="/admin/relatorios" replace />} />
+          <Suspense fallback={null}>
+            <Routes>
+              {/* Admin routes */}
+              <Route path="/admin/login" element={<AdminLoginEntry />} />
+              <Route path="/admin" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
+              <Route path="/admin/agenda" element={<ProtectedAdmin><AdminAgenda /></ProtectedAdmin>} />
+              <Route path="/admin/financeiro" element={<ProtectedAdmin><AdminFinanceiro /></ProtectedAdmin>} />
+              <Route path="/admin/relatorios" element={<ProtectedAdmin><AdminRelatorios /></ProtectedAdmin>} />
+              <Route path="/admin/configuracoes" element={<ProtectedAdmin><AdminConfiguracoes /></ProtectedAdmin>} />
+              <Route path="/agenda" element={<Navigate to="/admin/agenda" replace />} />
+              <Route path="/financeiro" element={<Navigate to="/admin/financeiro" replace />} />
+              <Route path="/relatorios" element={<Navigate to="/admin/relatorios" replace />} />
 
-            <Route path="/" element={<SmartRedirect />} />
-            <Route path="/vitrine" element={<WelcomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/cliente" element={<ClientHomePage />} />
-            <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
-            <Route path="/agendar" element={<BookingPage />} />
-            <Route path="/planos" element={<PlanosPage />} />
-            <Route path="/dashboard" element={<BarberDashboard />} />
-            <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
-            <Route path="/perfil" element={<Perfil />} />
+              <Route path="/" element={<SmartRedirect />} />
+              <Route path="/vitrine" element={<WelcomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/cliente" element={<ClientHomePage />} />
+              <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
+              <Route path="/agendar" element={<BookingPage />} />
+              <Route path="/planos" element={<PlanosPage />} />
+              <Route path="/dashboard" element={<BarberDashboard />} />
+              <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
+              <Route path="/perfil" element={<Perfil />} />
 
-            <Route path="*" element={<RouteFallback />} />
-          </Routes>
+              <Route path="*" element={<RouteFallback />} />
+            </Routes>
+          </Suspense>
         </AdminAuthProvider>
       </BrowserRouter>
     </TooltipProvider>

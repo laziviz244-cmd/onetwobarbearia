@@ -1,14 +1,14 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
-import { Input } from "@/components/ui/input";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { adminCrud } from "@/lib/admin-api";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Appointment {
   id: string;
@@ -29,9 +29,13 @@ for (let h = 8; h < 20; h++) {
   TIME_SLOTS.push(`${String(h).padStart(2, "0")}:30`);
 }
 
+const dates = Array.from({ length: 30 }, (_, i) => {
+  const d = addDays(new Date(), i);
+  return { value: format(d, "yyyy-MM-dd"), label: format(d, "EEE", { locale: ptBR }), day: format(d, "d") };
+});
+
 export default function AdminAgenda() {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "" });
@@ -40,16 +44,30 @@ export default function AdminAgenda() {
 
   const dateLabel = format(new Date(selectedDate + "T12:00:00"), "EEE, d MMM", { locale: ptBR });
 
-  const loadAppointments = useCallback(async () => {
-    const res = await adminCrud<Appointment[]>("list_appointments", { date: selectedDate });
-    if (res.data) setAppointments(res.data);
-  }, [selectedDate]);
+  const { data: appointments = [] } = useQuery({
+    queryKey: ["admin-agenda", selectedDate],
+    queryFn: async () => {
+      const res = await adminCrud<Appointment[]>("list_appointments", { date: selectedDate });
+      return res.data ?? [];
+    },
+    staleTime: 30_000,
+    gcTime: 5 * 60_000,
+    refetchOnMount: true,
+  });
 
+  // Realtime: auto-refresh on changes
   useEffect(() => {
-    loadAppointments();
-  }, [loadAppointments]);
+    const channel = supabase
+      .channel("agenda-appointments-rt")
+      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
+        queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] });
+        queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [queryClient, selectedDate]);
 
-  const occupiedTimes = new Set(appointments.map(a => a.time));
+  const occupiedTimes = useMemo(() => new Set(appointments.map(a => a.time)), [appointments]);
 
   const openNew = (time?: string) => {
     setEditingId(null);
@@ -68,47 +86,34 @@ export default function AdminAgenda() {
     if (!editingId && occupiedTimes.has(form.time)) { toast.error("Esse horário já está ocupado."); return; }
 
     if (editingId) {
-      const res = await adminCrud("update_appointment", {
-        id: editingId,
-        client_name: form.client_name.trim(),
-        service: form.service,
-        time: form.time,
-        phone: form.phone || null,
-      });
-      if (res.error) { toast.error("Erro ao atualizar."); return; }
+      // Optimistic update
+      queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate], (old) =>
+        (old ?? []).map(a => a.id === editingId ? { ...a, client_name: form.client_name.trim(), service: form.service, time: form.time, phone: form.phone || undefined } : a)
+      );
+      setDialogOpen(false);
+      const res = await adminCrud("update_appointment", { id: editingId, client_name: form.client_name.trim(), service: form.service, time: form.time, phone: form.phone || null });
+      if (res.error) { toast.error("Erro ao atualizar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] }); return; }
       toast.success("Agendamento atualizado!");
     } else {
-      const res = await adminCrud("add_appointment", {
-        client_name: form.client_name.trim(),
-        service: form.service,
-        date: selectedDate,
-        date_label: dateLabel,
-        time: form.time,
-        status: "Confirmado",
-        user_id: form.client_name.trim(),
-        phone: form.phone || null,
-      });
+      setDialogOpen(false);
+      const res = await adminCrud("add_appointment", { client_name: form.client_name.trim(), service: form.service, date: selectedDate, date_label: dateLabel, time: form.time, status: "Confirmado", user_id: form.client_name.trim(), phone: form.phone || null });
       if (res.error) { toast.error("Erro ao salvar."); return; }
       toast.success("Agendamento criado!");
+      queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] });
     }
-    setDialogOpen(false);
-    loadAppointments();
-    // Invalidate dashboard cache so it shows new data immediately
     queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
 
   const handleDelete = async (id: string) => {
+    // Optimistic delete
+    queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate], (old) =>
+      (old ?? []).filter(a => a.id !== id)
+    );
     const res = await adminCrud("delete_appointment", { id });
-    if (res.error) { toast.error("Erro ao cancelar."); return; }
+    if (res.error) { toast.error("Erro ao cancelar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] }); return; }
     toast.success("Agendamento cancelado!");
-    loadAppointments();
     queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
-
-  const dates = Array.from({ length: 30 }, (_, i) => {
-    const d = addDays(new Date(), i);
-    return { value: format(d, "yyyy-MM-dd"), label: format(d, "EEE", { locale: ptBR }), day: format(d, "d") };
-  });
 
   const inputStyle = { background: "#111111", border: "1px solid #1F2937", color: "#F9FAFB" };
 
@@ -154,7 +159,6 @@ export default function AdminAgenda() {
           </div>
         </div>
 
-
         {/* Time slots */}
         <div className="flex flex-col gap-2.5 w-full px-1">
           {TIME_SLOTS.map((time) => {
@@ -173,28 +177,17 @@ export default function AdminAgenda() {
                 <span className="text-base font-opensans font-bold tabular-nums w-14 flex-shrink-0 text-muted-foreground">
                   {time}
                 </span>
-
                 {apt ? (
                   <>
                     <div className="flex-1 min-w-0 ml-2">
-                      <p className="font-opensans font-semibold text-base truncate text-foreground">
-                        {apt.client_name}
-                      </p>
-                      <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">
-                        {apt.service}
-                      </p>
+                      <p className="font-opensans font-semibold text-base truncate text-foreground">{apt.client_name}</p>
+                      <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">{apt.service}</p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0 ml-2">
-                      <button
-                        onClick={() => openEdit(apt)}
-                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
-                      >
+                      <button onClick={() => openEdit(apt)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
                         <Edit2 className="h-[22px] w-[22px] text-primary" strokeWidth={1.8} />
                       </button>
-                      <button
-                        onClick={() => handleDelete(apt.id)}
-                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10"
-                      >
+                      <button onClick={() => handleDelete(apt.id)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
                         <Trash2 className="h-[22px] w-[22px] text-destructive" strokeWidth={1.8} />
                       </button>
                     </div>
