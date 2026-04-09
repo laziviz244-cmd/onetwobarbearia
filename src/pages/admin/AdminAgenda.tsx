@@ -55,17 +55,17 @@ export default function AdminAgenda() {
     refetchOnMount: true,
   });
 
-  // Realtime: auto-refresh on changes
+  // Realtime: auto-refresh on any appointment change (global, not tied to selectedDate)
   useEffect(() => {
     const channel = supabase
       .channel("agenda-appointments-rt")
       .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
-        queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] });
+        queryClient.invalidateQueries({ queryKey: ["admin-agenda"] });
         queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [queryClient, selectedDate]);
+  }, [queryClient]);
 
   const occupiedTimes = useMemo(() => new Set(appointments.map(a => a.time)), [appointments]);
 
