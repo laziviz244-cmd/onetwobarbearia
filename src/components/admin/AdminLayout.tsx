@@ -76,16 +76,6 @@ function NavContent({ onNavigate, theme, toggleTheme }: { onNavigate?: () => voi
         })}
       </nav>
 
-      <div className="px-3 py-2">
-        <button
-          onClick={toggleTheme}
-          className="w-full flex items-center gap-5 px-5 py-4 rounded-2xl font-opensans font-medium transition-colors min-h-[52px]"
-          style={{ color: c.subtext, fontSize: "16px" }}
-        >
-          {theme === "dark" ? <Sun className="h-6 w-6" style={{ color: "#F59E0B" }} /> : <Moon className="h-6 w-6" style={{ color: "#6366F1" }} />}
-          {theme === "dark" ? "Modo Claro" : "Modo Escuro"}
-        </button>
-      </div>
 
       <div className="px-3 py-6 mt-auto border-t" style={{ borderColor: c.border }}>
         <button
