@@ -115,6 +115,29 @@ export default function AdminAgenda() {
     queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
 
+  const [bellAnimating, setBellAnimating] = useState<string | null>(null);
+
+  const handleNotify = async (apt: Appointment) => {
+    setBellAnimating(apt.id);
+    setTimeout(() => setBellAnimating(null), 600);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-notification", {
+        body: {
+          user_id: apt.user_id,
+          title: "Sua vez chegou! 💈",
+          message: "Opa, o barbeiro já está te esperando. Pode vir!",
+        },
+      });
+      if (error || data?.error) {
+        toast.error("Erro ao enviar notificação.");
+        return;
+      }
+      toast.success("Notificação enviada!");
+    } catch {
+      toast.error("Erro ao enviar notificação.");
+    }
+  };
+
   const inputStyle = { background: "#111111", border: "1px solid #1F2937", color: "#F9FAFB" };
 
   return (
@@ -186,6 +209,13 @@ export default function AdminAgenda() {
                     <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                       <button onClick={() => openEdit(apt)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
                         <Edit2 className="h-[22px] w-[22px] text-primary" strokeWidth={1.8} />
+                      </button>
+                      <button
+                        onClick={() => handleNotify(apt)}
+                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-all active:bg-white/10"
+                        style={{ transform: bellAnimating === apt.id ? "scale(1.25) rotate(-15deg)" : "scale(1) rotate(0deg)", transition: "transform 0.3s ease" }}
+                      >
+                        <BellRing className="h-[22px] w-[22px]" strokeWidth={1.8} style={{ color: "#D4AF37" }} fill="none" />
                       </button>
                       <button onClick={() => handleDelete(apt.id)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
                         <Trash2 className="h-[22px] w-[22px] text-destructive" strokeWidth={1.8} />
