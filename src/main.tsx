@@ -10,6 +10,7 @@ async function bootstrap() {
   if (!shouldRender) return;
 
   await setupPwaInstall();
+  setupAutoVersionCheck();
   initOneSignal();
   createRoot(document.getElementById("root")!).render(<App />);
 }
