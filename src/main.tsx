@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
-import { checkVersionAndReload } from "./lib/version-check";
+import { checkVersionAndReload, setupAutoVersionCheck } from "./lib/version-check";
 import { setupPwaInstall } from "./pwa-install";
 import { initOneSignal } from "./lib/onesignal";
 import App from "./App.tsx";
@@ -10,6 +10,7 @@ async function bootstrap() {
   if (!shouldRender) return;
 
   await setupPwaInstall();
+  setupAutoVersionCheck();
   initOneSignal();
   createRoot(document.getElementById("root")!).render(<App />);
 }
