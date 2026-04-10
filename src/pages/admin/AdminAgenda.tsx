@@ -23,7 +23,7 @@ interface Appointment {
 }
 
 const SERVICES = ["Corte Masculino", "Barba", "Corte + Barba", "Degradê", "Pigmentação", "Sobrancelha"];
-const EXCLUDED_SLOTS = new Set(["12:30", "13:30"]);
+const EXCLUDED_SLOTS = new Set(["12:30", "13:00", "13:30"]);
 const TIME_SLOTS: string[] = [];
 for (let h = 8; h < 20; h++) {
   const full = `${String(h).padStart(2, "0")}:00`;
