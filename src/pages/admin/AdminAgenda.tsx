@@ -23,10 +23,13 @@ interface Appointment {
 }
 
 const SERVICES = ["Corte Masculino", "Barba", "Corte + Barba", "Degradê", "Pigmentação", "Sobrancelha"];
+const EXCLUDED_SLOTS = new Set(["12:30", "13:30"]);
 const TIME_SLOTS: string[] = [];
 for (let h = 8; h < 20; h++) {
-  TIME_SLOTS.push(`${String(h).padStart(2, "0")}:00`);
-  TIME_SLOTS.push(`${String(h).padStart(2, "0")}:30`);
+  const full = `${String(h).padStart(2, "0")}:00`;
+  const half = `${String(h).padStart(2, "0")}:30`;
+  if (!EXCLUDED_SLOTS.has(full)) TIME_SLOTS.push(full);
+  if (!EXCLUDED_SLOTS.has(half)) TIME_SLOTS.push(half);
 }
 
 const dates = Array.from({ length: 30 }, (_, i) => {
