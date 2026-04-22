@@ -99,10 +99,24 @@ export default function MeusAgendamentos() {
   const handleCancel = async (id: string) => {
     if (!currentUserId) return;
 
+    // Cancel scheduled push notification (if any)
+    const { data: row } = await supabase
+      .from("appointments")
+      .select("notification_id")
+      .eq("id", id)
+      .eq("user_id", currentUserId)
+      .single();
+
     await supabase.from("appointments").delete().eq("id", id).eq("user_id", currentUserId);
 
+    const notifId = (row as any)?.notification_id;
+    if (notifId) {
+      supabase.functions
+        .invoke("cancel-notification", { body: { notification_id: notifId } })
+        .catch((err) => console.warn("Cancel push failed:", err));
+    }
+
     setCancelId(null);
-    // loadAppointments will re-count and update loyaltyCount automatically
     loadAppointments();
   };
 
