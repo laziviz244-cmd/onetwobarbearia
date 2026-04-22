@@ -23,10 +23,10 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Calculate send_after: 10 minutes before appointment
+    // Calculate send_after: 30 minutes before appointment
     const [hours, minutes] = time.split(":").map(Number);
     const appointmentDate = new Date(`${date}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00-03:00`);
-    const sendAt = new Date(appointmentDate.getTime() - 10 * 60 * 1000);
+    const sendAt = new Date(appointmentDate.getTime() - 30 * 60 * 1000);
 
     // Don't schedule if the reminder time is already in the past
     if (sendAt.getTime() <= Date.now()) {
@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
       send_after: sendAt.toISOString(),
       headings: { en: "⏰ Lembrete de Agendamento" },
       contents: {
-        en: `Seu ${serviceName} é daqui a 10 minutos! (${dateLabel} às ${time}) — Onetwo Barbershop`,
+        en: `Seu ${serviceName} é daqui a 30 minutos! (${dateLabel} às ${time}) — Onetwo Barbershop`,
       },
     };
 
