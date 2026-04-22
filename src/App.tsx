@@ -137,7 +137,7 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <RoutePwaIdentitySync />
-          <Suspense fallback={null}>
+          <Suspense fallback={<div className="min-h-screen bg-background" aria-hidden />}>
             <Routes>
               {/* Admin routes */}
               <Route path="/admin/login" element={<AdminLoginEntry />} />
