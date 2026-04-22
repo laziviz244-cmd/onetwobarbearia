@@ -43,6 +43,7 @@ export type Database = {
           date: string
           date_label: string
           id: string
+          notification_id: string | null
           payment_method: string | null
           phone: string | null
           service: string
@@ -57,6 +58,7 @@ export type Database = {
           date: string
           date_label: string
           id?: string
+          notification_id?: string | null
           payment_method?: string | null
           phone?: string | null
           service: string
@@ -71,6 +73,7 @@ export type Database = {
           date?: string
           date_label?: string
           id?: string
+          notification_id?: string | null
           payment_method?: string | null
           phone?: string | null
           service?: string
