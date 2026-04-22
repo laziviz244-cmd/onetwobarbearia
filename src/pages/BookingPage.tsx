@@ -197,24 +197,38 @@ export default function BookingPage() {
       window.location.href = whatsappUrl;
     }
 
-    // 2) Fire-and-forget: save appointment + tag + notification (runs in background)
-    supabase.from("appointments").insert({
-      service: serviceName,
-      date: selectedDate,
-      date_label: dateLabel,
-      time: selectedTime,
-      status: "Confirmado",
-      client_name: clientName,
-      user_id: userId,
-    } as never).then(({ error }) => {
-      if (error) console.error("Booking insert failed:", error);
-    });
+    // 2) Fire-and-forget: save appointment + tag + schedule notification (background)
+    (async () => {
+      const { data: inserted, error: insErr } = await supabase
+        .from("appointments")
+        .insert({
+          service: serviceName,
+          date: selectedDate,
+          date_label: dateLabel,
+          time: selectedTime,
+          status: "Confirmado",
+          client_name: clientName,
+          user_id: userId,
+        } as never)
+        .select("id")
+        .single();
 
-    tagOneSignalUser(userId);
+      if (insErr) { console.error("Booking insert failed:", insErr); return; }
 
-    supabase.functions.invoke("schedule-notification", {
-      body: { clientName, serviceName, dateLabel, time: selectedTime, date: selectedDate },
-    }).catch((err) => console.warn("Notification scheduling failed:", err));
+      tagOneSignalUser(userId);
+
+      try {
+        const { data: notifRes } = await supabase.functions.invoke("schedule-notification", {
+          body: { clientName: userId, serviceName, dateLabel, time: selectedTime, date: selectedDate },
+        });
+        const notifId = (notifRes as any)?.notification_id ?? (notifRes as any)?.id;
+        if (notifId && inserted?.id) {
+          await supabase.from("appointments").update({ notification_id: notifId } as never).eq("id", inserted.id);
+        }
+      } catch (err) {
+        console.warn("Notification scheduling failed:", err);
+      }
+    })();
 
     setConfirmed(true);
   };
