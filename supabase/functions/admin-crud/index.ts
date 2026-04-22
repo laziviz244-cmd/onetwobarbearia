@@ -167,6 +167,20 @@ Deno.serve(async (req) => {
           user_id: user_id || client_name, phone: phone || null
         }).select().single()
         if (error) return jsonResponse({ error: error.message }, 500)
+
+        // Schedule push reminder 30min before
+        const notifId = await scheduleOneSignalReminder({
+          clientName: data.client_name,
+          userId: data.user_id,
+          serviceName: data.service,
+          dateLabel: data.date_label,
+          time: data.time,
+          date: data.date,
+        })
+        if (notifId) {
+          await supabase.from('appointments').update({ notification_id: notifId }).eq('id', data.id)
+        }
+
         return jsonResponse({ data })
       }
       case 'update_appointment': {
