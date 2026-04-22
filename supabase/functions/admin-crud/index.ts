@@ -29,6 +29,53 @@ function jsonResponse(body: any, status = 200) {
   })
 }
 
+const ONESIGNAL_APP_ID = "0f5b4b37-b119-45c0-bd5e-641d5553970d"
+
+async function cancelOneSignalNotification(notificationId: string): Promise<void> {
+  const key = Deno.env.get("ONESIGNAL_REST_API_KEY")
+  if (!key || !notificationId) return
+  try {
+    await fetch(`https://api.onesignal.com/notifications/${notificationId}?app_id=${ONESIGNAL_APP_ID}`, {
+      method: "DELETE",
+      headers: { Authorization: `Key ${key}` },
+    })
+  } catch (err) {
+    console.warn("OneSignal cancel failed:", err)
+  }
+}
+
+async function scheduleOneSignalReminder(p: {
+  clientName: string; userId: string; serviceName: string; dateLabel: string; time: string; date: string;
+}): Promise<string | null> {
+  const key = Deno.env.get("ONESIGNAL_REST_API_KEY")
+  if (!key) return null
+  try {
+    const [hours, minutes] = p.time.split(":").map(Number)
+    const appointmentDate = new Date(`${p.date}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00-03:00`)
+    const sendAt = new Date(appointmentDate.getTime() - 30 * 60 * 1000)
+    if (sendAt.getTime() <= Date.now()) return null
+
+    const res = await fetch("https://api.onesignal.com/notifications", {
+      method: "POST",
+      headers: { Authorization: `Key ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        app_id: ONESIGNAL_APP_ID,
+        include_aliases: { external_id: [p.userId || p.clientName] },
+        target_channel: "push",
+        send_after: sendAt.toISOString(),
+        headings: { en: "⏰ Lembrete de Agendamento" },
+        contents: { en: `Seu ${p.serviceName} é daqui a 30 minutos! (${p.dateLabel} às ${p.time}) — Onetwo Barbershop` },
+      }),
+    })
+    const result = await res.json().catch(() => ({}))
+    if (!res.ok) { console.error("OneSignal reschedule error:", result); return null }
+    return result.id ?? null
+  } catch (err) {
+    console.warn("OneSignal reschedule failed:", err)
+    return null
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -125,18 +172,53 @@ Deno.serve(async (req) => {
       case 'update_appointment': {
         const { id, client_name, service, time, phone } = params
         if (!id) return jsonResponse({ error: 'ID obrigatório' }, 400)
+
+        // Get existing row to know if time/date changed and to fetch notification_id
+        const { data: existing } = await supabase.from('appointments').select('*').eq('id', id).single()
+
         const updates: any = {}
         if (client_name !== undefined) updates.client_name = client_name
         if (service !== undefined) updates.service = service
         if (time !== undefined) updates.time = time
         if (phone !== undefined) updates.phone = phone
+
+        // If time changed, cancel old notification and reschedule
+        const timeChanged = existing && time !== undefined && existing.time !== time
+        if (timeChanged && existing?.notification_id) {
+          await cancelOneSignalNotification(existing.notification_id)
+          updates.notification_id = null
+        }
+
         const { data, error } = await supabase.from('appointments').update(updates).eq('id', id).select().single()
         if (error) return jsonResponse({ error: error.message }, 500)
+
+        // Reschedule notification with new time
+        if (timeChanged && data) {
+          const newId = await scheduleOneSignalReminder({
+            clientName: data.client_name,
+            userId: data.user_id,
+            serviceName: data.service,
+            dateLabel: data.date_label,
+            time: data.time,
+            date: data.date,
+          })
+          if (newId) {
+            await supabase.from('appointments').update({ notification_id: newId }).eq('id', id)
+          }
+        }
+
         return jsonResponse({ data })
       }
       case 'delete_appointment': {
         const { id } = params
         if (!id) return jsonResponse({ error: 'ID obrigatório' }, 400)
+
+        // Cancel scheduled push if any
+        const { data: existing } = await supabase.from('appointments').select('notification_id').eq('id', id).single()
+        if (existing?.notification_id) {
+          await cancelOneSignalNotification(existing.notification_id)
+        }
+
         const { error } = await supabase.from('appointments').delete().eq('id', id)
         if (error) return jsonResponse({ error: error.message }, 500)
         return jsonResponse({ success: true })
