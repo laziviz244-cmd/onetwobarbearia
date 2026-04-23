@@ -39,6 +39,41 @@
     OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.init({
         appId: "0f5b4b37-b119-45c0-bd5e-641d5553970d",
+        serviceWorkerPath: "OneSignalSDKWorker.js",
+        serviceWorkerParam: { scope: "/" },
+        allowLocalhostAsSecureOrigin: true,
+        notifyButton: { enable: false },
+        promptOptions: {
+          slidedown: {
+            prompts: [{
+              type: "push",
+              autoPrompt: true,
+              text: {
+                actionMessage: "Receba lembretes do seu agendamento 30 min antes do horário.",
+                acceptButton: "Ativar",
+                cancelButton: "Agora não"
+              },
+              delay: { pageViews: 1, timeDelay: 3 }
+            }]
+          }
+        }
+      });
+
+      // Garante que a Welcome Notification seja disparada ao conceder permissão
+      OneSignal.Notifications.addEventListener("permissionChange", async (granted) => {
+        console.log("[OneSignal] permissionChange:", granted);
+        if (granted) {
+          try {
+            await OneSignal.User.PushSubscription.optIn();
+            console.log("[OneSignal] optIn OK, subId:", OneSignal.User.PushSubscription.id);
+          } catch (e) {
+            console.warn("[OneSignal] optIn failed:", e);
+          }
+        }
+      });
+
+      OneSignal.User.PushSubscription.addEventListener("change", (event) => {
+        console.log("[OneSignal] subscription change:", event);
       });
     });
   </script>
