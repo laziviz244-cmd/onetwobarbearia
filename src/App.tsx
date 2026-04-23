@@ -1,4 +1,4 @@
-// Versão Final OneTwo - Force Deploy v2
+// Versão Final OneTwo - Force Deploy
 import { useEffect, useLayoutEffect, lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate, useLocation, useNavigate } from "react-router-dom";
@@ -8,12 +8,21 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminAuthProvider, useAdminAuth } from "@/contexts/AdminAuthContext";
 import { isAdminLikePath, normalizePathname, resolveAdminPath } from "@/lib/emergency-route-recovery";
 import { applyRoutePwaIdentity } from "@/lib/pwa-route-identity";
+import { IOSInstallGuide } from "@/components/IOSInstallGuide";
 import WelcomePage from "./pages/WelcomePage";
 import ClientHomePage from "./pages/ClientHomePage";
 import LoginPage from "./pages/LoginPage";
 import BookingPage from "./pages/BookingPage";
 import MeusAgendamentos from "./pages/MeusAgendamentos";
-
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "0f5b4b37-b119-45c0-bd5e-641d5553970d",
+    });
+  });
+</script>
 // Lazy-loaded pages (reduces initial bundle)
 const BarberShopDetailPage = lazy(() => import("./pages/BarberShopDetailPage"));
 const BarberDashboard = lazy(() => import("./pages/BarberDashboard"));
@@ -108,6 +117,12 @@ function RoutePwaIdentitySync() {
   return null;
 }
 
+function ClientOnlyIOSGuide() {
+  const location = useLocation();
+  if (isAdminLikePath(location.pathname)) return null;
+  return <IOSInstallGuide />;
+}
+
 function RouteFallback() {
   const location = useLocation();
   const { user, isLoading } = useAdminAuth();
@@ -137,6 +152,7 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <RoutePwaIdentitySync />
+          <ClientOnlyIOSGuide />
           <Suspense fallback={<div className="min-h-screen bg-background" aria-hidden />}>
             <Routes>
               {/* Admin routes */}
