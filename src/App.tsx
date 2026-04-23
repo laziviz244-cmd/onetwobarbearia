@@ -137,7 +137,6 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <RoutePwaIdentitySync />
-          <ClientOnlyIOSGuide />
           <Suspense fallback={<div className="min-h-screen bg-background" aria-hidden />}>
             <Routes>
               {/* Admin routes */}
