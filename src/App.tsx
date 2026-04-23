@@ -8,7 +8,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminAuthProvider, useAdminAuth } from "@/contexts/AdminAuthContext";
 import { isAdminLikePath, normalizePathname, resolveAdminPath } from "@/lib/emergency-route-recovery";
 import { applyRoutePwaIdentity } from "@/lib/pwa-route-identity";
-import { IOSInstallGuide } from "@/components/IOSInstallGuide";
 import WelcomePage from "./pages/WelcomePage";
 import ClientHomePage from "./pages/ClientHomePage";
 import LoginPage from "./pages/LoginPage";
@@ -109,12 +108,6 @@ function RoutePwaIdentitySync() {
   return null;
 }
 
-function ClientOnlyIOSGuide() {
-  const location = useLocation();
-  if (isAdminLikePath(location.pathname)) return null;
-  return <IOSInstallGuide />;
-}
-
 function RouteFallback() {
   const location = useLocation();
   const { user, isLoading } = useAdminAuth();
@@ -144,7 +137,6 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <RoutePwaIdentitySync />
-          <ClientOnlyIOSGuide />
           <Suspense fallback={<div className="min-h-screen bg-background" aria-hidden />}>
             <Routes>
               {/* Admin routes */}
