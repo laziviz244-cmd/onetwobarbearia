@@ -8,7 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminAuthProvider, useAdminAuth } from "@/contexts/AdminAuthContext";
 import { isAdminLikePath, normalizePathname, resolveAdminPath } from "@/lib/emergency-route-recovery";
 import { applyRoutePwaIdentity } from "@/lib/pwa-route-identity";
-
+import { IOSInstallGuide } from "@/components/IOSInstallGuide";
 import WelcomePage from "./pages/WelcomePage";
 import ClientHomePage from "./pages/ClientHomePage";
 import LoginPage from "./pages/LoginPage";
@@ -80,9 +80,7 @@ function AdminLoginEntry() {
 }
 
 function SmartRedirect() {
-  const hasClientSession = Boolean(
-    localStorage.getItem("onetwo_user") || localStorage.getItem("last_logged_user")
-  );
+  const hasClientSession = Boolean(localStorage.getItem("onetwo_user") || localStorage.getItem("last_logged_user"));
   if (hasClientSession) {
     return <Navigate to="/cliente" replace />;
   }
@@ -109,6 +107,11 @@ function RoutePwaIdentitySync() {
   return null;
 }
 
+function ClientOnlyIOSGuide() {
+  const location = useLocation();
+  if (isAdminLikePath(location.pathname)) return null;
+  return <IOSInstallGuide />;
+}
 
 function RouteFallback() {
   const location = useLocation();
@@ -123,9 +126,11 @@ function RouteFallback() {
   if (isAdminLikePath(normalizedPath)) {
     if (isLoading) return null;
 
-    return user || hasStoredSession
-      ? <Navigate to="/admin" replace />
-      : <Navigate to="/admin/login" state={{ from: normalizedPath }} replace />;
+    return user || hasStoredSession ? (
+      <Navigate to="/admin" replace />
+    ) : (
+      <Navigate to="/admin/login" state={{ from: normalizedPath }} replace />
+    );
   }
 
   return <Navigate to="/" replace />;
@@ -139,16 +144,51 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <RoutePwaIdentitySync />
-          
+          <ClientOnlyIOSGuide />
           <Suspense fallback={<div className="min-h-screen bg-background" aria-hidden />}>
             <Routes>
               {/* Admin routes */}
               <Route path="/admin/login" element={<AdminLoginEntry />} />
-              <Route path="/admin" element={<ProtectedAdmin><AdminDashboard /></ProtectedAdmin>} />
-              <Route path="/admin/agenda" element={<ProtectedAdmin><AdminAgenda /></ProtectedAdmin>} />
-              <Route path="/admin/financeiro" element={<ProtectedAdmin><AdminFinanceiro /></ProtectedAdmin>} />
-              <Route path="/admin/relatorios" element={<ProtectedAdmin><AdminRelatorios /></ProtectedAdmin>} />
-              <Route path="/admin/configuracoes" element={<ProtectedAdmin><AdminConfiguracoes /></ProtectedAdmin>} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedAdmin>
+                    <AdminDashboard />
+                  </ProtectedAdmin>
+                }
+              />
+              <Route
+                path="/admin/agenda"
+                element={
+                  <ProtectedAdmin>
+                    <AdminAgenda />
+                  </ProtectedAdmin>
+                }
+              />
+              <Route
+                path="/admin/financeiro"
+                element={
+                  <ProtectedAdmin>
+                    <AdminFinanceiro />
+                  </ProtectedAdmin>
+                }
+              />
+              <Route
+                path="/admin/relatorios"
+                element={
+                  <ProtectedAdmin>
+                    <AdminRelatorios />
+                  </ProtectedAdmin>
+                }
+              />
+              <Route
+                path="/admin/configuracoes"
+                element={
+                  <ProtectedAdmin>
+                    <AdminConfiguracoes />
+                  </ProtectedAdmin>
+                }
+              />
               <Route path="/agenda" element={<Navigate to="/admin/agenda" replace />} />
               <Route path="/financeiro" element={<Navigate to="/admin/financeiro" replace />} />
               <Route path="/relatorios" element={<Navigate to="/admin/relatorios" replace />} />
