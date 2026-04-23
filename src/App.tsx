@@ -14,15 +14,7 @@ import ClientHomePage from "./pages/ClientHomePage";
 import LoginPage from "./pages/LoginPage";
 import BookingPage from "./pages/BookingPage";
 import MeusAgendamentos from "./pages/MeusAgendamentos";
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "0f5b4b37-b119-45c0-bd5e-641d5553970d",
-    });
-  });
-</script>
+
 // Lazy-loaded pages (reduces initial bundle)
 const BarberShopDetailPage = lazy(() => import("./pages/BarberShopDetailPage"));
 const BarberDashboard = lazy(() => import("./pages/BarberDashboard"));
