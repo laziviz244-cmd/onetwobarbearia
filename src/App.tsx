@@ -1,4 +1,4 @@
-// Versão Final OneTwo - Force Deploy
+// Versão Final OneTwo - Force Deploy v2
 import { useEffect, useLayoutEffect, lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate, useLocation, useNavigate } from "react-router-dom";
