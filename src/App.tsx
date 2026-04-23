@@ -109,11 +109,6 @@ function RoutePwaIdentitySync() {
   return null;
 }
 
-function ClientOnlyIOSGuide() {
-  const location = useLocation();
-  if (isAdminLikePath(location.pathname)) return null;
-  return <IOSInstallGuide />;
-}
 
 function RouteFallback() {
   const location = useLocation();
