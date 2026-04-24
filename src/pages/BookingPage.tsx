@@ -73,6 +73,7 @@ export default function BookingPage() {
   const [showNameModal, setShowNameModal] = useState(false);
   const [guestName, setGuestName] = useState("");
   const [isBooking, setIsBooking] = useState(false);
+  const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
 
   const [reservedSlots, setReservedSlots] = useState<string[]>([]);
   const [businessHours, setBusinessHours] = useState<Record<string, DaySchedule> | null>(null);
@@ -90,12 +91,34 @@ export default function BookingPage() {
 
   const isDayClosed = selectedDaySchedule ? !selectedDaySchedule.enabled : false;
 
-  // Filter time slots based on business hours
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 30_000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  // Filter time slots based on business hours and hide past slots for today
   const timeSlots = useMemo(() => {
-    if (!selectedDaySchedule || !selectedDaySchedule.enabled) return ALL_TIME_SLOTS;
-    const { open, close } = selectedDaySchedule;
-    return ALL_TIME_SLOTS.filter((t) => t >= open && t < close);
-  }, [selectedDaySchedule]);
+    const baseSlots = !selectedDaySchedule || !selectedDaySchedule.enabled
+      ? ALL_TIME_SLOTS
+      : ALL_TIME_SLOTS.filter((t) => t >= selectedDaySchedule.open && t < selectedDaySchedule.close);
+
+    if (selectedDate !== format(currentDateTime, "yyyy-MM-dd")) return baseSlots;
+
+    const currentTime = format(currentDateTime, "HH:mm");
+    return baseSlots.filter((time) => currentTime <= time);
+  }, [selectedDaySchedule, selectedDate, currentDateTime]);
+
+  const hasNoMoreSlotsToday = selectedDate === format(currentDateTime, "yyyy-MM-dd") && timeSlots.length === 0;
+
+  // Clear selected time when day closes or the slot is no longer visible
+  useEffect(() => {
+    if (selectedTime && (isDayClosed || !timeSlots.includes(selectedTime))) {
+      setSelectedTime(null);
+    }
+  }, [isDayClosed, selectedTime, timeSlots]);
 
   // Fetch business hours + subscribe to realtime
   useEffect(() => {
@@ -149,11 +172,6 @@ export default function BookingPage() {
       supabase.removeChannel(channel);
     };
   }, [selectedDate]);
-
-  // Clear selected time when day becomes closed
-  useEffect(() => {
-    if (isDayClosed && selectedTime) setSelectedTime(null);
-  }, [isDayClosed, selectedTime]);
 
   const handleConfirm = () => {
     if (!selectedTime || isBooking) return;
@@ -375,45 +393,51 @@ export default function BookingPage() {
               <h2 className="font-montserrat font-bold text-foreground tracking-tighter mb-3">
                 Horários disponíveis
               </h2>
-              <div className="grid grid-cols-3 gap-2">
-                {timeSlots.map((time) => {
-                  const isReserved = reservedSlots.includes(time);
-                  return (
-                    <motion.button
-                      key={time}
-                      whileTap={isReserved ? undefined : { scale: 0.95 }}
-                      onClick={() => {
-                        if (isReserved) {
-                          toast({
-                            title: "Putz! Horário indisponível",
-                            description: "Este horário já foi reservado por outro cliente. Por favor, marque outro.",
-                            variant: "destructive",
-                          });
-                          return;
-                        }
-                        setSelectedTime(time);
-                      }}
-                      disabled={isReserved || isBooking}
-                      className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
-                        isReserved
-                          ? "surface-card opacity-40 cursor-not-allowed"
-                          : selectedTime === time
-                            ? "btn-primary-glow text-primary-foreground font-semibold"
-                            : "surface-card text-foreground font-semibold"
-                      }`}
-                    >
-                      {isReserved ? (
-                        <span className="flex flex-col items-center leading-tight">
-                          <span style={{ color: "#808080" }}>{time}</span>
-                          <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
-                        </span>
-                      ) : (
-                        time
-                      )}
-                    </motion.button>
-                  );
-                })}
-              </div>
+              {hasNoMoreSlotsToday ? (
+                <div className="rounded-2xl surface-card px-4 py-6 text-center font-opensans text-sm text-dimmed">
+                  Não há mais horários disponíveis para hoje
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-2">
+                  {timeSlots.map((time) => {
+                    const isReserved = reservedSlots.includes(time);
+                    return (
+                      <motion.button
+                        key={time}
+                        whileTap={isReserved ? undefined : { scale: 0.95 }}
+                        onClick={() => {
+                          if (isReserved) {
+                            toast({
+                              title: "Putz! Horário indisponível",
+                              description: "Este horário já foi reservado por outro cliente. Por favor, marque outro.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          setSelectedTime(time);
+                        }}
+                        disabled={isReserved || isBooking}
+                        className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
+                          isReserved
+                            ? "surface-card opacity-40 cursor-not-allowed"
+                            : selectedTime === time
+                              ? "btn-primary-glow text-primary-foreground font-semibold"
+                              : "surface-card text-foreground font-semibold"
+                        }`}
+                      >
+                        {isReserved ? (
+                          <span className="flex flex-col items-center leading-tight">
+                            <span style={{ color: "#808080" }}>{time}</span>
+                            <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
+                          </span>
+                        ) : (
+                          time
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
