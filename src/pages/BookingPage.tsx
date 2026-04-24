@@ -175,71 +175,90 @@ export default function BookingPage() {
     finalizeBooking(name);
   };
 
-  const finalizeBooking = (clientName: string) => {
+  const finalizeBooking = async (clientName: string) => {
     if (!selectedTime) return;
 
     const d = new Date(selectedDate + "T00:00:00");
     const dateLabel = `${format(d, "dd")}/${format(d, "MM")}`;
     const userId = getCurrentAppointmentUserId() ?? clientName.trim();
-
-    // 1) Redirect to WhatsApp FIRST (synchronous, in user-click context for iOS)
-    const msg = encodeURIComponent(
-      `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${selectedTime}\n\n✅ *Agendamento realizado pelo App!*`
-    );
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`;
+    const timeToBook = selectedTime;
 
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches
       || (navigator as any).standalone === true;
 
-    if (isStandalone && window.top) {
+    // 1) Pre-open a blank tab (browser only) to preserve user-gesture context
+    // for the WhatsApp redirect after the async DB call. iOS PWA standalone
+    // cannot use window.open, so we'll redirect via location.href instead.
+    let pendingWindow: Window | null = null;
+    if (!isStandalone) {
+      pendingWindow = window.open("about:blank", "_blank");
+    }
+
+    // 2) Atomic reservation: insert FIRST. Unique index blocks duplicates.
+    const { data: inserted, error: insErr } = await supabase
+      .from("appointments")
+      .insert({
+        service: serviceName,
+        date: selectedDate,
+        date_label: dateLabel,
+        time: timeToBook,
+        status: "Confirmado",
+        client_name: clientName,
+        user_id: userId,
+      } as never)
+      .select("id")
+      .single();
+
+    if (insErr) {
+      console.error("Booking insert failed:", insErr);
+      // Close pre-opened tab — WhatsApp must NOT open on conflict
+      if (pendingWindow) pendingWindow.close();
+
+      if ((insErr as any)?.code === "23505") {
+        setSelectedTime(null);
+        const { data: refreshed } = await supabase
+          .from("appointments")
+          .select("time")
+          .eq("date", selectedDate)
+          .eq("status", "Confirmado");
+        setReservedSlots((refreshed || []).map((a: any) => a.time));
+        toast({
+          title: "Ops! Horário já reservado",
+          description: "Este horário acabou de ser reservado por outra pessoa. Por favor, escolha outro horário disponível.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Erro ao agendar",
+          description: "Não foi possível concluir o agendamento. Tente novamente.",
+          variant: "destructive",
+        });
+      }
+      return;
+    }
+
+    // 3) Reservation confirmed — now redirect to WhatsApp
+    const msg = encodeURIComponent(
+      `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${timeToBook}\n\n✅ *Agendamento realizado pelo App!*`
+    );
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`;
+
+    if (pendingWindow) {
+      pendingWindow.location.href = whatsappUrl;
+    } else if (isStandalone && window.top) {
       window.top.location.href = whatsappUrl;
     } else {
       window.location.href = whatsappUrl;
     }
 
-    // 2) Fire-and-forget: save appointment + tag + schedule notification (background)
+    setConfirmed(true);
+
+    // 4) Fire-and-forget background tasks
     (async () => {
-      const { data: inserted, error: insErr } = await supabase
-        .from("appointments")
-        .insert({
-          service: serviceName,
-          date: selectedDate,
-          date_label: dateLabel,
-          time: selectedTime,
-          status: "Confirmado",
-          client_name: clientName,
-          user_id: userId,
-        } as never)
-        .select("id")
-        .single();
-
-      if (insErr) {
-        console.error("Booking insert failed:", insErr);
-        // Conflito de concorrência: outro cliente reservou no mesmo instante
-        if ((insErr as any)?.code === "23505") {
-          setConfirmed(false);
-          setSelectedTime(null);
-          // Atualiza a lista de slots reservados
-          const { data: refreshed } = await supabase
-            .from("appointments")
-            .select("time")
-            .eq("date", selectedDate)
-            .eq("status", "Confirmado");
-          setReservedSlots((refreshed || []).map((a: any) => a.time));
-          toast({
-            title: "Ops! Horário já reservado",
-            description: "Este horário acabou de ser reservado por outra pessoa. Por favor, escolha outro horário disponível.",
-            variant: "destructive",
-          });
-        }
-        return;
-      }
-
       tagOneSignalUser(userId);
-
       try {
         const { data: notifRes } = await supabase.functions.invoke("schedule-notification", {
-          body: { clientName: userId, serviceName, dateLabel, time: selectedTime, date: selectedDate },
+          body: { clientName: userId, serviceName, dateLabel, time: timeToBook, date: selectedDate },
         });
         const notifId = (notifRes as any)?.notification_id ?? (notifRes as any)?.id;
         if (notifId && inserted?.id) {
@@ -249,8 +268,6 @@ export default function BookingPage() {
         console.warn("Notification scheduling failed:", err);
       }
     })();
-
-    setConfirmed(true);
   };
 
   if (confirmed) {
