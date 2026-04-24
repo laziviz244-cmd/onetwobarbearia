@@ -172,7 +172,7 @@ export default function BookingPage() {
     localStorage.setItem("onetwo_guest_name", name);
     localStorage.setItem("last_logged_user", name);
     setShowNameModal(false);
-    finalizeBooking(name);
+    void finalizeBooking(name);
   };
 
   const finalizeBooking = async (clientName: string) => {
