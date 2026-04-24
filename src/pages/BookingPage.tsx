@@ -215,7 +215,7 @@ export default function BookingPage() {
         setReservedSlots((refreshed || []).map((a: any) => a.time));
         toast({
           title: "Horário indisponível",
-          description: "Este horário não está mais disponível. Alguém acabou de confirmar a reserva antes de você!",
+          description: "Este horário acabou de ser preenchido. Por favor, escolha outro.",
           variant: "destructive",
         });
       } else {
