@@ -73,6 +73,7 @@ export default function BookingPage() {
   const [showNameModal, setShowNameModal] = useState(false);
   const [guestName, setGuestName] = useState("");
   const [isBooking, setIsBooking] = useState(false);
+  const [currentDateTime, setCurrentDateTime] = useState(() => new Date());
 
   const [reservedSlots, setReservedSlots] = useState<string[]>([]);
   const [businessHours, setBusinessHours] = useState<Record<string, DaySchedule> | null>(null);
@@ -90,12 +91,43 @@ export default function BookingPage() {
 
   const isDayClosed = selectedDaySchedule ? !selectedDaySchedule.enabled : false;
 
-  // Filter time slots based on business hours
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 30_000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  // Filter time slots based on business hours and hide past slots for today
+  const timeSlots = useMemo(() => {
+    const baseSlots = !selectedDaySchedule || !selectedDaySchedule.enabled
+      ? ALL_TIME_SLOTS
+      : ALL_TIME_SLOTS.filter((t) => t >= selectedDaySchedule.open && t < selectedDaySchedule.close);
+
+    if (selectedDate !== format(currentDateTime, "yyyy-MM-dd")) return baseSlots;
+
+    const currentTime = format(currentDateTime, "HH:mm");
+    return baseSlots.filter((time) => currentTime <= time);
+  }, [selectedDaySchedule, selectedDate, currentDateTime]);
+
+  const hasNoMoreSlotsToday = selectedDate === format(currentDateTime, "yyyy-MM-dd") && timeSlots.length === 0;
+
+  // Clear selected time when day closes or the slot is no longer visible
+  useEffect(() => {
+    if (selectedTime && (isDayClosed || !timeSlots.includes(selectedTime))) {
+      setSelectedTime(null);
+    }
+  }, [isDayClosed, selectedTime, timeSlots]);
+
+  /*
+  // Previous business-hour-only filter
   const timeSlots = useMemo(() => {
     if (!selectedDaySchedule || !selectedDaySchedule.enabled) return ALL_TIME_SLOTS;
     const { open, close } = selectedDaySchedule;
     return ALL_TIME_SLOTS.filter((t) => t >= open && t < close);
   }, [selectedDaySchedule]);
+  */
 
   // Fetch business hours + subscribe to realtime
   useEffect(() => {
