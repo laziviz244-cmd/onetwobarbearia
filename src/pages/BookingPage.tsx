@@ -393,45 +393,51 @@ export default function BookingPage() {
               <h2 className="font-montserrat font-bold text-foreground tracking-tighter mb-3">
                 Horários disponíveis
               </h2>
-              <div className="grid grid-cols-3 gap-2">
-                {timeSlots.map((time) => {
-                  const isReserved = reservedSlots.includes(time);
-                  return (
-                    <motion.button
-                      key={time}
-                      whileTap={isReserved ? undefined : { scale: 0.95 }}
-                      onClick={() => {
-                        if (isReserved) {
-                          toast({
-                            title: "Putz! Horário indisponível",
-                            description: "Este horário já foi reservado por outro cliente. Por favor, marque outro.",
-                            variant: "destructive",
-                          });
-                          return;
-                        }
-                        setSelectedTime(time);
-                      }}
-                      disabled={isReserved || isBooking}
-                      className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
-                        isReserved
-                          ? "surface-card opacity-40 cursor-not-allowed"
-                          : selectedTime === time
-                            ? "btn-primary-glow text-primary-foreground font-semibold"
-                            : "surface-card text-foreground font-semibold"
-                      }`}
-                    >
-                      {isReserved ? (
-                        <span className="flex flex-col items-center leading-tight">
-                          <span style={{ color: "#808080" }}>{time}</span>
-                          <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
-                        </span>
-                      ) : (
-                        time
-                      )}
-                    </motion.button>
-                  );
-                })}
-              </div>
+              {hasNoMoreSlotsToday ? (
+                <div className="rounded-2xl surface-card px-4 py-6 text-center font-opensans text-sm text-dimmed">
+                  Não há mais horários disponíveis para hoje
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-2">
+                  {timeSlots.map((time) => {
+                    const isReserved = reservedSlots.includes(time);
+                    return (
+                      <motion.button
+                        key={time}
+                        whileTap={isReserved ? undefined : { scale: 0.95 }}
+                        onClick={() => {
+                          if (isReserved) {
+                            toast({
+                              title: "Putz! Horário indisponível",
+                              description: "Este horário já foi reservado por outro cliente. Por favor, marque outro.",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          setSelectedTime(time);
+                        }}
+                        disabled={isReserved || isBooking}
+                        className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
+                          isReserved
+                            ? "surface-card opacity-40 cursor-not-allowed"
+                            : selectedTime === time
+                              ? "btn-primary-glow text-primary-foreground font-semibold"
+                              : "surface-card text-foreground font-semibold"
+                        }`}
+                      >
+                        {isReserved ? (
+                          <span className="flex flex-col items-center leading-tight">
+                            <span style={{ color: "#808080" }}>{time}</span>
+                            <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
+                          </span>
+                        ) : (
+                          time
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
