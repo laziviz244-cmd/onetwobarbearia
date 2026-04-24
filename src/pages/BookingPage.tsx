@@ -120,15 +120,6 @@ export default function BookingPage() {
     }
   }, [isDayClosed, selectedTime, timeSlots]);
 
-  /*
-  // Previous business-hour-only filter
-  const timeSlots = useMemo(() => {
-    if (!selectedDaySchedule || !selectedDaySchedule.enabled) return ALL_TIME_SLOTS;
-    const { open, close } = selectedDaySchedule;
-    return ALL_TIME_SLOTS.filter((t) => t >= open && t < close);
-  }, [selectedDaySchedule]);
-  */
-
   // Fetch business hours + subscribe to realtime
   useEffect(() => {
     const fetchHours = async () => {
@@ -181,11 +172,6 @@ export default function BookingPage() {
       supabase.removeChannel(channel);
     };
   }, [selectedDate]);
-
-  // Clear selected time when day becomes closed
-  useEffect(() => {
-    if (isDayClosed && selectedTime) setSelectedTime(null);
-  }, [isDayClosed, selectedTime]);
 
   const handleConfirm = () => {
     if (!selectedTime || isBooking) return;
