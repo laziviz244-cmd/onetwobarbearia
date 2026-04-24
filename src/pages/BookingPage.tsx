@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Check, CalendarOff } from "lucide-react";
+import { ArrowLeft, Check, CalendarOff, Loader2 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
@@ -72,6 +72,7 @@ export default function BookingPage() {
   const [confirmed, setConfirmed] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
   const [guestName, setGuestName] = useState("");
+  const [isBooking, setIsBooking] = useState(false);
 
   const [reservedSlots, setReservedSlots] = useState<string[]>([]);
   const [businessHours, setBusinessHours] = useState<Record<string, DaySchedule> | null>(null);
@@ -155,7 +156,7 @@ export default function BookingPage() {
   }, [isDayClosed, selectedTime]);
 
   const handleConfirm = () => {
-    if (!selectedTime) return;
+    if (!selectedTime || isBooking) return;
 
     const clientName = getCurrentAppointmentUserId();
     if (!clientName) {
@@ -167,6 +168,7 @@ export default function BookingPage() {
   };
 
   const handleGuestConfirm = () => {
+    if (isBooking) return;
     const name = guestName.trim();
     if (!name) return;
     localStorage.setItem("onetwo_guest_name", name);
@@ -176,25 +178,15 @@ export default function BookingPage() {
   };
 
   const finalizeBooking = async (clientName: string) => {
-    if (!selectedTime) return;
+    if (!selectedTime || isBooking) return;
+    setIsBooking(true);
 
     const d = new Date(selectedDate + "T00:00:00");
     const dateLabel = `${format(d, "dd")}/${format(d, "MM")}`;
     const userId = getCurrentAppointmentUserId() ?? clientName.trim();
     const timeToBook = selectedTime;
 
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches
-      || (navigator as any).standalone === true;
-
-    // 1) Pre-open a blank tab (browser only) to preserve user-gesture context
-    // for the WhatsApp redirect after the async DB call. iOS PWA standalone
-    // cannot use window.open, so we'll redirect via location.href instead.
-    let pendingWindow: Window | null = null;
-    if (!isStandalone) {
-      pendingWindow = window.open("about:blank", "_blank");
-    }
-
-    // 2) Atomic reservation: insert FIRST. Unique index blocks duplicates.
+    // Atomic reservation: insert FIRST. Unique index blocks duplicates.
     const { data: inserted, error: insErr } = await supabase
       .from("appointments")
       .insert({
@@ -211,8 +203,7 @@ export default function BookingPage() {
 
     if (insErr) {
       console.error("Booking insert failed:", insErr);
-      // Close pre-opened tab — WhatsApp must NOT open on conflict
-      if (pendingWindow) pendingWindow.close();
+      setIsBooking(false);
 
       if ((insErr as any)?.code === "23505") {
         setSelectedTime(null);
@@ -223,11 +214,12 @@ export default function BookingPage() {
           .eq("status", "Confirmado");
         setReservedSlots((refreshed || []).map((a: any) => a.time));
         toast({
-          title: "Ops! Horário já reservado",
-          description: "Este horário acabou de ser reservado por outra pessoa. Por favor, escolha outro horário disponível.",
+          title: "Horário indisponível",
+          description: "Este horário não está mais disponível. Alguém acabou de confirmar a reserva antes de você!",
           variant: "destructive",
         });
       } else {
+        setSelectedTime(null);
         toast({
           title: "Erro ao agendar",
           description: "Não foi possível concluir o agendamento. Tente novamente.",
@@ -237,19 +229,13 @@ export default function BookingPage() {
       return;
     }
 
-    // 3) Reservation confirmed — now redirect to WhatsApp
+    // Reservation confirmed — only now redirect to WhatsApp.
     const msg = encodeURIComponent(
       `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${timeToBook}\n\n✅ *Agendamento realizado pelo App!*`
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`;
 
-    if (pendingWindow) {
-      pendingWindow.location.href = whatsappUrl;
-    } else if (isStandalone && window.top) {
-      window.top.location.href = whatsappUrl;
-    } else {
-      window.location.href = whatsappUrl;
-    }
+    window.location.href = whatsappUrl;
 
     setConfirmed(true);
 
@@ -407,7 +393,7 @@ export default function BookingPage() {
                         }
                         setSelectedTime(time);
                       }}
-                      disabled={isReserved}
+                      disabled={isReserved || isBooking}
                       className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
                         isReserved
                           ? "surface-card opacity-40 cursor-not-allowed"
@@ -444,10 +430,18 @@ export default function BookingPage() {
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
             onClick={() => handleConfirm()}
-            className="w-full rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight"
+            disabled={isBooking}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight disabled:opacity-80"
             style={{ background: "#25D366", color: "#FFFFFF" }}
           >
-            Confirmar via WhatsApp · {selectedTime}
+            {isBooking ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Validando horário...
+              </>
+            ) : (
+              <>Confirmar via WhatsApp · {selectedTime}</>
+            )}
           </motion.button>
         </motion.div>
       )}
@@ -485,11 +479,18 @@ export default function BookingPage() {
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={handleGuestConfirm}
-              disabled={!guestName.trim()}
-              className="w-full rounded-2xl py-3 font-montserrat font-bold text-sm tracking-tight disabled:opacity-40"
+              disabled={!guestName.trim() || isBooking}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl py-3 font-montserrat font-bold text-sm tracking-tight disabled:opacity-40"
               style={{ background: "#25D366", color: "#FFFFFF" }}
             >
-              Confirmar Agendamento
+              {isBooking ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Validando...
+                </>
+              ) : (
+                <>Confirmar Agendamento</>
+              )}
             </motion.button>
           </div>
         </DialogContent>
