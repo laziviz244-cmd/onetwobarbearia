@@ -213,7 +213,27 @@ export default function BookingPage() {
         .select("id")
         .single();
 
-      if (insErr) { console.error("Booking insert failed:", insErr); return; }
+      if (insErr) {
+        console.error("Booking insert failed:", insErr);
+        // Conflito de concorrência: outro cliente reservou no mesmo instante
+        if ((insErr as any)?.code === "23505") {
+          setConfirmed(false);
+          setSelectedTime(null);
+          // Atualiza a lista de slots reservados
+          const { data: refreshed } = await supabase
+            .from("appointments")
+            .select("time")
+            .eq("date", selectedDate)
+            .eq("status", "Confirmado");
+          setReservedSlots((refreshed || []).map((a: any) => a.time));
+          toast({
+            title: "Ops! Horário já reservado",
+            description: "Este horário acabou de ser reservado por outra pessoa. Por favor, escolha outro horário disponível.",
+            variant: "destructive",
+          });
+        }
+        return;
+      }
 
       tagOneSignalUser(userId);
 
