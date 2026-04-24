@@ -92,11 +92,21 @@ export default function BookingPage() {
   const isDayClosed = selectedDaySchedule ? !selectedDaySchedule.enabled : false;
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
-      setCurrentDateTime(new Date());
-    }, 30_000);
+    let intervalId: number | undefined;
 
-    return () => window.clearInterval(interval);
+    const syncClock = () => setCurrentDateTime(new Date());
+    const now = new Date();
+    const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds() + 50;
+
+    const timeoutId = window.setTimeout(() => {
+      syncClock();
+      intervalId = window.setInterval(syncClock, 60_000);
+    }, msUntilNextMinute);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      if (intervalId) window.clearInterval(intervalId);
+    };
   }, []);
 
   // Filter time slots based on business hours and hide past slots for today
@@ -113,7 +123,7 @@ export default function BookingPage() {
 
   const isSelectedDateToday = selectedDate === format(currentDateTime, "yyyy-MM-dd");
   const noSlotsMessage = isSelectedDateToday && timeSlots.length === 0
-    ? "Não há mais horários disponíveis para hoje"
+    ? "Agendamentos encerrados por hoje. Confira os horários de amanhã!"
     : null;
 
   // Clear selected time when day closes or the slot is no longer visible
@@ -159,9 +169,11 @@ export default function BookingPage() {
         .from("appointments")
         .select("time")
         .eq("date", selectedDate)
-        .eq("status", "Confirmado");
+        .eq("status", "Confirmado")
+        .order("time", { ascending: true });
       setReservedSlots((data || []).map((a: any) => a.time));
     };
+    setReservedSlots([]);
     fetchReserved();
 
     const channel = supabase
