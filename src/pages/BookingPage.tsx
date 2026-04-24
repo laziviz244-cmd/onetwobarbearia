@@ -111,7 +111,10 @@ export default function BookingPage() {
     return baseSlots.filter((time) => currentTime <= time);
   }, [selectedDaySchedule, selectedDate, currentDateTime]);
 
-  const hasNoMoreSlotsToday = selectedDate === format(currentDateTime, "yyyy-MM-dd") && timeSlots.length === 0;
+  const isSelectedDateToday = selectedDate === format(currentDateTime, "yyyy-MM-dd");
+  const noSlotsMessage = isSelectedDateToday && timeSlots.length === 0
+    ? "Não há mais horários disponíveis para hoje"
+    : null;
 
   // Clear selected time when day closes or the slot is no longer visible
   useEffect(() => {
@@ -393,9 +396,9 @@ export default function BookingPage() {
               <h2 className="font-montserrat font-bold text-foreground tracking-tighter mb-3">
                 Horários disponíveis
               </h2>
-              {hasNoMoreSlotsToday ? (
+              {noSlotsMessage ? (
                 <div className="rounded-2xl surface-card px-4 py-6 text-center font-opensans text-sm text-dimmed">
-                  Não há mais horários disponíveis para hoje
+                  {noSlotsMessage}
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-2">
