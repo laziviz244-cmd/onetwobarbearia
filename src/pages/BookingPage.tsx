@@ -393,7 +393,7 @@ export default function BookingPage() {
                         }
                         setSelectedTime(time);
                       }}
-                      disabled={isReserved}
+                      disabled={isReserved || isBooking}
                       className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
                         isReserved
                           ? "surface-card opacity-40 cursor-not-allowed"
@@ -430,10 +430,18 @@ export default function BookingPage() {
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
             onClick={() => handleConfirm()}
-            className="w-full rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight"
+            disabled={isBooking}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight disabled:opacity-80"
             style={{ background: "#25D366", color: "#FFFFFF" }}
           >
-            Confirmar via WhatsApp · {selectedTime}
+            {isBooking ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Validando horário...
+              </>
+            ) : (
+              <>Confirmar via WhatsApp · {selectedTime}</>
+            )}
           </motion.button>
         </motion.div>
       )}
@@ -471,11 +479,18 @@ export default function BookingPage() {
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={handleGuestConfirm}
-              disabled={!guestName.trim()}
-              className="w-full rounded-2xl py-3 font-montserrat font-bold text-sm tracking-tight disabled:opacity-40"
+              disabled={!guestName.trim() || isBooking}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl py-3 font-montserrat font-bold text-sm tracking-tight disabled:opacity-40"
               style={{ background: "#25D366", color: "#FFFFFF" }}
             >
-              Confirmar Agendamento
+              {isBooking ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Validando...
+                </>
+              ) : (
+                <>Confirmar Agendamento</>
+              )}
             </motion.button>
           </div>
         </DialogContent>
