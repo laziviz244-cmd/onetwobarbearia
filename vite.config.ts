@@ -60,6 +60,15 @@ function appendBuildVersionToLocalAssets(html: string) {
 const forceFreshHtmlAndAssets = () => ({
   name: "onetwo-force-fresh-html-assets",
   enforce: "post" as const,
+  configureServer(server: any) {
+    server.middlewares.use("/version.json", (_req: any, res: any) => {
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0");
+      res.setHeader("Pragma", "no-cache");
+      res.setHeader("Expires", "0");
+      res.end(JSON.stringify({ version: fullBuildVersion, timestamp: buildTimestamp, cache: forceUpdateTag }));
+    });
+  },
   transformIndexHtml(html: string) {
     return appendBuildVersionToLocalAssets(html.replace("<head>", `<head>${earlyVersionGuard}`));
   },
