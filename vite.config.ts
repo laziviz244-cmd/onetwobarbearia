@@ -4,7 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 const buildTimestamp = Date.now().toString();
-const forceUpdateTag = "force-refresh-2026-04-25-universal-cache-bust-05";
+const forceUpdateTag = "force-refresh-2026-04-25-agenda-cache-bust-06";
 const fullBuildVersion = `${buildTimestamp}-${forceUpdateTag}`;
 
 const earlyVersionGuard = `
@@ -23,20 +23,20 @@ const earlyVersionGuard = `
             return;
           }
           localStorage.setItem(versionKey, buildVersion);
-          fetch("/version.json?v=" + Date.now(), { cache: "no-store", headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache" } })
+          fetch("/version.json?v=" + Date.now() + "&mobile_bust=" + Date.now(), { cache: "no-store", headers: { "Accept": "application/json", "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0" } })
             .then(function (res) { return res.ok ? res.json() : null; })
             .then(function (data) {
               if (!data || !data.version || data.version === buildVersion || sessionStorage.getItem(reloadKey + ":remote")) return;
               sessionStorage.setItem(reloadKey + ":remote", "1");
               localStorage.setItem(versionKey, data.version);
-              if ("caches" in window) caches.keys().then(function (keys) { return Promise.all(keys.map(function (key) { return caches.delete(key); })); }).finally(reload);
-              else reload();
+              if ("caches" in window) caches.keys().then(function (keys) { return Promise.all(keys.map(function (key) { return caches.delete(key); })); }).finally(function () { reload(data.version, data.cache); });
+              else reload(data.version, data.cache);
             }).catch(function () {});
         } catch (e) {}
-        function reload() {
+        function reload(targetVersion, targetCache) {
           var url = new URL(window.location.href);
-          url.searchParams.set("v", buildVersion);
-          url.searchParams.set("cache", "${forceUpdateTag}");
+          url.searchParams.set("v", targetVersion || buildVersion);
+          url.searchParams.set("cache", targetCache || "${forceUpdateTag}");
           url.searchParams.set("mobile_bust", Date.now().toString());
           window.location.replace(url.toString());
         }
