@@ -4,7 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 const buildTimestamp = Date.now().toString();
-const forceUpdateTag = "force-refresh-2026-04-25-agenda-cache-bust-06";
+const forceUpdateTag = "force-refresh-2026-04-25-critical-cache-reset-07";
 const fullBuildVersion = `${buildTimestamp}-${forceUpdateTag}`;
 
 const earlyVersionGuard = `
@@ -18,8 +18,7 @@ const earlyVersionGuard = `
           var stored = localStorage.getItem(versionKey);
           if (stored && stored !== buildVersion && !sessionStorage.getItem(reloadKey)) {
             sessionStorage.setItem(reloadKey, "1");
-            if ("caches" in window) caches.keys().then(function (keys) { return Promise.all(keys.map(function (key) { return caches.delete(key); })); }).finally(reload);
-            else reload();
+            purgeCachesAndWorkers().finally(reload);
             return;
           }
           localStorage.setItem(versionKey, buildVersion);
@@ -29,15 +28,20 @@ const earlyVersionGuard = `
               if (!data || !data.version || data.version === buildVersion || sessionStorage.getItem(reloadKey + ":remote")) return;
               sessionStorage.setItem(reloadKey + ":remote", "1");
               localStorage.setItem(versionKey, data.version);
-              if ("caches" in window) caches.keys().then(function (keys) { return Promise.all(keys.map(function (key) { return caches.delete(key); })); }).finally(function () { reload(data.version, data.cache); });
-              else reload(data.version, data.cache);
+              purgeCachesAndWorkers().finally(function () { reload(data.version, data.cache); });
             }).catch(function () {});
         } catch (e) {}
+        function purgeCachesAndWorkers() {
+          var cacheCleanup = "caches" in window ? caches.keys().then(function (keys) { return Promise.all(keys.map(function (key) { return caches.delete(key); })); }) : Promise.resolve();
+          var workerCleanup = "serviceWorker" in navigator ? navigator.serviceWorker.getRegistrations().then(function (registrations) { return Promise.all(registrations.map(function (registration) { registration.waiting && registration.waiting.postMessage({ type: "SKIP_WAITING" }); registration.active && registration.active.postMessage({ type: "ONETWO_CLEAR_CACHES", version: buildVersion }); return registration.unregister(); })); }) : Promise.resolve();
+          return Promise.all([cacheCleanup, workerCleanup]).catch(function () {});
+        }
         function reload(targetVersion, targetCache) {
           var url = new URL(window.location.href);
           url.searchParams.set("v", targetVersion || buildVersion);
           url.searchParams.set("cache", targetCache || "${forceUpdateTag}");
           url.searchParams.set("mobile_bust", Date.now().toString());
+          url.searchParams.set("ngsw-bypass", "1");
           window.location.replace(url.toString());
         }
       })();

@@ -13,7 +13,7 @@ async function fetchRemoteBuildVersion() {
     cache: "no-store",
     headers: {
       Accept: "application/json",
-      "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+      "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0, proxy-revalidate, s-maxage=0",
       Pragma: "no-cache",
       Expires: "0",
     },
@@ -60,7 +60,7 @@ async function fetchLatestBuildSignature() {
     cache: "no-store",
     headers: {
       Accept: "text/html",
-      "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+      "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0, proxy-revalidate, s-maxage=0",
       Pragma: "no-cache",
       Expires: "0",
     },
@@ -169,8 +169,9 @@ export function setupAutoVersionCheck() {
         cache: "reload",
         headers: {
           Accept: "text/html",
-          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0, proxy-revalidate, s-maxage=0",
           Pragma: "no-cache",
+          Expires: "0",
         },
       });
       if (!res.ok) return;

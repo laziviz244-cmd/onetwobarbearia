@@ -25,9 +25,9 @@ async function retireLegacyAppServiceWorkers() {
 
   const registrations = await navigator.serviceWorker.getRegistrations();
   await Promise.all(registrations.map((registration) => registration.update().catch(() => undefined)));
-  const legacyRegistrations = registrations.filter((registration) => {
+  const outdatedRegistrations = registrations.filter((registration) => {
     const scriptURL = registration.active?.scriptURL || registration.waiting?.scriptURL || registration.installing?.scriptURL;
-    return !isOneSignalWorker(scriptURL);
+    return !isOneSignalWorker(scriptURL) || !scriptURL?.includes(BUILD_VERSION);
   });
 
   if ("caches" in window) {
@@ -36,14 +36,15 @@ async function retireLegacyAppServiceWorkers() {
   }
 
   await Promise.all(
-    legacyRegistrations.map(async (registration) => {
+    outdatedRegistrations.map(async (registration) => {
       registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+      registration.active?.postMessage({ type: "ONETWO_CLEAR_CACHES", version: BUILD_VERSION });
       await registration.unregister();
     }),
   );
 
   const controllerURL = navigator.serviceWorker.controller?.scriptURL;
-  if (legacyRegistrations.length > 0 || (controllerURL && !isOneSignalWorker(controllerURL))) {
+  if (outdatedRegistrations.length > 0 || (controllerURL && (!isOneSignalWorker(controllerURL) || !controllerURL.includes(BUILD_VERSION)))) {
     window.location.replace(buildVersionedUrl(window.location.pathname, window.location.search, window.location.hash));
   }
 }
