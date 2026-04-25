@@ -1,4 +1,4 @@
-const FORCE_UPDATE_TAG = import.meta.env.VITE_FORCE_UPDATE_TAG || "force-refresh-2026-04-25-universal-cache-bust-05";
+const FORCE_UPDATE_TAG = import.meta.env.VITE_FORCE_UPDATE_TAG || "force-refresh-2026-04-25-agenda-cache-bust-06";
 
 export const BUILD_VERSION = `${import.meta.env.VITE_BUILD_TIMESTAMP || Date.now().toString()}-${FORCE_UPDATE_TAG}`;
 
