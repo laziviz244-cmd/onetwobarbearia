@@ -117,12 +117,17 @@ export default function BookingPage() {
 
     if (selectedDate !== format(currentDateTime, "yyyy-MM-dd")) return baseSlots;
 
-    const currentTime = format(currentDateTime, "HH:mm");
-    return baseSlots.filter((time) => currentTime <= time);
+    return baseSlots.filter((time) => {
+      const [hours, minutes] = time.split(":").map(Number);
+      const slotLimit = new Date(selectedDate + "T00:00:00");
+      slotLimit.setHours(hours, minutes, 59, 999);
+      return currentDateTime <= slotLimit;
+    });
   }, [selectedDaySchedule, selectedDate, currentDateTime]);
 
   const isSelectedDateToday = selectedDate === format(currentDateTime, "yyyy-MM-dd");
-  const noSlotsMessage = isSelectedDateToday && timeSlots.length === 0
+  const hasAvailableFutureSlot = timeSlots.some((time) => !reservedSlots.includes(time));
+  const noSlotsMessage = isSelectedDateToday && !hasAvailableFutureSlot
     ? "Agendamentos encerrados por hoje. Confira os horários de amanhã!"
     : null;
 
