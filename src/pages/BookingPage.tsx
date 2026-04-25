@@ -415,9 +415,16 @@ export default function BookingPage() {
                 Horários disponíveis
               </h2>
               {noSlotsMessage ? (
-                <div className="rounded-2xl surface-card px-5 py-8 text-center font-montserrat text-base font-semibold text-foreground">
-                  {noSlotsMessage}
-                </div>
+                <motion.div
+                  key="schedule-full"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex flex-col items-center justify-center gap-3 rounded-2xl surface-card px-5 py-10 text-center"
+                >
+                  <CalendarOff className="h-10 w-10 text-primary" />
+                  <p className="font-montserrat text-lg font-bold text-foreground">Agenda encerrada</p>
+                  <p className="font-opensans text-sm leading-relaxed text-dimmed">{noSlotsMessage}</p>
+                </motion.div>
               ) : (
                 <div className="grid grid-cols-3 gap-2">
                   {timeSlots.map((time) => {
@@ -447,9 +454,9 @@ export default function BookingPage() {
                         }`}
                       >
                         {isReserved ? (
-                          <span className="flex flex-col items-center leading-tight">
-                            <span style={{ color: "#808080" }}>{time}</span>
-                            <span className="text-[10px]" style={{ color: "#808080" }}>Reservado</span>
+                          <span className="flex flex-col items-center leading-tight text-muted-foreground">
+                            <span>{time}</span>
+                            <span className="text-[10px]">Reservado</span>
                           </span>
                         ) : (
                           time
@@ -465,7 +472,7 @@ export default function BookingPage() {
       </div>
 
       {/* Confirm */}
-      {selectedTime && !reservedSlots.includes(selectedTime) && (
+      {selectedTime && !shouldBlockBooking && !reservedSlots.includes(selectedTime) && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
