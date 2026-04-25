@@ -4,7 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 const buildTimestamp = Date.now().toString();
-const forceUpdateTag = "force-refresh-2026-04-25-agenda-cache-bust-06";
+const forceUpdateTag = "force-refresh-2026-04-25-critical-cache-reset-07";
 const fullBuildVersion = `${buildTimestamp}-${forceUpdateTag}`;
 
 const earlyVersionGuard = `
@@ -38,6 +38,7 @@ const earlyVersionGuard = `
           url.searchParams.set("v", targetVersion || buildVersion);
           url.searchParams.set("cache", targetCache || "${forceUpdateTag}");
           url.searchParams.set("mobile_bust", Date.now().toString());
+          url.searchParams.set("ngsw-bypass", "1");
           window.location.replace(url.toString());
         }
       })();
