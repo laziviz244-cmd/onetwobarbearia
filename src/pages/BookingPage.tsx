@@ -117,12 +117,17 @@ export default function BookingPage() {
 
     if (selectedDate !== format(currentDateTime, "yyyy-MM-dd")) return baseSlots;
 
-    const currentTime = format(currentDateTime, "HH:mm");
-    return baseSlots.filter((time) => currentTime <= time);
+    return baseSlots.filter((time) => {
+      const [hours, minutes] = time.split(":").map(Number);
+      const slotLimit = new Date(selectedDate + "T00:00:00");
+      slotLimit.setHours(hours, minutes, 59, 999);
+      return currentDateTime <= slotLimit;
+    });
   }, [selectedDaySchedule, selectedDate, currentDateTime]);
 
   const isSelectedDateToday = selectedDate === format(currentDateTime, "yyyy-MM-dd");
-  const noSlotsMessage = isSelectedDateToday && timeSlots.length === 0
+  const hasAvailableFutureSlot = timeSlots.some((time) => !reservedSlots.includes(time));
+  const noSlotsMessage = isSelectedDateToday && !hasAvailableFutureSlot
     ? "Agendamentos encerrados por hoje. Confira os horários de amanhã!"
     : null;
 
@@ -409,7 +414,7 @@ export default function BookingPage() {
                 Horários disponíveis
               </h2>
               {noSlotsMessage ? (
-                <div className="rounded-2xl surface-card px-4 py-6 text-center font-opensans text-sm text-dimmed">
+                <div className="rounded-2xl surface-card px-5 py-8 text-center font-montserrat text-base font-semibold text-foreground">
                   {noSlotsMessage}
                 </div>
               ) : (
