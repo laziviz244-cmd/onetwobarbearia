@@ -73,10 +73,21 @@ export async function setupPwaInstall() {
     registrations.forEach(requestServiceWorkerUpdate);
 
     const hasWaitingWorker = registrations.some((registration) => Boolean(registration.waiting));
-    if (hasWaitingWorker && isAdminLikePath(window.location.pathname)) {
-      await hardReloadOnce("admin-deep-link");
+    if (hasWaitingWorker) {
+      await hardReloadOnce(isAdminLikePath(window.location.pathname) ? "admin-deep-link" : "client-sw-waiting");
       return;
     }
+
+    const refreshServiceWorkers = () => {
+      navigator.serviceWorker.getRegistrations().then((activeRegistrations) => {
+        activeRegistrations.forEach(requestServiceWorkerUpdate);
+      });
+    };
+
+    window.addEventListener("focus", refreshServiceWorkers);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") refreshServiceWorkers();
+    });
   }
 
   applyRoutePwaIdentity(resolveAdminPath(window.location.pathname));
