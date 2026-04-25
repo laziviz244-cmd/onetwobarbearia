@@ -414,7 +414,7 @@ export default function BookingPage() {
                 Horários disponíveis
               </h2>
               {noSlotsMessage ? (
-                <div className="rounded-2xl surface-card px-4 py-6 text-center font-opensans text-sm text-dimmed">
+                <div className="rounded-2xl surface-card px-5 py-8 text-center font-montserrat text-base font-semibold text-foreground">
                   {noSlotsMessage}
                 </div>
               ) : (
