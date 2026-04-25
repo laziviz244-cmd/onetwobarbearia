@@ -1,4 +1,4 @@
-const FORCE_UPDATE_TAG = import.meta.env.VITE_FORCE_UPDATE_TAG || "force-refresh-2026-04-25-agenda-cache-bust-06";
+const FORCE_UPDATE_TAG = import.meta.env.VITE_FORCE_UPDATE_TAG || "force-refresh-2026-04-25-critical-cache-reset-07";
 
 export const BUILD_VERSION = `${import.meta.env.VITE_BUILD_TIMESTAMP || Date.now().toString()}-${FORCE_UPDATE_TAG}`;
 
@@ -39,6 +39,7 @@ export function buildVersionedUrl(pathname: string, search = "", hash = "") {
   url.searchParams.set("v", BUILD_VERSION);
   url.searchParams.set("cache", FORCE_UPDATE_TAG);
   url.searchParams.set("mobile_bust", Date.now().toString());
+  url.searchParams.set("ngsw-bypass", "1");
   return url.toString();
 }
 
