@@ -2,6 +2,20 @@ import { BUILD_VERSION, buildVersionedUrl, clearBrowserRuntimeCaches } from "./e
 
 const VERSION_KEY = "onetwo_app_version";
 const RELOAD_FLAG = "onetwo_version_reloaded";
+const BUNDLE_HASH_KEY = "onetwo_bundle_hash";
+const VERSION_CHECK_INTERVAL_MS = 60_000;
+
+function extractBuildSignature(html: string) {
+  const assetMatches = [...html.matchAll(/assets\/[\w.-]+-([a-zA-Z0-9_-]+)\.(?:js|css)/g)].map((match) => match[1]);
+  return assetMatches.length ? assetMatches.sort().join("|") : null;
+}
+
+async function reloadToLatestVersion() {
+  sessionStorage.setItem(RELOAD_FLAG, BUILD_VERSION);
+  localStorage.setItem(VERSION_KEY, BUILD_VERSION);
+  await clearBrowserRuntimeCaches();
+  window.location.replace(buildVersionedUrl(window.location.pathname, window.location.search, window.location.hash));
+}
 
 export async function checkVersionAndReload() {
   if (typeof window === "undefined") return true;
@@ -11,10 +25,7 @@ export async function checkVersionAndReload() {
   const storedVersion = localStorage.getItem(VERSION_KEY);
 
   if (storedVersion && storedVersion !== BUILD_VERSION) {
-    sessionStorage.setItem(RELOAD_FLAG, BUILD_VERSION);
-    localStorage.setItem(VERSION_KEY, BUILD_VERSION);
-    await clearBrowserRuntimeCaches();
-    window.location.replace(buildVersionedUrl(window.location.pathname, window.location.search, window.location.hash));
+    await reloadToLatestVersion();
     return false;
   }
 
@@ -30,28 +41,42 @@ export async function checkVersionAndReload() {
 export function setupAutoVersionCheck() {
   if (typeof window === "undefined") return;
 
+  let checking = false;
+
   const check = async () => {
+    if (checking) return;
+    checking = true;
+
     try {
       const res = await fetch(`/?_vc=${Date.now()}`, { cache: "no-store", headers: { Accept: "text/html" } });
       if (!res.ok) return;
       const html = await res.text();
-      // Look for the main JS entry with a hash – if it changed, there's a new deploy
-      const match = html.match(/assets\/index-([a-zA-Z0-9]+)\.js/);
-      const storedHash = localStorage.getItem("onetwo_bundle_hash");
-      if (match && storedHash && match[1] !== storedHash) {
-        // New version detected
-        localStorage.setItem("onetwo_bundle_hash", match[1]);
-        await clearBrowserRuntimeCaches();
-        window.location.reload();
+      const buildSignature = extractBuildSignature(html);
+      const storedSignature = localStorage.getItem(BUNDLE_HASH_KEY);
+
+      if (buildSignature && storedSignature && buildSignature !== storedSignature) {
+        localStorage.setItem(BUNDLE_HASH_KEY, buildSignature);
+        await reloadToLatestVersion();
         return;
       }
-      if (match) {
-        localStorage.setItem("onetwo_bundle_hash", match[1]);
+
+      if (buildSignature) {
+        localStorage.setItem(BUNDLE_HASH_KEY, buildSignature);
       }
     } catch {
       // Network error, skip silently
+    } finally {
+      checking = false;
     }
   };
+
+  void check();
+
+  window.setInterval(() => {
+    if (!document.hidden && navigator.onLine !== false) {
+      void check();
+    }
+  }, VERSION_CHECK_INTERVAL_MS);
 
   // Check when app becomes visible (user opens/switches to app)
   document.addEventListener("visibilitychange", () => {
