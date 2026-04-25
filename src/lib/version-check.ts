@@ -8,6 +8,23 @@ const MAX_RELOAD_ATTEMPTS_PER_SIGNATURE = 3;
 const VERSION_CHECK_INTERVAL_MS = 60_000;
 const MOBILE_BOOTSTRAP_REFRESH_KEY = `onetwo_mobile_bootstrap_refresh:${BUILD_VERSION}`;
 
+async function fetchRemoteBuildVersion() {
+  const res = await fetch(`/version.json?v=${Date.now()}&mobile_bust=${Date.now()}`, {
+    cache: "no-store",
+    headers: {
+      Accept: "application/json",
+      "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
+  });
+
+  if (!res.ok) return null;
+
+  const data = await res.json().catch(() => null);
+  return typeof data?.version === "string" ? data.version : null;
+}
+
 function extractBuildSignature(html: string) {
   const assetMatches = [...html.matchAll(/assets\/[\w.-]+-([a-zA-Z0-9_-]+)\.(?:js|css)/g)].map((match) => match[1]);
   const devMatches = [...html.matchAll(/\/src\/main\.tsx\?t=([0-9]+)/g)].map((match) => match[1]);
@@ -94,6 +111,12 @@ export async function checkVersionAndReload() {
   const currentSignature = getCurrentDocumentSignature();
 
   try {
+    const remoteVersion = await fetchRemoteBuildVersion();
+    if (remoteVersion && remoteVersion !== BUILD_VERSION) {
+      const isReloading = await reloadToLatestVersion(remoteVersion);
+      return !isReloading;
+    }
+
     const latestSignature = await fetchLatestBuildSignature();
 
     if (latestSignature) {
@@ -135,6 +158,12 @@ export function setupAutoVersionCheck() {
     checking = true;
 
     try {
+      const remoteVersion = await fetchRemoteBuildVersion();
+      if (remoteVersion && remoteVersion !== BUILD_VERSION) {
+        await reloadToLatestVersion(remoteVersion);
+        return;
+      }
+
       const versionUrl = buildVersionedUrl("/", `?_vc=${Date.now()}&mobile_bust=${BUILD_VERSION}`);
       const res = await fetch(versionUrl, {
         cache: "reload",
