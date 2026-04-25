@@ -125,18 +125,19 @@ export default function BookingPage() {
     });
   }, [selectedDaySchedule, selectedDate, currentDateTime]);
 
-  const isSelectedDateToday = selectedDate === format(currentDateTime, "yyyy-MM-dd");
-  const hasAvailableFutureSlot = timeSlots.some((time) => !reservedSlots.includes(time));
-  const noSlotsMessage = isSelectedDateToday && !hasAvailableFutureSlot
-    ? "Agendamentos encerrados por hoje!"
+  const isScheduleFull = !isDayClosed && timeSlots.length > 0 && timeSlots.every((time) => reservedSlots.includes(time));
+  const hasNoBookableSlots = !isDayClosed && timeSlots.length === 0;
+  const shouldBlockBooking = isScheduleFull || hasNoBookableSlots;
+  const noSlotsMessage = shouldBlockBooking
+    ? "Agenda encerrada! Todos os horários disponíveis para este dia já foram reservados. Selecione outra data."
     : null;
 
   // Clear selected time when day closes or the slot is no longer visible
   useEffect(() => {
-    if (selectedTime && (isDayClosed || !timeSlots.includes(selectedTime))) {
+    if (selectedTime && (isDayClosed || shouldBlockBooking || !timeSlots.includes(selectedTime) || reservedSlots.includes(selectedTime))) {
       setSelectedTime(null);
     }
-  }, [isDayClosed, selectedTime, timeSlots]);
+  }, [isDayClosed, shouldBlockBooking, selectedTime, timeSlots, reservedSlots]);
 
   // Fetch business hours + subscribe to realtime
   useEffect(() => {
@@ -194,7 +195,7 @@ export default function BookingPage() {
   }, [selectedDate]);
 
   const handleConfirm = () => {
-    if (!selectedTime || isBooking) return;
+    if (!selectedTime || isBooking || shouldBlockBooking || reservedSlots.includes(selectedTime)) return;
 
     const clientName = getCurrentAppointmentUserId();
     if (!clientName) {
