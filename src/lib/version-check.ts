@@ -48,7 +48,15 @@ export function setupAutoVersionCheck() {
     checking = true;
 
     try {
-      const res = await fetch(`/?_vc=${Date.now()}`, { cache: "no-store", headers: { Accept: "text/html" } });
+      const versionUrl = buildVersionedUrl("/", `?_vc=${Date.now()}&mobile_bust=${BUILD_VERSION}`);
+      const res = await fetch(versionUrl, {
+        cache: "reload",
+        headers: {
+          Accept: "text/html",
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+        },
+      });
       if (!res.ok) return;
       const html = await res.text();
       const buildSignature = extractBuildSignature(html);

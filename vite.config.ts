@@ -60,9 +60,32 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         navigateFallbackDenylist: [/^\/~oauth/],
+        globPatterns: ["**/*.{js,css,ico,png,svg,webp,woff,woff2}"],
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
+        navigateFallback: null,
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === "navigate" || request.destination === "document",
+            handler: "NetworkOnly",
+            options: {
+              cacheName: "onetwo-html-network-only",
+            },
+          },
+          {
+            urlPattern: ({ request }) => ["script", "style", "worker"].includes(request.destination),
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "onetwo-essential-assets",
+              networkTimeoutSeconds: 2,
+              expiration: {
+                maxEntries: 80,
+                maxAgeSeconds: 60 * 60 * 24 * 7,
+              },
+            },
+          },
+        ],
       },
     }),
   ].filter(Boolean),
