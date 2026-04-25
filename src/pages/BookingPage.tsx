@@ -128,7 +128,7 @@ export default function BookingPage() {
   const isSelectedDateToday = selectedDate === format(currentDateTime, "yyyy-MM-dd");
   const hasAvailableFutureSlot = timeSlots.some((time) => !reservedSlots.includes(time));
   const noSlotsMessage = isSelectedDateToday && !hasAvailableFutureSlot
-    ? "Agendamentos encerrados por hoje. Confira os horários de amanhã!"
+    ? "Agendamentos encerrados por hoje!"
     : null;
 
   // Clear selected time when day closes or the slot is no longer visible
