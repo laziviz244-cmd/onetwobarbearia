@@ -14,6 +14,7 @@ declare global {
 
 const PAGE_RESTORE_KEY = `onetwo_pageshow_reload:${BUILD_VERSION}`;
 const LEGACY_SW_CLEANUP_KEY = `onetwo_legacy_sw_cleanup:${BUILD_VERSION}`;
+const SW_UPDATE_RELOAD_KEY = `onetwo_sw_update_reload:${BUILD_VERSION}`;
 
 function isOneSignalWorker(scriptURL?: string) {
   return Boolean(scriptURL?.includes("OneSignalSDKWorker.js") || scriptURL?.includes("OneSignalSDK.sw.js"));
@@ -46,6 +47,17 @@ async function retireLegacyAppServiceWorkers() {
   }
 }
 
+function setupServiceWorkerUpdateReload() {
+  if (!("serviceWorker" in navigator)) return;
+
+  navigator.serviceWorker.addEventListener("message", (event) => {
+    if (event.data?.type !== "ONETWO_SW_UPDATED" || sessionStorage.getItem(SW_UPDATE_RELOAD_KEY)) return;
+
+    sessionStorage.setItem(SW_UPDATE_RELOAD_KEY, "1");
+    window.location.replace(buildVersionedUrl(window.location.pathname, window.location.search, window.location.hash));
+  });
+}
+
 export async function setupPwaInstall() {
   if (typeof window === "undefined") return;
 
@@ -55,6 +67,7 @@ export async function setupPwaInstall() {
   }
 
   window.__onetwoPwaInstallSetup = true;
+  setupServiceWorkerUpdateReload();
 
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
