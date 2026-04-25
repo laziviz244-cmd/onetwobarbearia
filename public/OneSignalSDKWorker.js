@@ -1,4 +1,4 @@
-const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-mobile-logged-users-04";
+const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-universal-cache-bust-05";
 
 async function clearAllRuntimeCaches() {
   const keys = await caches.keys();
