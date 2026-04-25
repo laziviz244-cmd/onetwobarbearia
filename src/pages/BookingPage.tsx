@@ -60,6 +60,8 @@ function generateWeekDays(): { day: string; date: string; full: string; monthLab
 }
 
 const WHATSAPP_NUMBER = "5577981302545";
+const SCHEDULE_FULL_MESSAGE =
+  "Agenda Completa! Todos os horários para este período já estão reservados. Por favor, escolha outra data ou entre em contato para mais informações.";
 
 export default function BookingPage() {
   const navigate = useNavigate();
@@ -125,11 +127,12 @@ export default function BookingPage() {
     });
   }, [selectedDaySchedule, selectedDate, currentDateTime]);
 
-  const isScheduleFull = !isDayClosed && timeSlots.length > 0 && timeSlots.every((time) => reservedSlots.includes(time));
+  const reservedVisibleSlots = timeSlots.filter((time) => reservedSlots.includes(time)).length;
+  const isScheduleFull = !isDayClosed && timeSlots.length > 0 && reservedVisibleSlots === timeSlots.length;
   const hasNoBookableSlots = !isDayClosed && timeSlots.length === 0;
   const shouldBlockBooking = isScheduleFull || hasNoBookableSlots;
   const noSlotsMessage = shouldBlockBooking
-    ? "Agenda encerrada! Todos os horários disponíveis para este dia já foram reservados. Selecione outra data."
+    ? SCHEDULE_FULL_MESSAGE
     : null;
 
   // Clear selected time when day closes or the slot is no longer visible
