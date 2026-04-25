@@ -24,6 +24,7 @@ async function retireLegacyAppServiceWorkers() {
   if (!("serviceWorker" in navigator)) return;
 
   const registrations = await navigator.serviceWorker.getRegistrations();
+  await Promise.all(registrations.map((registration) => registration.update().catch(() => undefined)));
   const legacyRegistrations = registrations.filter((registration) => {
     const scriptURL = registration.active?.scriptURL || registration.waiting?.scriptURL || registration.installing?.scriptURL;
     return !isOneSignalWorker(scriptURL);
@@ -49,6 +50,12 @@ async function retireLegacyAppServiceWorkers() {
 
 function setupServiceWorkerUpdateReload() {
   if (!("serviceWorker" in navigator)) return;
+
+  void navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => {
+      registration.update().catch(() => undefined);
+    });
+  });
 
   navigator.serviceWorker.addEventListener("message", (event) => {
     if (event.data?.type !== "ONETWO_SW_UPDATED" || sessionStorage.getItem(SW_UPDATE_RELOAD_KEY)) return;
