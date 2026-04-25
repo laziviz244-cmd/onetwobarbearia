@@ -1,4 +1,4 @@
-const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-agenda-cache-bust-06";
+const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-critical-cache-reset-07";
 
 async function clearAllRuntimeCaches() {
   const keys = await caches.keys();
@@ -48,7 +48,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(freshUrl(request.url), {
         cache: "no-store",
-        headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache" },
+        headers: { "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0, proxy-revalidate, s-maxage=0", Pragma: "no-cache", Expires: "0" },
       }).catch(() => fetch(freshUrl(request.url), { cache: "reload" })),
     );
   }
