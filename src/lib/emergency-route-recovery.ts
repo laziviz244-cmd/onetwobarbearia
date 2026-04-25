@@ -1,4 +1,4 @@
-const FORCE_UPDATE_TAG = "force-refresh-2026-04-24-01";
+const FORCE_UPDATE_TAG = "force-refresh-2026-04-25-mobile-logged-users-02";
 
 export const BUILD_VERSION = `${import.meta.env.VITE_BUILD_TIMESTAMP || Date.now().toString()}-${FORCE_UPDATE_TAG}`;
 
@@ -38,6 +38,7 @@ export function buildVersionedUrl(pathname: string, search = "", hash = "") {
   const url = new URL(window.location.origin + resolveAdminPath(pathname) + search + hash);
   url.searchParams.set("v", BUILD_VERSION);
   url.searchParams.set("cache", FORCE_UPDATE_TAG);
+  url.searchParams.set("mobile_bust", Date.now().toString());
   return url.toString();
 }
 
