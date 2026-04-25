@@ -425,7 +425,7 @@ export default function BookingPage() {
                   className="flex flex-col items-center justify-center gap-3 rounded-2xl surface-card px-5 py-10 text-center"
                 >
                   <CalendarOff className="h-10 w-10 text-primary" />
-                  <p className="font-montserrat text-lg font-bold text-foreground">Agenda encerrada</p>
+                  <p className="font-montserrat text-lg font-bold text-foreground">Agenda Completa</p>
                   <p className="font-opensans text-sm leading-relaxed text-dimmed">{noSlotsMessage}</p>
                 </motion.div>
               ) : (
