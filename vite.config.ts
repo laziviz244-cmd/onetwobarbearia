@@ -63,7 +63,7 @@ const forceFreshHtmlAndAssets = () => ({
   transformIndexHtml(html: string) {
     return appendBuildVersionToLocalAssets(html.replace("<head>", `<head>${earlyVersionGuard}`));
   },
-  generateBundle(_: unknown, bundle: Record<string, any>) {
+  generateBundle(this: any, _: unknown, bundle: Record<string, any>) {
     this.emitFile({
       type: "asset",
       fileName: "version.json",
