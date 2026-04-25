@@ -1,3 +1,5 @@
+import { BUILD_VERSION } from "./emergency-route-recovery";
+
 const CLIENT_PWA_ASSETS = {
   manifest: "/manifest.webmanifest",
   favicon: "/icon-192x192.png",
@@ -40,8 +42,8 @@ export function applyRoutePwaIdentity(pathname: string) {
   const assets = normalizedPath.startsWith("/admin") ? ADMIN_PWA_ASSETS : CLIENT_PWA_ASSETS;
 
   // Cache-bust so the browser re-reads the correct manifest on install
-  const bust = `?v=${Date.now()}`;
+  const bust = `?v=${encodeURIComponent(BUILD_VERSION)}&mobile_bust=${Date.now()}`;
   upsertHeadLink("manifest", assets.manifest + bust);
-  upsertHeadLink("icon", assets.favicon, "image/png");
-  upsertHeadLink("apple-touch-icon", assets.appleTouchIcon);
+  upsertHeadLink("icon", assets.favicon + bust, "image/png");
+  upsertHeadLink("apple-touch-icon", assets.appleTouchIcon + bust);
 }
