@@ -1,4 +1,4 @@
-const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-universal-cache-bust-05";
+const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-agenda-cache-bust-06";
 
 async function clearAllRuntimeCaches() {
   const keys = await caches.keys();
@@ -41,9 +41,10 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
   const isSameOrigin = url.origin === self.location.origin;
-  const isCriticalAsset = ["document", "script", "style", "worker", "manifest"].includes(request.destination);
+  const isVersionFile = isSameOrigin && url.pathname === "/version.json";
+  const isCriticalAsset = ["document", "script", "style", "worker", "manifest", "image", "font"].includes(request.destination);
 
-  if (isSameOrigin && (request.mode === "navigate" || isCriticalAsset)) {
+  if (isVersionFile || (isSameOrigin && (request.mode === "navigate" || isCriticalAsset))) {
     event.respondWith(
       fetch(freshUrl(request.url), {
         cache: "no-store",
