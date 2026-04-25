@@ -1,4 +1,4 @@
-const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-existing-users";
+const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-mobile-logged-users-02";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
@@ -32,7 +32,10 @@ self.addEventListener("fetch", (event) => {
 
   if (isSameOrigin && (request.mode === "navigate" || isCriticalAsset)) {
     event.respondWith(
-      fetch(request, { cache: "no-store" }).catch(() => fetch(`${url.pathname}?cache=${ONETWO_CACHE_RESET}`, { cache: "reload" })),
+      fetch(`${url.pathname}${url.search ? `${url.search}&` : "?"}cache=${ONETWO_CACHE_RESET}&mobile_bust=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache" },
+      }).catch(() => fetch(`${url.pathname}?cache=${ONETWO_CACHE_RESET}&mobile_bust=${Date.now()}`, { cache: "reload" })),
     );
   }
 });

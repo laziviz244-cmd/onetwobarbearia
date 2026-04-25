@@ -6,6 +6,7 @@ const BUNDLE_HASH_KEY = "onetwo_bundle_hash";
 const RELOAD_ATTEMPT_PREFIX = "onetwo_update_reload_attempts";
 const MAX_RELOAD_ATTEMPTS_PER_SIGNATURE = 3;
 const VERSION_CHECK_INTERVAL_MS = 60_000;
+const MOBILE_BOOTSTRAP_REFRESH_KEY = `onetwo_mobile_bootstrap_refresh:${BUILD_VERSION}`;
 
 function extractBuildSignature(html: string) {
   const assetMatches = [...html.matchAll(/assets\/[\w.-]+-([a-zA-Z0-9_-]+)\.(?:js|css)/g)].map((match) => match[1]);
@@ -64,8 +65,29 @@ async function reloadToLatestVersion(signature = BUILD_VERSION) {
   return true;
 }
 
+async function forceMobileBootstrapRefresh() {
+  const isTouchDevice = navigator.maxTouchPoints > 0 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (!isTouchDevice || sessionStorage.getItem(MOBILE_BOOTSTRAP_REFRESH_KEY)) return false;
+
+  const hasPersistentSession = [
+    "onetwo_user",
+    "onetwo_guest_name",
+    "barber_admin_session",
+  ].some((key) => localStorage.getItem(key));
+
+  const isVersionedNavigation = new URLSearchParams(window.location.search).get("v") === BUILD_VERSION;
+  if (!hasPersistentSession || isVersionedNavigation) return false;
+
+  sessionStorage.setItem(MOBILE_BOOTSTRAP_REFRESH_KEY, "1");
+  await clearBrowserRuntimeCaches();
+  window.location.replace(buildVersionedUrl(window.location.pathname, window.location.search, window.location.hash));
+  return true;
+}
+
 export async function checkVersionAndReload() {
   if (typeof window === "undefined") return true;
+
+  if (await forceMobileBootstrapRefresh()) return false;
 
   const storedVersion = localStorage.getItem(VERSION_KEY);
   const storedSignature = localStorage.getItem(BUNDLE_HASH_KEY);
