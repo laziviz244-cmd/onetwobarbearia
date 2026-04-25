@@ -1,4 +1,4 @@
-const FORCE_UPDATE_TAG = "force-refresh-2026-04-25-mobile-logged-users-02";
+const FORCE_UPDATE_TAG = "force-refresh-2026-04-25-mobile-logged-users-03";
 
 export const BUILD_VERSION = `${import.meta.env.VITE_BUILD_TIMESTAMP || Date.now().toString()}-${FORCE_UPDATE_TAG}`;
 
@@ -60,7 +60,11 @@ export async function clearBrowserRuntimeCaches() {
 
       await Promise.all(
         registrations.map(async (registration) => {
+          registration.active?.postMessage({ type: "ONETWO_CLEAR_CACHES", version: BUILD_VERSION });
           registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+          registration.waiting?.postMessage({ type: "ONETWO_CLEAR_CACHES", version: BUILD_VERSION });
+          registration.installing?.postMessage({ type: "ONETWO_CLEAR_CACHES", version: BUILD_VERSION });
+          await registration.update().catch(() => undefined);
           await registration.unregister();
         }),
       );

@@ -1,18 +1,31 @@
-const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-mobile-logged-users-02";
+const ONETWO_CACHE_RESET = "force-refresh-2026-04-25-mobile-logged-users-03";
+
+async function clearAllRuntimeCaches() {
+  const keys = await caches.keys();
+  await Promise.all(keys.map((key) => caches.delete(key)));
+}
+
+function freshUrl(url) {
+  const next = new URL(url);
+  next.searchParams.set("cache", ONETWO_CACHE_RESET);
+  next.searchParams.set("mobile_bust", Date.now().toString());
+  return next.toString();
+}
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
 
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key)))),
-  );
+  event.waitUntil(clearAllRuntimeCaches());
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     Promise.all([
-      caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key)))),
+      clearAllRuntimeCaches(),
       self.clients.claim(),
+      self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+        clients.forEach((client) => client.postMessage({ type: "ONETWO_SW_UPDATED", version: ONETWO_CACHE_RESET }));
+      }),
     ]),
   );
 });
@@ -20,7 +33,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data?.type === "SKIP_WAITING" || event.data?.type === "ONETWO_CLEAR_CACHES") {
     self.skipWaiting();
-    event.waitUntil(caches.keys().then((keys) => Promise.all(keys.map((key) => caches.delete(key)))));
+    event.waitUntil(clearAllRuntimeCaches());
   }
 });
 
@@ -32,10 +45,10 @@ self.addEventListener("fetch", (event) => {
 
   if (isSameOrigin && (request.mode === "navigate" || isCriticalAsset)) {
     event.respondWith(
-      fetch(`${url.pathname}${url.search ? `${url.search}&` : "?"}cache=${ONETWO_CACHE_RESET}&mobile_bust=${Date.now()}`, {
+      fetch(freshUrl(request.url), {
         cache: "no-store",
         headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache" },
-      }).catch(() => fetch(`${url.pathname}?cache=${ONETWO_CACHE_RESET}&mobile_bust=${Date.now()}`, { cache: "reload" })),
+      }).catch(() => fetch(freshUrl(request.url), { cache: "reload" })),
     );
   }
 });
