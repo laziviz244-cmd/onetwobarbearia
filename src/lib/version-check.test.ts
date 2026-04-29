@@ -114,7 +114,7 @@ describe("checkVersionAndReload cache antigo", () => {
       Object.defineProperty(window, "caches", {
         configurable: true,
         value: {
-          keys: vi.fn().mockResolvedValue([]),
+          keys: vi.fn().mockResolvedValue(["onetwo-runtime-oldhash", "workbox-precache-v1"]),
           delete: vi.fn().mockResolvedValue(true),
         },
       });
@@ -128,6 +128,8 @@ describe("checkVersionAndReload cache antigo", () => {
       sessionStorage.setItem("onetwo_version_reloaded", "new-build-2026:newhash");
 
       await expect(verifyPostReloadCacheIntegrity()).resolves.toBe(true);
+      expect(window.caches.delete).toHaveBeenCalledWith("onetwo-runtime-oldhash");
+      expect(window.caches.delete).toHaveBeenCalledWith("workbox-precache-v1");
       expect(localStorage.getItem("onetwo_pre_reload_bundle_hash")).toBeNull();
       expect(replaceMock).not.toHaveBeenCalled();
     },
