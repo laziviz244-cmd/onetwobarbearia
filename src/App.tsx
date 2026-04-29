@@ -26,19 +26,6 @@ const AdminFinanceiro = lazy(() => import("./pages/admin/AdminFinanceiro"));
 const AdminRelatorios = lazy(() => import("./pages/admin/AdminRelatorios"));
 const AdminConfiguracoes = lazy(() => import("./pages/admin/AdminConfiguracoes"));
 
-function AppRouteSkeleton() {
-  return (
-    <div className="min-h-[100dvh] bg-background px-6 py-8" aria-label="Carregando página">
-      <div className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-md flex-col justify-end gap-4">
-        <div className="mb-auto mt-[8dvh] aspect-square w-40 self-center rounded-full border border-primary/25 bg-muted/60 animate-pulse" />
-        <div className="h-3 w-3/4 self-center rounded-full bg-muted animate-pulse" />
-        <div className="h-14 w-full rounded-2xl bg-primary/80 animate-pulse" />
-        <div className="h-2.5 w-36 self-center rounded-full bg-muted animate-pulse" />
-      </div>
-    </div>
-  );
-}
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -150,7 +137,7 @@ const App = () => (
       <BrowserRouter>
         <AdminAuthProvider>
           <RoutePwaIdentitySync />
-          <Suspense fallback={<AppRouteSkeleton />}>
+          <Suspense fallback={null}>
             <Routes>
               {/* Admin routes */}
               <Route path="/admin/login" element={<AdminLoginEntry />} />
