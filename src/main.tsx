@@ -5,16 +5,14 @@ import { initOneSignal } from "./lib/onesignal";
 import App from "./App.tsx";
 import "./index.css";
 
-async function bootstrap() {
-  const shouldRender = await checkVersionAndReload();
-  if (!shouldRender) return;
+createRoot(document.getElementById("root")!).render(<App />);
 
-  createRoot(document.getElementById("root")!).render(<App />);
-
+function bootstrap() {
   const runAfterFirstPaint = () => {
     void setupPwaInstall();
     setupAutoVersionCheck();
     initOneSignal();
+    void checkVersionAndReload();
   };
 
   if ("requestIdleCallback" in window) {
@@ -35,4 +33,4 @@ async function bootstrap() {
   }
 }
 
-void bootstrap();
+bootstrap();
