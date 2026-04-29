@@ -8,6 +8,7 @@ const RELOAD_ATTEMPT_PREFIX = "onetwo_update_reload_attempts";
 const MAX_RELOAD_ATTEMPTS_PER_SIGNATURE = 3;
 const VERSION_CHECK_INTERVAL_MS = 60_000;
 const MOBILE_BOOTSTRAP_REFRESH_KEY = `onetwo_mobile_bootstrap_refresh:${BUILD_VERSION}`;
+const RUNTIME_CACHE_PREFIXES = ["onetwo", "workbox", "runtime", "precache", "html", "assets", "js", "css", "font", "image", "onesignal"];
 
 async function fetchRemoteBuildVersion() {
   const res = await fetch(`/version.json?v=${Date.now()}&mobile_bust=${Date.now()}`, {
@@ -183,6 +184,21 @@ async function hasRuntimeCaches() {
   return (await caches.keys()).length > 0;
 }
 
+async function clearRuntimeCachesByPrefix(extraSignatures: string[] = []) {
+  if (!("caches" in window)) return [];
+
+  const cacheKeys = await caches.keys();
+  const signatures = extraSignatures.filter(Boolean).map((signature) => signature.toLowerCase());
+  const deletedKeys = cacheKeys.filter((key) => {
+    const normalizedKey = key.toLowerCase();
+    return RUNTIME_CACHE_PREFIXES.some((prefix) => normalizedKey.startsWith(prefix) || normalizedKey.includes(`-${prefix}`))
+      || signatures.some((signature) => normalizedKey.includes(signature));
+  });
+
+  await Promise.all(deletedKeys.map((key) => caches.delete(key)));
+  return deletedKeys;
+}
+
 export async function verifyPostReloadCacheIntegrity() {
   if (typeof window === "undefined" || typeof document === "undefined") return true;
 
@@ -191,6 +207,8 @@ export async function verifyPostReloadCacheIntegrity() {
   if (!oldSignature || !reloadMarker) return true;
 
   try {
+    await clearRuntimeCachesByPrefix([oldSignature, localStorage.getItem(BUNDLE_HASH_KEY) || "", BUILD_VERSION]);
+
     const urls = getLoadedResourceUrls();
     const hasOldBundleReference = urls.some((url) => resourcePointsToSignature(url, oldSignature));
     const staleServiceWorker = await hasStaleServiceWorker();
