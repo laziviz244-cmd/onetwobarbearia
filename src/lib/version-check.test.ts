@@ -114,7 +114,9 @@ describe("checkVersionAndReload cache antigo", () => {
       Object.defineProperty(window, "caches", {
         configurable: true,
         value: {
-          keys: vi.fn().mockResolvedValue(["onetwo-runtime-oldhash", "workbox-precache-v1"]),
+          keys: vi.fn()
+            .mockResolvedValueOnce(["onetwo-runtime-oldhash", "workbox-precache-v1"])
+            .mockResolvedValueOnce([]),
           delete: vi.fn().mockResolvedValue(true),
         },
       });
