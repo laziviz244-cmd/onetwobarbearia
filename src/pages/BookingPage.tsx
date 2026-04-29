@@ -154,8 +154,9 @@ export default function BookingPage() {
     };
     fetchHours();
 
+    const channelId = `business-hours-realtime-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const channel = supabase
-      .channel("business-hours-realtime")
+      .channel(channelId)
       .on("postgres_changes", {
         event: "UPDATE",
         schema: "public",
@@ -185,8 +186,9 @@ export default function BookingPage() {
     setReservedSlots([]);
     fetchReserved();
 
+    const channelId = `slots-realtime-${selectedDate}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const channel = supabase
-      .channel(`slots-realtime-${selectedDate}`)
+      .channel(channelId)
       .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
         fetchReserved();
       })
