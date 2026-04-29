@@ -16,6 +16,8 @@ export default function WelcomePage() {
       <img
         src={logoVitrine}
         alt="One Two Barbearia"
+        fetchPriority="high"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover object-top"
       />
 
