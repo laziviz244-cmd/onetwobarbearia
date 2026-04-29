@@ -9,10 +9,19 @@ async function bootstrap() {
   const shouldRender = await checkVersionAndReload();
   if (!shouldRender) return;
 
-  await setupPwaInstall();
-  setupAutoVersionCheck();
-  initOneSignal();
   createRoot(document.getElementById("root")!).render(<App />);
+
+  const runAfterFirstPaint = () => {
+    void setupPwaInstall();
+    setupAutoVersionCheck();
+    initOneSignal();
+  };
+
+  if ("requestIdleCallback" in window) {
+    (window as any).requestIdleCallback(runAfterFirstPaint, { timeout: 1500 });
+  } else {
+    setTimeout(runAfterFirstPaint, 250);
+  }
 
   // Prefetch lazy routes during idle to eliminate black flash on tab switch
   const prefetch = () => {
