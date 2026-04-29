@@ -3,6 +3,7 @@ import { BUILD_VERSION, buildVersionedUrl, clearBrowserRuntimeCaches } from "./e
 const VERSION_KEY = "onetwo_app_version";
 const RELOAD_FLAG = "onetwo_version_reloaded";
 const BUNDLE_HASH_KEY = "onetwo_bundle_hash";
+const PRE_RELOAD_BUNDLE_HASH_KEY = "onetwo_pre_reload_bundle_hash";
 const RELOAD_ATTEMPT_PREFIX = "onetwo_update_reload_attempts";
 const MAX_RELOAD_ATTEMPTS_PER_SIGNATURE = 3;
 const VERSION_CHECK_INTERVAL_MS = 60_000;
@@ -74,6 +75,11 @@ async function fetchLatestBuildSignature() {
 async function reloadToLatestVersion(signature = BUILD_VERSION) {
   if (!canAttemptReload(signature)) return false;
 
+  const currentSignature = getCurrentDocumentSignature();
+  if (currentSignature && currentSignature !== signature) {
+    localStorage.setItem(PRE_RELOAD_BUNDLE_HASH_KEY, currentSignature);
+  }
+
   sessionStorage.setItem(RELOAD_FLAG, `${BUILD_VERSION}:${signature}`);
   localStorage.setItem(VERSION_KEY, BUILD_VERSION);
   if (signature) localStorage.setItem(BUNDLE_HASH_KEY, signature);
@@ -103,6 +109,8 @@ async function forceMobileBootstrapRefresh() {
 
 export async function checkVersionAndReload() {
   if (typeof window === "undefined") return true;
+
+  if (!(await verifyPostReloadCacheIntegrity())) return false;
 
   if (await forceMobileBootstrapRefresh()) return false;
 
@@ -141,6 +149,63 @@ export async function checkVersionAndReload() {
 
   localStorage.setItem(VERSION_KEY, BUILD_VERSION);
   return true;
+}
+
+function getLoadedResourceUrls() {
+  const domUrls = [
+    ...Array.from(document.scripts).map((script) => script.src),
+    ...Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"][href]')).map((link) => link.href),
+  ].filter(Boolean);
+
+  const performanceUrls = typeof performance?.getEntriesByType === "function"
+    ? performance.getEntriesByType("resource").map((entry) => entry.name)
+    : [];
+
+  return [...domUrls, ...performanceUrls];
+}
+
+function resourcePointsToSignature(url: string, signature: string) {
+  return url.includes(`-${signature}.js`) || url.includes(`-${signature}.css`) || url.includes(`/${signature}.js`) || url.includes(`/${signature}.css`);
+}
+
+async function hasStaleServiceWorker() {
+  if (!("serviceWorker" in navigator)) return false;
+
+  const registrations = await navigator.serviceWorker.getRegistrations();
+  return registrations.some((registration) => {
+    const scriptURL = registration.active?.scriptURL || registration.waiting?.scriptURL || registration.installing?.scriptURL || "";
+    return Boolean(scriptURL && !scriptURL.includes(BUILD_VERSION));
+  });
+}
+
+async function hasRuntimeCaches() {
+  if (!("caches" in window)) return false;
+  return (await caches.keys()).length > 0;
+}
+
+export async function verifyPostReloadCacheIntegrity() {
+  if (typeof window === "undefined" || typeof document === "undefined") return true;
+
+  const oldSignature = localStorage.getItem(PRE_RELOAD_BUNDLE_HASH_KEY);
+  const reloadMarker = sessionStorage.getItem(RELOAD_FLAG);
+  if (!oldSignature || !reloadMarker) return true;
+
+  try {
+    const urls = getLoadedResourceUrls();
+    const hasOldBundleReference = urls.some((url) => resourcePointsToSignature(url, oldSignature));
+    const staleServiceWorker = await hasStaleServiceWorker();
+    const runtimeCachesRemain = await hasRuntimeCaches();
+
+    if (hasOldBundleReference || staleServiceWorker || runtimeCachesRemain) {
+      const isReloading = await reloadToLatestVersion(localStorage.getItem(BUNDLE_HASH_KEY) || BUILD_VERSION);
+      return !isReloading;
+    }
+
+    localStorage.removeItem(PRE_RELOAD_BUNDLE_HASH_KEY);
+    return true;
+  } catch {
+    return true;
+  }
 }
 
 /**
