@@ -33,6 +33,19 @@
   <meta name="twitter:title" content="Onetwo — Agende seu Corte">
   <meta property="og:description" content="Agende seu horário com exclusividade, acompanhe seu cartão fidelidade e garanta seu 10º corte por nossa conta.">
   <meta name="twitter:description" content="Agende seu horário com exclusividade, acompanhe seu cartão fidelidade e garanta seu 10º corte por nossa conta.">
+  <style>
+    :root { color-scheme: dark; background: #000; }
+    html, body, #root { min-height: 100%; margin: 0; background: #000; }
+    .app-shell-skeleton { min-height: 100dvh; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 14px; padding: 0 24px 32px; box-sizing: border-box; background: radial-gradient(circle at 50% 18%, rgba(26,58,143,.22), transparent 34%), linear-gradient(180deg, #050505 0%, #000 58%, #000 100%); overflow: hidden; }
+    .app-shell-skeleton::before { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 18%, rgba(255,255,255,.07) 34%, transparent 50%); animation: onetwo-skeleton-sweep 1.25s ease-in-out infinite; transform: translateX(-100%); }
+    .skeleton-mark { width: min(56vw, 220px); aspect-ratio: 1; border-radius: 999px; border: 1px solid rgba(197,160,89,.28); background: rgba(255,255,255,.045); margin-bottom: auto; margin-top: 12dvh; }
+    .skeleton-line { height: 12px; border-radius: 999px; background: rgba(255,255,255,.10); }
+    .skeleton-line.short { width: min(70vw, 280px); }
+    .skeleton-cta { width: min(100%, 384px); height: 56px; border-radius: 16px; background: rgba(26,58,143,.82); box-shadow: 0 0 20px rgba(26,58,143,.24); }
+    .skeleton-caption { width: 152px; height: 10px; border-radius: 999px; background: rgba(255,255,255,.08); }
+    @keyframes onetwo-skeleton-sweep { to { transform: translateX(100%); } }
+    @media (prefers-reduced-motion: reduce) { .app-shell-skeleton::before { animation: none; } }
+  </style>
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -82,7 +95,14 @@
   </script>
 </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="app-shell-skeleton" aria-label="Carregando OneTwo">
+        <div class="skeleton-mark"></div>
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-cta"></div>
+        <div class="skeleton-caption"></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
