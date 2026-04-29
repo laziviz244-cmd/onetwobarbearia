@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import BookingPage from "./BookingPage";
@@ -54,20 +54,18 @@ describe("BookingPage agenda cheia", () => {
   });
 
   it("desabilita a seleção de horários e exibe a mensagem de Agenda Completa", async () => {
-    render(
+    const { findByText, getByText, queryByText } = render(
       <MemoryRouter initialEntries={["/agendar?servico=Corte"]}>
         <BookingPage />
       </MemoryRouter>
     );
 
-    expect(await screen.findByText("Agenda Completa")).toBeInTheDocument();
+    expect(await findByText("Agenda Completa")).toBeInTheDocument();
     expect(
-      screen.getByText(/Todos os horários para este período já estão reservados/i)
+      getByText(/Todos os horários para este período já estão reservados/i)
     ).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(screen.queryByText("14:00")).not.toBeInTheDocument();
-      expect(screen.queryByText(/Confirmar via WhatsApp/i)).not.toBeInTheDocument();
-    });
+    expect(queryByText("14:00")).not.toBeInTheDocument();
+    expect(queryByText(/Confirmar via WhatsApp/i)).not.toBeInTheDocument();
   });
 });
