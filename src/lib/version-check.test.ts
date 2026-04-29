@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { checkVersionAndReload } from "./version-check";
+import { checkVersionAndReload, verifyPostReloadCacheIntegrity } from "./version-check";
 
 const versionMocks = vi.hoisted(() => ({
   clearBrowserRuntimeCaches: vi.fn(() => Promise.resolve()),
@@ -92,6 +92,7 @@ describe("checkVersionAndReload cache antigo", () => {
       expect(versionMocks.clearBrowserRuntimeCaches).toHaveBeenCalledTimes(1);
       expect(localStorage.getItem("onetwo_app_version")).toBe("new-build-2026");
       expect(localStorage.getItem("onetwo_bundle_hash")).toBe("newhash");
+      expect(localStorage.getItem("onetwo_pre_reload_bundle_hash")).toBe("oldhash");
       expect(replaceMock).toHaveBeenCalledTimes(1);
       expect(replaceMock.mock.calls[0][0]).toContain("/agendar?servico=Corte");
       expect(replaceMock.mock.calls[0][0]).toContain("v=new-build-2026");
@@ -99,4 +100,64 @@ describe("checkVersionAndReload cache antigo", () => {
       expect(replaceMock.mock.calls[0][0]).toContain("ngsw-bypass=1");
     },
   );
+
+  it.each(browserUserAgents)(
+    "confirma pós-reload em $name que caches, Service Workers antigos e bundle antigo foram removidos",
+    async ({ userAgent }) => {
+      Object.defineProperty(navigator, "userAgent", { configurable: true, value: userAgent });
+      Object.defineProperty(navigator, "serviceWorker", {
+        configurable: true,
+        value: {
+          getRegistrations: vi.fn().mockResolvedValue([]),
+        },
+      });
+      Object.defineProperty(window, "caches", {
+        configurable: true,
+        value: {
+          keys: vi.fn().mockResolvedValue([]),
+          delete: vi.fn().mockResolvedValue(true),
+        },
+      });
+      vi.spyOn(performance, "getEntriesByType").mockReturnValue([
+        { name: "https://onetwobarrbearia.lovable.app/assets/index-newhash.js" } as PerformanceResourceTiming,
+      ]);
+
+      document.head.innerHTML = `<script type="module" src="https://onetwobarrbearia.lovable.app/assets/index-newhash.js"></script>`;
+      localStorage.setItem("onetwo_pre_reload_bundle_hash", "oldhash");
+      localStorage.setItem("onetwo_bundle_hash", "newhash");
+      sessionStorage.setItem("onetwo_version_reloaded", "new-build-2026:newhash");
+
+      await expect(verifyPostReloadCacheIntegrity()).resolves.toBe(true);
+      expect(localStorage.getItem("onetwo_pre_reload_bundle_hash")).toBeNull();
+      expect(replaceMock).not.toHaveBeenCalled();
+    },
+  );
+
+  it("força novo reload se a verificação pós-reload ainda encontrar o bundle antigo", async () => {
+    Object.defineProperty(navigator, "serviceWorker", {
+      configurable: true,
+      value: {
+        getRegistrations: vi.fn().mockResolvedValue([]),
+      },
+    });
+    Object.defineProperty(window, "caches", {
+      configurable: true,
+      value: {
+        keys: vi.fn().mockResolvedValue([]),
+        delete: vi.fn().mockResolvedValue(true),
+      },
+    });
+    vi.spyOn(performance, "getEntriesByType").mockReturnValue([
+      { name: "https://onetwobarrbearia.lovable.app/assets/index-oldhash.js" } as PerformanceResourceTiming,
+    ]);
+
+    localStorage.setItem("onetwo_pre_reload_bundle_hash", "oldhash");
+    localStorage.setItem("onetwo_bundle_hash", "newhash");
+    sessionStorage.setItem("onetwo_version_reloaded", "new-build-2026:newhash");
+
+    await expect(verifyPostReloadCacheIntegrity()).resolves.toBe(false);
+    expect(versionMocks.clearBrowserRuntimeCaches).toHaveBeenCalledTimes(1);
+    expect(replaceMock).toHaveBeenCalledTimes(1);
+    expect(replaceMock.mock.calls[0][0]).toContain("ngsw-bypass=1");
+  });
 });
