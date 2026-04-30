@@ -401,26 +401,7 @@ export default function BookingPage() {
       {/* Time slots */}
       <div className="px-6 mt-8">
         <AnimatePresence mode="wait">
-          {isWalkInWeekday ? (
-            <motion.div
-              key="walk-in-weekday"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="flex flex-col items-center justify-center gap-4 rounded-2xl surface-card px-5 py-12 text-center"
-            >
-              <CalendarOff className="h-10 w-10 text-primary" />
-              <p className="font-opensans text-sm leading-relaxed text-dimmed">{WALK_IN_WEEKDAY_MESSAGE}</p>
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                onClick={selectNextWeekend}
-                className="mt-2 rounded-2xl btn-primary-glow px-5 py-3 font-montserrat text-sm font-bold text-primary-foreground"
-              >
-                Agendar para o Final de Semana
-              </motion.button>
-            </motion.div>
-          ) : isDayClosed ? (
+          {isDayClosed ? (
             <motion.div
               key="closed"
               initial={{ opacity: 0, y: 10 }}
