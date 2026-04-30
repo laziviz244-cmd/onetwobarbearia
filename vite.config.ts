@@ -4,7 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 const buildTimestamp = Date.now().toString();
-const forceUpdateTag = "force-refresh-2026-04-29-no-skeleton-instant-render-01";
+const forceUpdateTag = "force-refresh-2026-04-30-latest-deploy-cache-policy-01";
 const fullBuildVersion = `${buildTimestamp}-${forceUpdateTag}`;
 
 const earlyVersionGuard = `
