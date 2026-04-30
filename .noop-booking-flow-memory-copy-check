@@ -1,0 +1,20 @@
+---
+name: Booking Flow Logic
+description: Client booking rules, time slots, and WhatsApp confirmation
+type: feature
+---
+- Public flow at `/agendar`.
+- Bookable days are Friday and Saturday only.
+- Monday through Thursday are walk-in only: hide time slots, show the exact warning “Meios de semana atendemos exclusivamente por ordem de chegada. Agendamentos disponíveis apenas para finais de semana!”, and provide “Agendar para o Final de Semana” shortcut to the next Friday.
+- 30 min slots from 08:00, dynamic 14-day window.
+- Excludes Sundays, past times, 12:30, 13:00, 13:30.
+- Confirmation via WhatsApp: `wa.me/5577981302545`.
+- Returning guests skip identification (stored in LocalStorage `onetwo_guest_name`).
+- WhatsApp message format:
+  📌 *NOVO AGENDAMENTO*
+  👤 *Cliente:* [NOME]
+  ✂️ *Serviço:* [SERVIÇO]
+  📅 *Data:* [DATA]
+  ⏰ *Horário:* [HORÁRIO]
+  ✅ *Agendamento realizado pelo App!
+- Occupied slots: 'Reservado' at 40% opacity gray (#808080).
