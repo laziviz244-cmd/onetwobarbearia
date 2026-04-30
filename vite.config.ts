@@ -11,39 +11,10 @@ const earlyVersionGuard = `
     <script>
       (function () {
         var buildVersion = "${fullBuildVersion}";
-        var versionKey = "onetwo_html_build_version";
-        var reloadKey = "onetwo_html_reload:" + buildVersion;
         window.__ONETWO_BUILD_VERSION__ = buildVersion;
         try {
-          var stored = localStorage.getItem(versionKey);
-          if (stored && stored !== buildVersion && !sessionStorage.getItem(reloadKey)) {
-            sessionStorage.setItem(reloadKey, "1");
-            purgeCachesAndWorkers().finally(reload);
-            return;
-          }
-          localStorage.setItem(versionKey, buildVersion);
-          fetch("/version.json?v=" + Date.now() + "&mobile_bust=" + Date.now(), { cache: "no-store", headers: { "Accept": "application/json", "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0", "Pragma": "no-cache", "Expires": "0" } })
-            .then(function (res) { return res.ok ? res.json() : null; })
-            .then(function (data) {
-              if (!data || !data.version || data.version === buildVersion || sessionStorage.getItem(reloadKey + ":remote")) return;
-              sessionStorage.setItem(reloadKey + ":remote", "1");
-              localStorage.setItem(versionKey, data.version);
-              purgeCachesAndWorkers().finally(function () { reload(data.version, data.cache); });
-            }).catch(function () {});
+          localStorage.setItem("onetwo_html_build_version", buildVersion);
         } catch (e) {}
-        function purgeCachesAndWorkers() {
-          var cacheCleanup = "caches" in window ? caches.keys().then(function (keys) { return Promise.all(keys.map(function (key) { return caches.delete(key); })); }) : Promise.resolve();
-          var workerCleanup = "serviceWorker" in navigator ? navigator.serviceWorker.getRegistrations().then(function (registrations) { return Promise.all(registrations.map(function (registration) { registration.waiting && registration.waiting.postMessage({ type: "SKIP_WAITING" }); registration.active && registration.active.postMessage({ type: "ONETWO_CLEAR_CACHES", version: buildVersion }); return registration.unregister(); })); }) : Promise.resolve();
-          return Promise.all([cacheCleanup, workerCleanup]).catch(function () {});
-        }
-        function reload(targetVersion, targetCache) {
-          var url = new URL(window.location.href);
-          url.searchParams.set("v", targetVersion || buildVersion);
-          url.searchParams.set("cache", targetCache || "${forceUpdateTag}");
-          url.searchParams.set("mobile_bust", Date.now().toString());
-          url.searchParams.set("ngsw-bypass", "1");
-          window.location.replace(url.toString());
-        }
       })();
     </script>`;
 
