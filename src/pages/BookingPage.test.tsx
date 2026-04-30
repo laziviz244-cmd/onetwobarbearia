@@ -54,6 +54,8 @@ describe("BookingPage agenda cheia", () => {
   });
 
   it("desabilita a seleção de horários e exibe a mensagem de Agenda Completa", async () => {
+    vi.setSystemTime(new Date("2026-05-01T13:00:00"));
+
     const { findByText, getByText, queryByText } = render(
       <MemoryRouter initialEntries={["/agendar?servico=Corte"]}>
         <BookingPage />
