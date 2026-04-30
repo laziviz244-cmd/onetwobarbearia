@@ -89,7 +89,7 @@ export async function hardReloadOnce(
 
   sessionStorage.setItem(flag, "1");
   await clearBrowserRuntimeCaches();
-  window.location.replace(buildVersionedUrl(resolvedPath, search, hash));
+  window.history.replaceState(null, "", resolvedPath + search + hash);
   return true;
 }
 
