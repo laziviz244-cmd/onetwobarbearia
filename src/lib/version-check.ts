@@ -81,12 +81,10 @@ async function reloadToLatestVersion(signature = BUILD_VERSION) {
     localStorage.setItem(PRE_RELOAD_BUNDLE_HASH_KEY, currentSignature);
   }
 
-  sessionStorage.setItem(RELOAD_FLAG, `${BUILD_VERSION}:${signature}`);
   localStorage.setItem(VERSION_KEY, BUILD_VERSION);
   if (signature) localStorage.setItem(BUNDLE_HASH_KEY, signature);
   await clearBrowserRuntimeCaches();
-  window.location.replace(buildVersionedUrl(window.location.pathname, window.location.search, window.location.hash));
-  return true;
+  return false;
 }
 
 async function forceMobileBootstrapRefresh() {
@@ -104,8 +102,7 @@ async function forceMobileBootstrapRefresh() {
 
   sessionStorage.setItem(MOBILE_BOOTSTRAP_REFRESH_KEY, "1");
   await clearBrowserRuntimeCaches();
-  window.location.replace(buildVersionedUrl(window.location.pathname, window.location.search, window.location.hash));
-  return true;
+  return false;
 }
 
 export async function checkVersionAndReload() {
