@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import BookingPage from "./BookingPage";
@@ -67,5 +67,22 @@ describe("BookingPage agenda cheia", () => {
 
     expect(queryByText("14:00")).not.toBeInTheDocument();
     expect(queryByText(/Confirmar via WhatsApp/i)).not.toBeInTheDocument();
+  });
+
+  it("bloqueia agendamento de segunda a quinta e atalha para a próxima sexta", async () => {
+    const { findByText, getByText, queryByText } = render(
+      <MemoryRouter initialEntries={["/agendar?servico=Corte"]}>
+        <BookingPage />
+      </MemoryRouter>
+    );
+
+    expect(await findByText(/Meios de semana atendemos exclusivamente por ordem de chegada/i)).toBeInTheDocument();
+    expect(queryByText("14:00")).not.toBeInTheDocument();
+
+    fireEvent.click(getByText("Agendar para o Final de Semana"));
+
+    await waitFor(() => expect(queryByText(/ordem de chegada/i)).not.toBeInTheDocument());
+    expect(getByText("Horários disponíveis")).toBeInTheDocument();
+    expect(getByText("08:00")).toBeInTheDocument();
   });
 });
