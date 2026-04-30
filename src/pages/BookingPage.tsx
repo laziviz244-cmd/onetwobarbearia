@@ -322,7 +322,7 @@ export default function BookingPage() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex min-h-screen flex-col items-center justify-center bg-background px-6"
+        className="flex min-h-[calc(100vh-6rem)] flex-col items-center justify-center bg-background px-6"
       >
         <motion.div
           initial={{ scale: 0 }}
@@ -352,7 +352,7 @@ export default function BookingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="bg-background pb-8">
       {/* Header */}
       <div className="px-6 pt-12 flex items-center gap-4">
         <button
