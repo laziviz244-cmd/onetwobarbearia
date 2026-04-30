@@ -62,14 +62,6 @@ function generateWeekDays(): { day: string; date: string; full: string; monthLab
 const WHATSAPP_NUMBER = "5577981302545";
 const SCHEDULE_FULL_MESSAGE =
   "Agenda Completa! Todos os horários para este período já estão reservados. Por favor, escolha outra data ou entre em contato para mais informações.";
-const WALK_IN_WEEKDAY_MESSAGE =
-  "Meios de semana atendemos exclusivamente por ordem de chegada. Agendamentos disponíveis apenas para finais de semana!";
-
-function isWalkInOnlyWeekday(date: string) {
-  if (!date) return false;
-  const dow = getDay(new Date(date + "T12:00:00"));
-  return dow >= 1 && dow <= 4;
-}
 
 export default function BookingPage() {
   const navigate = useNavigate();
