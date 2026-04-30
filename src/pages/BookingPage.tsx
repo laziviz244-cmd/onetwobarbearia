@@ -91,7 +91,7 @@ export default function BookingPage() {
     return businessHours[key] ?? null;
   }, [businessHours, selectedDate]);
 
-  const isWalkInWeekday = useMemo(() => isWalkInOnlyWeekday(selectedDate), [selectedDate]);
+  const isWalkInWeekday = false;
   const isDayClosed = selectedDaySchedule ? !selectedDaySchedule.enabled : false;
 
   useEffect(() => {
