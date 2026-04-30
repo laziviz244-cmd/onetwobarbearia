@@ -3,7 +3,6 @@ const FORCE_UPDATE_TAG = import.meta.env.VITE_FORCE_UPDATE_TAG || "force-refresh
 export const BUILD_VERSION = `${import.meta.env.VITE_BUILD_TIMESTAMP || Date.now().toString()}-${FORCE_UPDATE_TAG}`;
 
 export const ADMIN_ROUTE_ALIASES: Record<string, string> = {
-  "/agenda": "/admin/agenda",
   "/financeiro": "/admin/financeiro",
   "/relatorios": "/admin/relatorios",
   "/configuracoes": "/admin/configuracoes",
