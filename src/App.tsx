@@ -1,11 +1,12 @@
 // Versão Final OneTwo - Force Deploy
 import { useEffect, useLayoutEffect, lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminAuthProvider, useAdminAuth } from "@/contexts/AdminAuthContext";
+import { BottomNav } from "@/components/BottomNav";
 import { isAdminLikePath, resolveAdminPath } from "@/lib/emergency-route-recovery";
 import { applyRoutePwaIdentity } from "@/lib/pwa-route-identity";
 import WelcomePage from "./pages/WelcomePage";
@@ -13,12 +14,12 @@ import ClientHomePage from "./pages/ClientHomePage";
 import LoginPage from "./pages/LoginPage";
 import BookingPage from "./pages/BookingPage";
 import MeusAgendamentos from "./pages/MeusAgendamentos";
+import Perfil from "./pages/Perfil";
+import PlanosPage from "./pages/PlanosPage";
 
 // Lazy-loaded pages (reduces initial bundle)
 const BarberShopDetailPage = lazy(() => import("./pages/BarberShopDetailPage"));
 const BarberDashboard = lazy(() => import("./pages/BarberDashboard"));
-const Perfil = lazy(() => import("./pages/Perfil"));
-const PlanosPage = lazy(() => import("./pages/PlanosPage"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminAgenda = lazy(() => import("./pages/admin/AdminAgenda"));
@@ -85,6 +86,15 @@ function SmartRedirect() {
   }
 
   return <WelcomePage />;
+}
+
+function ClientLayout() {
+  return (
+    <div className="min-h-screen bg-background text-foreground pb-24">
+      <Outlet />
+      <BottomNav />
+    </div>
+  );
 }
 
 function RoutePwaIdentitySync() {
@@ -181,20 +191,23 @@ const App = () => (
                   </ProtectedAdmin>
                 }
               />
-              <Route path="/agenda" element={<Navigate to="/admin/agenda" replace />} />
               <Route path="/financeiro" element={<Navigate to="/admin/financeiro" replace />} />
               <Route path="/relatorios" element={<Navigate to="/admin/relatorios" replace />} />
 
               <Route path="/" element={<SmartRedirect />} />
               <Route path="/vitrine" element={<WelcomePage />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/cliente" element={<ClientHomePage />} />
+              <Route element={<ClientLayout />}>
+                <Route path="/cliente" element={<ClientHomePage />} />
+                <Route path="/agendar" element={<BookingPage />} />
+                <Route path="/agenda" element={<MeusAgendamentos />} />
+                <Route path="/planos" element={<PlanosPage />} />
+                <Route path="/meus-agendamentos" element={<Navigate to="/agenda" replace />} />
+                <Route path="/profile" element={<Perfil />} />
+                <Route path="/perfil" element={<Perfil />} />
+              </Route>
               <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
-              <Route path="/agendar" element={<BookingPage />} />
-              <Route path="/planos" element={<PlanosPage />} />
               <Route path="/dashboard" element={<BarberDashboard />} />
-              <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
-              <Route path="/perfil" element={<Perfil />} />
 
               <Route path="*" element={<RouteFallback />} />
             </Routes>

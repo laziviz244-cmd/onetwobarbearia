@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Calendar, Scissors } from "lucide-react";
-import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +25,9 @@ interface Appointment {
   clientName?: string;
 }
 
+const APPOINTMENTS_CACHE_TTL_MS = 5 * 60 * 1000;
+const appointmentsCache = new Map<string, { data: Appointment[]; timestamp: number }>();
+
 export default function MeusAgendamentos() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [showLoyalty, setShowLoyalty] = useState(false);
@@ -38,6 +40,14 @@ export default function MeusAgendamentos() {
   const loadAppointments = useCallback(async () => {
     if (!currentUserId) {
       setAppointments([]);
+      setIsLoading(false);
+      return;
+    }
+
+    const cached = appointmentsCache.get(currentUserId);
+    if (cached && Date.now() - cached.timestamp < APPOINTMENTS_CACHE_TTL_MS) {
+      setAppointments(cached.data);
+      setLoyaltyCount(cached.data.length);
       setIsLoading(false);
       return;
     }
@@ -57,6 +67,7 @@ export default function MeusAgendamentos() {
       status: a.status,
       clientName: a.client_name,
     }));
+    appointmentsCache.set(currentUserId, { data: mapped, timestamp: Date.now() });
     setAppointments(mapped);
     setLoyaltyCount(mapped.length);
     setIsLoading(false);
@@ -87,6 +98,7 @@ export default function MeusAgendamentos() {
     const channel = supabase
       .channel(`appointments-realtime-${currentUserId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
+        appointmentsCache.delete(currentUserId);
         loadAppointments();
       })
       .subscribe();
@@ -108,6 +120,7 @@ export default function MeusAgendamentos() {
       .single();
 
     await supabase.from("appointments").delete().eq("id", id).eq("user_id", currentUserId);
+    appointmentsCache.delete(currentUserId);
 
     const notifId = (row as any)?.notification_id;
     if (notifId) {
@@ -121,7 +134,7 @@ export default function MeusAgendamentos() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24">
+    <div className="bg-background text-foreground">
       <header className="px-6 pt-12 pb-6">
         <motion.h1
           initial={{ opacity: 0, y: -12 }}
@@ -356,8 +369,6 @@ export default function MeusAgendamentos() {
           </motion.div>
         </motion.div>
       )}
-
-      <BottomNav />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { BottomNav } from "@/components/BottomNav";
 import { useState, useEffect } from "react";
 
 export default function Perfil() {
@@ -111,7 +110,7 @@ export default function Perfil() {
   const canSubmit = username.trim().length > 0 && password.trim().length > 0 && !isDuplicate;
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24">
+    <div className="bg-background text-foreground">
       <header className="px-6 pt-12 pb-6">
         <motion.div
           initial={{ opacity: 0, y: -12 }}
@@ -228,8 +227,6 @@ export default function Perfil() {
           </motion.div>
         )}
       </main>
-
-      <BottomNav />
     </div>
   );
 }

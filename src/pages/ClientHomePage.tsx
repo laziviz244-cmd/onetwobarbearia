@@ -2,7 +2,6 @@
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState, memo } from "react";
 import corteImg from "@/assets/corte.jpg";
@@ -30,7 +29,7 @@ export default function ClientHomePage() {
   const [showLoyalty, setShowLoyalty] = useState(false);
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="bg-background">
       {/* Header */}
       <div className="px-6 pt-12 pb-4">
         <div className="flex items-center justify-between">
@@ -393,8 +392,6 @@ export default function ClientHomePage() {
           </motion.div>
         </motion.div>
       )}
-
-      <BottomNav />
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
 
 const plans = [
@@ -42,7 +41,7 @@ export default function PlanosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="bg-background">
       <div className="px-6 pt-12 pb-4">
         <h1 className="font-montserrat font-bold text-2xl text-foreground tracking-tighter">
           Planos de Assinatura
@@ -124,8 +123,6 @@ export default function PlanosPage() {
           Sobrancelha, Hidratação, Prioridade na Agenda e Brindes.
         </p>
       </div>
-
-      <BottomNav />
     </div>
   );
 }
