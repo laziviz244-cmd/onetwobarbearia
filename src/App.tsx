@@ -191,7 +191,6 @@ const App = () => (
                   </ProtectedAdmin>
                 }
               />
-              <Route path="/agenda" element={<Navigate to="/admin/agenda" replace />} />
               <Route path="/financeiro" element={<Navigate to="/admin/financeiro" replace />} />
               <Route path="/relatorios" element={<Navigate to="/admin/relatorios" replace />} />
 
@@ -201,10 +200,10 @@ const App = () => (
               <Route element={<ClientLayout />}>
                 <Route path="/cliente" element={<ClientHomePage />} />
                 <Route path="/agendar" element={<BookingPage />} />
-                <Route path="/agenda" element={<Navigate to="/meus-agendamentos" replace />} />
+                <Route path="/agenda" element={<MeusAgendamentos />} />
                 <Route path="/planos" element={<PlanosPage />} />
-                <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
-                <Route path="/profile" element={<Navigate to="/perfil" replace />} />
+                <Route path="/meus-agendamentos" element={<Navigate to="/agenda" replace />} />
+                <Route path="/profile" element={<Perfil />} />
                 <Route path="/perfil" element={<Perfil />} />
               </Route>
               <Route path="/barbearia/:id" element={<BarberShopDetailPage />} />
