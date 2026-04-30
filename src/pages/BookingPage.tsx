@@ -62,6 +62,14 @@ function generateWeekDays(): { day: string; date: string; full: string; monthLab
 const WHATSAPP_NUMBER = "5577981302545";
 const SCHEDULE_FULL_MESSAGE =
   "Agenda Completa! Todos os horários para este período já estão reservados. Por favor, escolha outra data ou entre em contato para mais informações.";
+const WALK_IN_WEEKDAY_MESSAGE =
+  "Meios de semana atendemos exclusivamente por ordem de chegada. Agendamentos disponíveis apenas para finais de semana!";
+
+function isWalkInOnlyWeekday(date: string) {
+  if (!date) return false;
+  const dow = getDay(new Date(date + "T12:00:00"));
+  return dow >= 1 && dow <= 4;
+}
 
 export default function BookingPage() {
   const navigate = useNavigate();
@@ -91,6 +99,7 @@ export default function BookingPage() {
     return businessHours[key] ?? null;
   }, [businessHours, selectedDate]);
 
+  const isWalkInWeekday = useMemo(() => isWalkInOnlyWeekday(selectedDate), [selectedDate]);
   const isDayClosed = selectedDaySchedule ? !selectedDaySchedule.enabled : false;
 
   useEffect(() => {
@@ -130,17 +139,24 @@ export default function BookingPage() {
   const reservedVisibleSlots = timeSlots.filter((time) => reservedSlots.includes(time)).length;
   const isScheduleFull = !isDayClosed && timeSlots.length > 0 && reservedVisibleSlots === timeSlots.length;
   const hasNoBookableSlots = !isDayClosed && timeSlots.length === 0;
-  const shouldBlockBooking = isScheduleFull || hasNoBookableSlots;
+  const shouldBlockBooking = isWalkInWeekday || isScheduleFull || hasNoBookableSlots;
   const noSlotsMessage = shouldBlockBooking
     ? SCHEDULE_FULL_MESSAGE
     : null;
 
+  const selectNextWeekend = useCallback(() => {
+    const nextFriday = weekDays.find((d) => d.full > selectedDate && getDay(new Date(d.full + "T12:00:00")) === 5);
+    if (!nextFriday) return;
+    setSelectedDate(nextFriday.full);
+    setSelectedTime(null);
+  }, [selectedDate, weekDays]);
+
   // Clear selected time when day closes or the slot is no longer visible
   useEffect(() => {
-    if (selectedTime && (isDayClosed || shouldBlockBooking || !timeSlots.includes(selectedTime) || reservedSlots.includes(selectedTime))) {
+    if (selectedTime && (isWalkInWeekday || isDayClosed || shouldBlockBooking || !timeSlots.includes(selectedTime) || reservedSlots.includes(selectedTime))) {
       setSelectedTime(null);
     }
-  }, [isDayClosed, shouldBlockBooking, selectedTime, timeSlots, reservedSlots]);
+  }, [isWalkInWeekday, isDayClosed, shouldBlockBooking, selectedTime, timeSlots, reservedSlots]);
 
   // Fetch business hours + subscribe to realtime
   useEffect(() => {
@@ -200,7 +216,7 @@ export default function BookingPage() {
   }, [selectedDate]);
 
   const handleConfirm = () => {
-    if (!selectedTime || isBooking || shouldBlockBooking || reservedSlots.includes(selectedTime)) return;
+    if (!selectedTime || isBooking || isWalkInWeekday || shouldBlockBooking || reservedSlots.includes(selectedTime)) return;
 
     const clientName = getCurrentAppointmentUserId();
     if (!clientName) {
@@ -393,7 +409,26 @@ export default function BookingPage() {
       {/* Time slots */}
       <div className="px-6 mt-8">
         <AnimatePresence mode="wait">
-          {isDayClosed ? (
+          {isWalkInWeekday ? (
+            <motion.div
+              key="walk-in-weekday"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="flex flex-col items-center justify-center gap-4 rounded-2xl surface-card px-5 py-12 text-center"
+            >
+              <CalendarOff className="h-10 w-10 text-primary" />
+              <p className="font-opensans text-sm leading-relaxed text-dimmed">{WALK_IN_WEEKDAY_MESSAGE}</p>
+              <motion.button
+                whileTap={{ scale: 0.96 }}
+                onClick={selectNextWeekend}
+                className="mt-2 rounded-2xl btn-primary-glow px-5 py-3 font-montserrat text-sm font-bold text-primary-foreground"
+              >
+                Agendar para o Final de Semana
+              </motion.button>
+            </motion.div>
+          ) : isDayClosed ? (
             <motion.div
               key="closed"
               initial={{ opacity: 0, y: 10 }}
