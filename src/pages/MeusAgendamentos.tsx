@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Calendar, Scissors } from "lucide-react";
-import { BottomNav } from "@/components/BottomNav";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -121,7 +120,7 @@ export default function MeusAgendamentos() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24">
+    <div className="bg-background text-foreground">
       <header className="px-6 pt-12 pb-6">
         <motion.h1
           initial={{ opacity: 0, y: -12 }}
@@ -356,8 +355,6 @@ export default function MeusAgendamentos() {
           </motion.div>
         </motion.div>
       )}
-
-      <BottomNav />
     </div>
   );
 }
