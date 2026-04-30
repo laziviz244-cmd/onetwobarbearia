@@ -1,5 +1,4 @@
 import { createRoot } from "react-dom/client";
-import { checkVersionAndReload, setupAutoVersionCheck } from "./lib/version-check";
 import { setupPwaInstall } from "./pwa-install";
 import { initOneSignal } from "./lib/onesignal";
 import App from "./App.tsx";
@@ -10,9 +9,7 @@ createRoot(document.getElementById("root")!).render(<App />);
 function bootstrap() {
   const runAfterFirstPaint = () => {
     void setupPwaInstall();
-    setupAutoVersionCheck();
     initOneSignal();
-    void checkVersionAndReload();
   };
 
   if ("requestIdleCallback" in window) {
