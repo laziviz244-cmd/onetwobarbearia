@@ -4,9 +4,8 @@ const VERSION_KEY = "onetwo_app_version";
 const RELOAD_FLAG = "onetwo_version_reloaded";
 const BUNDLE_HASH_KEY = "onetwo_bundle_hash";
 const PRE_RELOAD_BUNDLE_HASH_KEY = "onetwo_pre_reload_bundle_hash";
-const RELOAD_ATTEMPT_PREFIX = "onetwo_update_reload_attempts";
-const MAX_RELOAD_ATTEMPTS_PER_SIGNATURE = 3;
-const VERSION_CHECK_INTERVAL_MS = 120_000;
+const VERSION_CHECK_INTERVAL_MS = 300_000;
+const VERSION_FETCH_TIMEOUT_MS = 3_000;
 const MOBILE_BOOTSTRAP_REFRESH_KEY = `onetwo_mobile_bootstrap_refresh:${BUILD_VERSION}`;
 const RUNTIME_CACHE_PREFIXES = ["onetwo", "workbox", "runtime", "precache", "html", "assets", "js", "css", "font", "image", "onesignal"];
 const NO_CACHE_HEADERS = {
@@ -16,9 +15,24 @@ const NO_CACHE_HEADERS = {
   Expires: "0",
 };
 
+async function fetchWithTimeout(input: RequestInfo | URL, init: RequestInit = {}) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), VERSION_FETCH_TIMEOUT_MS);
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeout);
+  }
+}
+
+function hasReloadedThisSession() {
+  return Boolean(sessionStorage.getItem(RELOAD_FLAG));
+}
+
 async function fetchRemoteBuildVersion() {
   const cacheBust = `${BUILD_VERSION}:${Date.now()}:${Math.random().toString(36).slice(2)}`;
-  const res = await fetch(`/version.json?v=${encodeURIComponent(cacheBust)}&mobile_bust=${Date.now()}&ngsw-bypass=1`, {
+  const res = await fetchWithTimeout(`/version.json?v=${encodeURIComponent(cacheBust)}&mobile_bust=${Date.now()}&ngsw-bypass=1`, {
     cache: "no-store",
     headers: NO_CACHE_HEADERS,
   });
@@ -48,19 +62,9 @@ function getCurrentDocumentSignature() {
   return extractBuildSignature(resourceMarkup);
 }
 
-function canAttemptReload(signature: string) {
-  const attemptKey = `${RELOAD_ATTEMPT_PREFIX}:${signature}`;
-  const attempts = Number(sessionStorage.getItem(attemptKey) || "0");
-
-  if (attempts >= MAX_RELOAD_ATTEMPTS_PER_SIGNATURE) return false;
-
-  sessionStorage.setItem(attemptKey, String(attempts + 1));
-  return true;
-}
-
 async function fetchLatestBuildSignature() {
   const versionUrl = buildVersionedUrl("/", `?_vc=${Date.now()}&mobile_bust=${Date.now()}&ngsw-bypass=1`);
-  const res = await fetch(versionUrl, {
+  const res = await fetchWithTimeout(versionUrl, {
     cache: "no-store",
     headers: {
       Accept: "text/html",
@@ -76,7 +80,7 @@ async function fetchLatestBuildSignature() {
 }
 
 async function reloadToLatestVersion(signature = BUILD_VERSION) {
-  if (!canAttemptReload(signature)) return false;
+  if (hasReloadedThisSession()) return false;
 
   const currentSignature = getCurrentDocumentSignature();
   if (currentSignature && currentSignature !== signature) {
@@ -85,7 +89,7 @@ async function reloadToLatestVersion(signature = BUILD_VERSION) {
 
   localStorage.setItem(VERSION_KEY, BUILD_VERSION);
   if (signature) localStorage.setItem(BUNDLE_HASH_KEY, signature);
-  sessionStorage.setItem(RELOAD_FLAG, "1");
+  sessionStorage.setItem(RELOAD_FLAG, "true");
   await clearBrowserRuntimeCaches();
 
   // Force a hard reload — preserves localStorage (session/login) but bypasses page cache.
