@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { checkVersionAndReload, verifyPostReloadCacheIntegrity } from "./version-check";
+import { checkVersionAndReload, setupAutoVersionCheck, verifyPostReloadCacheIntegrity } from "./version-check";
 
 const versionMocks = vi.hoisted(() => ({
   clearBrowserRuntimeCaches: vi.fn(() => Promise.resolve()),
@@ -137,7 +137,7 @@ describe("checkVersionAndReload cache antigo", () => {
     },
   );
 
-  it("força novo reload se a verificação pós-reload ainda encontrar o bundle antigo", async () => {
+  it("não força novo reload se a sessão já passou por um reload obrigatório", async () => {
     Object.defineProperty(navigator, "serviceWorker", {
       configurable: true,
       value: {
@@ -159,9 +159,39 @@ describe("checkVersionAndReload cache antigo", () => {
     localStorage.setItem("onetwo_bundle_hash", "newhash");
     sessionStorage.setItem("onetwo_version_reloaded", "new-build-2026:newhash");
 
-    await expect(verifyPostReloadCacheIntegrity()).resolves.toBe(false);
-    expect(versionMocks.clearBrowserRuntimeCaches).toHaveBeenCalledTimes(1);
-    expect(replaceMock).toHaveBeenCalledTimes(1);
-    expect(replaceMock.mock.calls[0][0]).toContain("ngsw-bypass=1");
+    await expect(verifyPostReloadCacheIntegrity()).resolves.toBe(true);
+    expect(versionMocks.clearBrowserRuntimeCaches).not.toHaveBeenCalled();
+    expect(replaceMock).not.toHaveBeenCalled();
+  });
+
+  it("libera a abertura do app se version.json não responder em até 3 segundos", async () => {
+    globalThis.fetch = vi.fn(() => new Promise(() => undefined)) as unknown as typeof fetch;
+
+    const checkPromise = checkVersionAndReload();
+    await vi.advanceTimersByTimeAsync(3_100);
+
+    await expect(checkPromise).resolves.toBe(true);
+    expect(replaceMock).not.toHaveBeenCalled();
+  });
+
+  it("verifica versão só no boot e depois de 5 minutos", async () => {
+    sessionStorage.clear();
+    localStorage.clear();
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ version: "new-build-2026" }),
+      text: async () => `<script type="module" src="/assets/index-newhash.js"></script>`,
+    }) as unknown as typeof fetch;
+
+    setupAutoVersionCheck();
+    expect(fetch).not.toHaveBeenCalled();
+
+    window.dispatchEvent(new Event("focus"));
+    await vi.advanceTimersByTimeAsync(299_000);
+    expect(fetch).not.toHaveBeenCalled();
+
+    await vi.advanceTimersByTimeAsync(1_000);
+    await vi.runOnlyPendingTimersAsync();
+    expect(fetch).toHaveBeenCalled();
   });
 });
