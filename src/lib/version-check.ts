@@ -91,8 +91,9 @@ async function reloadToLatestVersion(signature = BUILD_VERSION) {
   // Force a hard reload — preserves localStorage (session/login) but bypasses page cache.
   // Critical for Safari/Chrome mobile, which can keep an old index.html or BFCache entry.
   try {
-    const url = new URL(window.location.href);
-    url.searchParams.set("v", signature || BUILD_VERSION);
+    const url = new URL(buildVersionedUrl(window.location.pathname, window.location.search, window.location.hash));
+    url.searchParams.set("v", BUILD_VERSION);
+    url.searchParams.set("latest", signature || BUILD_VERSION);
     url.searchParams.set("_t", Date.now().toString());
     url.searchParams.set("ngsw-bypass", "1");
     window.location.replace(url.toString());
