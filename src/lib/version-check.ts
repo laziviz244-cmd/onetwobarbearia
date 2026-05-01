@@ -9,16 +9,18 @@ const MAX_RELOAD_ATTEMPTS_PER_SIGNATURE = 3;
 const VERSION_CHECK_INTERVAL_MS = 120_000;
 const MOBILE_BOOTSTRAP_REFRESH_KEY = `onetwo_mobile_bootstrap_refresh:${BUILD_VERSION}`;
 const RUNTIME_CACHE_PREFIXES = ["onetwo", "workbox", "runtime", "precache", "html", "assets", "js", "css", "font", "image", "onesignal"];
+const NO_CACHE_HEADERS = {
+  Accept: "application/json",
+  "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0",
+  Pragma: "no-cache",
+  Expires: "0",
+};
 
 async function fetchRemoteBuildVersion() {
-  const res = await fetch(`/version.json?v=${Date.now()}&mobile_bust=${Date.now()}`, {
+  const cacheBust = `${BUILD_VERSION}:${Date.now()}:${Math.random().toString(36).slice(2)}`;
+  const res = await fetch(`/version.json?v=${encodeURIComponent(cacheBust)}&mobile_bust=${Date.now()}&ngsw-bypass=1`, {
     cache: "no-store",
-    headers: {
-      Accept: "application/json",
-      "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0, proxy-revalidate, s-maxage=0",
-      Pragma: "no-cache",
-      Expires: "0",
-    },
+    headers: NO_CACHE_HEADERS,
   });
 
   if (!res.ok) return null;
