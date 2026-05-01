@@ -12,6 +12,7 @@ async function renderFreshApp() {
 
   setupAutoVersionCheck();
   createRoot(document.getElementById("root")!).render(<App />);
+  bootstrap();
 }
 
 void renderFreshApp();
@@ -39,5 +40,3 @@ function bootstrap() {
     setTimeout(prefetch, 1000);
   }
 }
-
-bootstrap();
