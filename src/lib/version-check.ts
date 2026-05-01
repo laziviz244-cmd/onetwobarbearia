@@ -163,7 +163,8 @@ export async function checkVersionAndReload() {
       localStorage.setItem(BUNDLE_HASH_KEY, latestSignature);
     }
   } catch {
-    // Network error, continue with local version checks.
+    // Network/timeout error: never block startup or force reload without a fresh remote version.
+    return true;
   }
 
   if (storedVersion && storedVersion !== BUILD_VERSION) {
