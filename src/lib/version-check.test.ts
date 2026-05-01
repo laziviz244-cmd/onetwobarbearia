@@ -165,7 +165,9 @@ describe("checkVersionAndReload cache antigo", () => {
   });
 
   it("libera a abertura do app se version.json não responder em até 3 segundos", async () => {
-    globalThis.fetch = vi.fn(() => new Promise(() => undefined)) as unknown as typeof fetch;
+    globalThis.fetch = vi.fn((_input, init) => new Promise((_resolve, reject) => {
+      init?.signal?.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")));
+    })) as unknown as typeof fetch;
 
     const checkPromise = checkVersionAndReload();
     await vi.advanceTimersByTimeAsync(3_100);
