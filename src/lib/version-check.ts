@@ -258,8 +258,11 @@ export function setupAutoVersionCheck() {
   if (typeof window === "undefined") return;
 
   let checking = false;
+  let lastCheckAt = Date.now();
 
   const check = async () => {
+    lastCheckAt = Date.now();
+
     if (checking) return;
     checking = true;
 
@@ -301,7 +304,11 @@ export function setupAutoVersionCheck() {
     }
   };
 
-  void check();
+  const checkIfIntervalElapsed = () => {
+    if (Date.now() - lastCheckAt >= VERSION_CHECK_INTERVAL_MS && navigator.onLine !== false) {
+      void check();
+    }
+  };
 
   window.setInterval(() => {
     if (!document.hidden && navigator.onLine !== false) {
@@ -312,13 +319,13 @@ export function setupAutoVersionCheck() {
   // Check when app becomes visible (user opens/switches to app)
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
-      check();
+      checkIfIntervalElapsed();
     }
   });
 
   // Check when PWA regains focus
   window.addEventListener("focus", () => {
-    check();
+    checkIfIntervalElapsed();
   });
 
   // CRITICAL for Safari (iOS/macOS): pageshow fires when page is restored from
@@ -327,7 +334,7 @@ export function setupAutoVersionCheck() {
   window.addEventListener("pageshow", (event) => {
     // event.persisted = true means the page was restored from bfcache
     if ((event as PageTransitionEvent).persisted || document.visibilityState === "visible") {
-      void check();
+      checkIfIntervalElapsed();
     }
   });
 }
