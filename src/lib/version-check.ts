@@ -108,6 +108,8 @@ async function reloadToLatestVersion(signature = BUILD_VERSION) {
 }
 
 async function forceMobileBootstrapRefresh() {
+  if (hasReloadedThisSession()) return false;
+
   const isTouchDevice = navigator.maxTouchPoints > 0 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (!isTouchDevice || sessionStorage.getItem(MOBILE_BOOTSTRAP_REFRESH_KEY)) return false;
 
@@ -269,8 +271,8 @@ export function setupAutoVersionCheck() {
       }
 
       const versionUrl = buildVersionedUrl("/", `?_vc=${Date.now()}&mobile_bust=${BUILD_VERSION}`);
-      const res = await fetch(versionUrl, {
-        cache: "reload",
+      const res = await fetchWithTimeout(versionUrl, {
+        cache: "no-store",
         headers: {
           Accept: "text/html",
           "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0, proxy-revalidate, s-maxage=0",
@@ -285,7 +287,7 @@ export function setupAutoVersionCheck() {
 
       if (buildSignature && storedSignature && buildSignature !== storedSignature) {
         localStorage.setItem(BUNDLE_HASH_KEY, buildSignature);
-        await reloadToLatestVersion();
+        await reloadToLatestVersion(buildSignature);
         return;
       }
 
