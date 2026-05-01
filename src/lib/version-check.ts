@@ -6,7 +6,7 @@ const BUNDLE_HASH_KEY = "onetwo_bundle_hash";
 const PRE_RELOAD_BUNDLE_HASH_KEY = "onetwo_pre_reload_bundle_hash";
 const RELOAD_ATTEMPT_PREFIX = "onetwo_update_reload_attempts";
 const MAX_RELOAD_ATTEMPTS_PER_SIGNATURE = 3;
-const VERSION_CHECK_INTERVAL_MS = 60_000;
+const VERSION_CHECK_INTERVAL_MS = 120_000;
 const MOBILE_BOOTSTRAP_REFRESH_KEY = `onetwo_mobile_bootstrap_refresh:${BUILD_VERSION}`;
 const RUNTIME_CACHE_PREFIXES = ["onetwo", "workbox", "runtime", "precache", "html", "assets", "js", "css", "font", "image", "onesignal"];
 
@@ -83,8 +83,20 @@ async function reloadToLatestVersion(signature = BUILD_VERSION) {
 
   localStorage.setItem(VERSION_KEY, BUILD_VERSION);
   if (signature) localStorage.setItem(BUNDLE_HASH_KEY, signature);
+  sessionStorage.setItem(RELOAD_FLAG, "1");
   await clearBrowserRuntimeCaches();
-  return false;
+
+  // Force a hard reload — preserves localStorage (session/login) but bypasses page cache.
+  // Critical for Safari (iOS/macOS) which aggressively caches index.html.
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set("v", BUILD_VERSION);
+    url.searchParams.set("_t", Date.now().toString());
+    window.location.replace(url.toString());
+  } catch {
+    window.location.reload();
+  }
+  return true;
 }
 
 async function forceMobileBootstrapRefresh() {
@@ -293,5 +305,15 @@ export function setupAutoVersionCheck() {
   // Check when PWA regains focus
   window.addEventListener("focus", () => {
     check();
+  });
+
+  // CRITICAL for Safari (iOS/macOS): pageshow fires when page is restored from
+  // the back-forward cache (bfcache) — visibilitychange does NOT fire in that case.
+  // Without this, Safari users returning to a backgrounded tab keep the old bundle.
+  window.addEventListener("pageshow", (event) => {
+    // event.persisted = true means the page was restored from bfcache
+    if ((event as PageTransitionEvent).persisted || document.visibilityState === "visible") {
+      void check();
+    }
   });
 }
