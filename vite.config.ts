@@ -4,7 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 const buildTimestamp = Date.now().toString();
-const forceUpdateTag = "force-refresh-2026-05-01-safari-hard-reload-03";
+const forceUpdateTag = "force-refresh-2026-05-01-mobile-chrome-safari-mandatory-version-check-04";
 const fullBuildVersion = `${buildTimestamp}-${forceUpdateTag}`;
 
 const earlyVersionGuard = `
@@ -35,10 +35,29 @@ function appendBuildVersionToLocalAssets(html: string) {
 const forceFreshHtmlAndAssets = () => ({
   name: "onetwo-force-fresh-html-assets",
   enforce: "post" as const,
+  configurePreviewServer(server: any) {
+    server.middlewares.use((req: any, res: any, next: any) => {
+      if (req.url === "/" || req.url?.startsWith("/index.html") || req.url?.startsWith("/version.json")) {
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+      }
+      next();
+    });
+  },
   configureServer(server: any) {
+    server.middlewares.use((req: any, res: any, next: any) => {
+      if (req.url === "/" || req.url?.startsWith("/index.html") || req.url?.startsWith("/version.json")) {
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+      }
+      next();
+    });
+
     server.middlewares.use("/version.json", (_req: any, res: any) => {
       res.setHeader("Content-Type", "application/json; charset=utf-8");
-      res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0");
+      res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0");
       res.setHeader("Pragma", "no-cache");
       res.setHeader("Expires", "0");
       res.end(JSON.stringify({ version: fullBuildVersion, timestamp: buildTimestamp, cache: forceUpdateTag }));

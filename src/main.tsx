@@ -1,10 +1,21 @@
 import { createRoot } from "react-dom/client";
 import { setupPwaInstall } from "./pwa-install";
 import { initOneSignal } from "./lib/onesignal";
+import { checkVersionAndReload, setupAutoVersionCheck } from "./lib/version-check";
 import App from "./App.tsx";
 import "./index.css";
 
-createRoot(document.getElementById("root")!).render(<App />);
+async function renderFreshApp() {
+  const canRenderCurrentBundle = await checkVersionAndReload();
+
+  if (!canRenderCurrentBundle) return;
+
+  setupAutoVersionCheck();
+  createRoot(document.getElementById("root")!).render(<App />);
+  bootstrap();
+}
+
+void renderFreshApp();
 
 function bootstrap() {
   const runAfterFirstPaint = () => {
@@ -29,5 +40,3 @@ function bootstrap() {
     setTimeout(prefetch, 1000);
   }
 }
-
-bootstrap();
