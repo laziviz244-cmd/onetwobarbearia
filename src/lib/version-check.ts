@@ -89,11 +89,12 @@ async function reloadToLatestVersion(signature = BUILD_VERSION) {
   await clearBrowserRuntimeCaches();
 
   // Force a hard reload — preserves localStorage (session/login) but bypasses page cache.
-  // Critical for Safari (iOS/macOS) which aggressively caches index.html.
+  // Critical for Safari/Chrome mobile, which can keep an old index.html or BFCache entry.
   try {
     const url = new URL(window.location.href);
-    url.searchParams.set("v", BUILD_VERSION);
+    url.searchParams.set("v", signature || BUILD_VERSION);
     url.searchParams.set("_t", Date.now().toString());
+    url.searchParams.set("ngsw-bypass", "1");
     window.location.replace(url.toString());
   } catch {
     window.location.reload();
@@ -135,6 +136,10 @@ export async function checkVersionAndReload() {
     if (remoteVersion && remoteVersion !== BUILD_VERSION) {
       const isReloading = await reloadToLatestVersion(remoteVersion);
       return !isReloading;
+    }
+
+    if (remoteVersion) {
+      localStorage.setItem(VERSION_KEY, remoteVersion);
     }
 
     const latestSignature = await fetchLatestBuildSignature();
