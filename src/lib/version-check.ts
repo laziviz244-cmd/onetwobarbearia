@@ -132,47 +132,39 @@ export async function checkVersionAndReload() {
 
   if (!(await verifyPostReloadCacheIntegrity())) return false;
 
-  if (await forceMobileBootstrapRefresh()) return false;
-
-  const storedVersion = localStorage.getItem(VERSION_KEY);
-  const storedSignature = localStorage.getItem(BUNDLE_HASH_KEY);
-  const currentSignature = getCurrentDocumentSignature();
-
-  try {
-    const remoteVersion = await fetchRemoteBuildVersion();
-    if (remoteVersion && remoteVersion !== BUILD_VERSION) {
-      const isReloading = await reloadToLatestVersion(remoteVersion);
-      return !isReloading;
-    }
-
-    if (remoteVersion) {
-      localStorage.setItem(VERSION_KEY, remoteVersion);
-    }
-
-    const latestSignature = await fetchLatestBuildSignature();
-
-    if (latestSignature) {
-      const hasNewerDocument = currentSignature && latestSignature !== currentSignature;
-      const hasNewerStoredSignature = storedSignature && latestSignature !== storedSignature;
-
-      if (hasNewerDocument || hasNewerStoredSignature) {
-        const isReloading = await reloadToLatestVersion(latestSignature);
-        return !isReloading;
-      }
-
-      localStorage.setItem(BUNDLE_HASH_KEY, latestSignature);
-    }
-  } catch {
-    // Network/timeout error: never block startup or force reload without a fresh remote version.
+  // Hard guard against multiple reloads per session.
+  if (hasReloadedThisSession()) {
+    localStorage.setItem(VERSION_KEY, BUILD_VERSION);
+    const sig = getCurrentDocumentSignature();
+    if (sig) localStorage.setItem(BUNDLE_HASH_KEY, sig);
     return true;
   }
 
-  if (storedVersion && storedVersion !== BUILD_VERSION) {
-    const isReloading = await reloadToLatestVersion(BUILD_VERSION);
-    return !isReloading;
+  const storedVersion = localStorage.getItem(VERSION_KEY);
+  const currentSignature = getCurrentDocumentSignature();
+
+  // First visit ever: just record the current version, never reload.
+  if (!storedVersion) {
+    localStorage.setItem(VERSION_KEY, BUILD_VERSION);
+    if (currentSignature) localStorage.setItem(BUNDLE_HASH_KEY, currentSignature);
+    return true;
+  }
+
+  // Returning user: only reload if the remote version differs from the stored one.
+  try {
+    const remoteVersion = await fetchRemoteBuildVersion();
+    if (remoteVersion && remoteVersion !== storedVersion) {
+      const isReloading = await reloadToLatestVersion(remoteVersion);
+      return !isReloading;
+    }
+    if (remoteVersion) localStorage.setItem(VERSION_KEY, remoteVersion);
+  } catch {
+    // Network/timeout: never block startup.
+    return true;
   }
 
   localStorage.setItem(VERSION_KEY, BUILD_VERSION);
+  if (currentSignature) localStorage.setItem(BUNDLE_HASH_KEY, currentSignature);
   return true;
 }
 
