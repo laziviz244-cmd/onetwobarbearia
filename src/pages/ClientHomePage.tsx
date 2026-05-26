@@ -78,7 +78,7 @@ export default function ClientHomePage() {
                 transformOrigin: "center center",
                 background:
                   "conic-gradient(from 0deg, transparent 0deg, transparent 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, transparent 360deg)",
-                animation: "produtos-border-rotate 5s linear infinite",
+                animation: "produtos-border-rotate 4s linear infinite",
               }}
             />
           </div>
@@ -93,16 +93,13 @@ export default function ClientHomePage() {
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1.5">
-                <span className="relative flex h-2 w-2">
-                  <span
-                    className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                    style={{ background: "#D4AF37" }}
-                  />
-                  <span
-                    className="relative inline-flex rounded-full h-2 w-2"
-                    style={{ background: "#D4AF37", boxShadow: "0 0 6px #D4AF37" }}
-                  />
-                </span>
+                <span
+                  className="inline-block rounded-full h-2 w-2"
+                  style={{
+                    background: "#D4AF37",
+                    animation: "novidade-pulse 1.2s ease-in-out infinite",
+                  }}
+                />
                 <span
                   className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
                   style={{ color: "#D4AF37" }}
@@ -121,11 +118,11 @@ export default function ClientHomePage() {
               <div
                 className="h-12 w-12 rounded-full flex items-center justify-center"
                 style={{
-                  background: "#0d0d0d",
-                  border: "1px solid rgba(212, 175, 55, 0.45)",
+                  background: "rgba(90,174,255,0.1)",
+                  border: "1.5px solid #5aaeff",
                 }}
               >
-                <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
+                <Package className="h-6 w-6" style={{ color: "#5aaeff" }} />
               </div>
               <span
                 onClick={(e) => {
@@ -145,6 +142,10 @@ export default function ClientHomePage() {
         @keyframes produtos-border-rotate {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+        @keyframes novidade-pulse {
+          0%, 100% { background: #D4AF37; }
+          50% { background: #000000; }
         }
       `}</style>
 
