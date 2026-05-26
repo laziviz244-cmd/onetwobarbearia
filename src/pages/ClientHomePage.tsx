@@ -74,11 +74,8 @@ export default function ClientHomePage() {
             <div
               style={{
                 position: "absolute",
-                top: "50%",
-                left: "50%",
-                width: "200%",
-                aspectRatio: "1 / 1",
-                transform: "translate(-50%, -50%)",
+                inset: "-80px",
+                transformOrigin: "center center",
                 background:
                   "conic-gradient(from 0deg, #1a1a1a 0deg, #1a1a1a 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, #1a1a1a 360deg)",
                 animation: "produtos-border-rotate 4s linear infinite",
