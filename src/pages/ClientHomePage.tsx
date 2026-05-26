@@ -77,8 +77,8 @@ export default function ClientHomePage() {
                 inset: "-80px",
                 transformOrigin: "center center",
                 background:
-                  "conic-gradient(from 0deg, #1a1a1a 0deg, #1a1a1a 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, #1a1a1a 360deg)",
-                animation: "produtos-border-rotate 4s linear infinite",
+                  "conic-gradient(from 0deg, transparent 0deg, transparent 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, transparent 360deg)",
+                animation: "produtos-border-rotate 5s linear infinite",
               }}
             />
           </div>
