@@ -16,6 +16,7 @@ import BookingPage from "./pages/BookingPage";
 import MeusAgendamentos from "./pages/MeusAgendamentos";
 import Perfil from "./pages/Perfil";
 import PlanosPage from "./pages/PlanosPage";
+import ProdutosPage from "./pages/ProdutosPage";
 
 // Lazy-loaded pages (reduces initial bundle)
 const BarberShopDetailPage = lazy(() => import("./pages/BarberShopDetailPage"));
@@ -202,6 +203,7 @@ const App = () => (
                 <Route path="/agendar" element={<BookingPage />} />
                 <Route path="/agenda" element={<MeusAgendamentos />} />
                 <Route path="/planos" element={<PlanosPage />} />
+                <Route path="/produtos" element={<ProdutosPage />} />
                 <Route path="/meus-agendamentos" element={<Navigate to="/agenda" replace />} />
                 <Route path="/profile" element={<Perfil />} />
                 <Route path="/perfil" element={<Perfil />} />
