@@ -1,6 +1,6 @@
 /* refreshed */
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
+import { MapPin, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState, memo } from "react";
