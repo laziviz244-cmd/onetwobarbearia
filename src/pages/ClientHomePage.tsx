@@ -57,64 +57,84 @@ export default function ClientHomePage() {
 
       {/* Produtos Banner */}
       <div className="px-4 mt-2">
-        <button
-          type="button"
-          onClick={() => navigate("/produtos")}
-          className="w-full text-left rounded-[18px] p-4 flex items-center gap-3 active:scale-[0.99] transition-transform"
-          style={{
-            background: "#1a1a1a",
-            border: "1.5px solid #D4AF37",
-          }}
+        <div
+          className="relative w-full rounded-[18px]"
+          style={{ padding: "2px" }}
         >
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="relative flex h-2 w-2">
+          <span
+            aria-hidden
+            className="absolute inset-0 rounded-[18px] pointer-events-none"
+            style={{
+              background:
+                "conic-gradient(from 0deg, #1a1a1a 0deg, #1a1a1a 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, #1a1a1a 360deg)",
+              animation: "produtos-border-rotate 4s linear infinite",
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => navigate("/produtos")}
+            className="relative w-full text-left p-4 flex items-center gap-3 active:scale-[0.99] transition-transform"
+            style={{
+              background: "#1a1a1a",
+              borderRadius: "17px",
+            }}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span
+                    className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                    style={{ background: "#D4AF37" }}
+                  />
+                  <span
+                    className="relative inline-flex rounded-full h-2 w-2"
+                    style={{ background: "#D4AF37", boxShadow: "0 0 6px #D4AF37" }}
+                  />
+                </span>
                 <span
-                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                  style={{ background: "#D4AF37" }}
-                />
-                <span
-                  className="relative inline-flex rounded-full h-2 w-2"
-                  style={{ background: "#D4AF37", boxShadow: "0 0 6px #D4AF37" }}
-                />
-              </span>
-              <span
-                className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
-                style={{ color: "#D4AF37" }}
+                  className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
+                  style={{ color: "#D4AF37" }}
+                >
+                  Novidade
+                </span>
+              </div>
+              <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
+                Confira nossos produtos!
+              </h3>
+              <p className="text-xs text-dimmed font-opensans leading-snug">
+                Cuidados masculinos de alto padrão
+              </p>
+            </div>
+            <div className="flex flex-col items-center gap-2 flex-shrink-0">
+              <div
+                className="h-12 w-12 rounded-full flex items-center justify-center"
+                style={{
+                  background: "#0d0d0d",
+                  border: "1px solid rgba(212, 175, 55, 0.45)",
+                }}
               >
-                Novidade
+                <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
+              </div>
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate("/produtos");
+                }}
+                className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
+                style={{ background: "#D4AF37", color: "#fff" }}
+              >
+                Ver Produtos
               </span>
             </div>
-            <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
-              Confira nossos produtos!
-            </h3>
-            <p className="text-xs text-dimmed font-opensans leading-snug">
-              Cuidados masculinos de alto padrão
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-2 flex-shrink-0">
-            <div
-              className="h-12 w-12 rounded-full flex items-center justify-center"
-              style={{
-                background: "#0d0d0d",
-                border: "1px solid rgba(212, 175, 55, 0.45)",
-              }}
-            >
-              <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
-            </div>
-            <span
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate("/produtos");
-              }}
-              className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
-              style={{ background: "#D4AF37", color: "#fff" }}
-            >
-              Ver Produtos
-            </span>
-          </div>
-        </button>
+          </button>
+        </div>
       </div>
+      <style>{`
+        @keyframes produtos-border-rotate {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
 
 
 
