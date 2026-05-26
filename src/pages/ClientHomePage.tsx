@@ -1,6 +1,6 @@
 /* refreshed */
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
+import { MapPin, ShoppingBag } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState, memo } from "react";
@@ -56,6 +56,69 @@ export default function ClientHomePage() {
           </a>
         </div>
       </div>
+
+      {/* Produtos Banner */}
+      <div className="px-4 mt-2">
+        <button
+          type="button"
+          onClick={() => navigate("/produtos")}
+          className="w-full text-left rounded-[18px] p-4 flex items-center gap-3 active:scale-[0.99] transition-transform"
+          style={{
+            background: "#1a1a1a",
+            border: "1.5px solid #D4AF37",
+          }}
+        >
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span
+                className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
+                style={{ color: "#D4AF37" }}
+              >
+                Novidade
+              </span>
+              <span className="relative flex h-2 w-2">
+                <span
+                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                  style={{ background: "#D4AF37" }}
+                />
+                <span
+                  className="relative inline-flex rounded-full h-2 w-2"
+                  style={{ background: "#D4AF37", boxShadow: "0 0 6px #D4AF37" }}
+                />
+              </span>
+            </div>
+            <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
+              Confira nossos produtos!
+            </h3>
+            <p className="text-xs text-dimmed font-opensans leading-snug">
+              Cuidados masculinos de alto padrão
+            </p>
+          </div>
+          <div className="flex flex-col items-center gap-2 flex-shrink-0">
+            <div
+              className="h-12 w-12 rounded-full flex items-center justify-center"
+              style={{
+                background: "rgba(212, 175, 55, 0.12)",
+                border: "1px solid rgba(212, 175, 55, 0.4)",
+              }}
+            >
+              <ShoppingBag className="h-6 w-6" style={{ color: "#D4AF37" }} />
+            </div>
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate("/produtos");
+              }}
+              className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
+              style={{ background: "#D4AF37", color: "#000" }}
+            >
+              Ver Produtos
+            </span>
+          </div>
+        </button>
+      </div>
+
+
 
       {/* Promos */}
       <div className="px-6 mt-2">
