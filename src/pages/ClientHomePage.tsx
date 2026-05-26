@@ -58,18 +58,33 @@ export default function ClientHomePage() {
       {/* Produtos Banner */}
       <div className="px-4 mt-2">
         <div
-          className="relative w-full rounded-[18px]"
-          style={{ padding: "2px" }}
+          className="relative w-full"
+          style={{ padding: "2px", borderRadius: "18px" }}
         >
-          <span
+          <div
             aria-hidden
-            className="absolute inset-0 rounded-[18px] pointer-events-none"
+            className="pointer-events-none"
             style={{
-              background:
-                "conic-gradient(from 0deg, #1a1a1a 0deg, #1a1a1a 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, #1a1a1a 360deg)",
-              animation: "produtos-border-rotate 4s linear infinite",
+              position: "absolute",
+              inset: 0,
+              overflow: "hidden",
+              borderRadius: "18px",
             }}
-          />
+          >
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                width: "200%",
+                aspectRatio: "1 / 1",
+                transform: "translate(-50%, -50%)",
+                background:
+                  "conic-gradient(from 0deg, #1a1a1a 0deg, #1a1a1a 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, #1a1a1a 360deg)",
+                animation: "produtos-border-rotate 4s linear infinite",
+              }}
+            />
+          </div>
           <button
             type="button"
             onClick={() => navigate("/produtos")}
