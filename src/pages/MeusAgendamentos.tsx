@@ -95,8 +95,9 @@ export default function MeusAgendamentos() {
 
     if (!currentUserId) return;
 
-    const channel = supabase
-      .channel(`appointments-realtime-${currentUserId}`)
+    const channelName = `appointments-realtime-${currentUserId}-${Math.random().toString(36).slice(2)}`;
+    const channel = supabase.channel(channelName);
+    channel
       .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
         appointmentsCache.delete(currentUserId);
         loadAppointments();
