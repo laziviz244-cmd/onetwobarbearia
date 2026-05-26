@@ -1,6 +1,6 @@
 /* refreshed */
 import { motion } from "framer-motion";
-import { MapPin, ShoppingBag } from "lucide-react";
+import { MapPin, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState, memo } from "react";
@@ -43,16 +43,14 @@ export default function ClientHomePage() {
             href="https://www.google.com/maps/search/?api=1&query=Rua+Potiragua+406+Camaca+Itapetinga+BA"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-end gap-0.5 no-underline"
-            style={{ color: "inherit", textDecoration: "none" }}
+            className="flex items-center gap-1.5 no-underline text-dimmed"
+            style={{ textDecoration: "none" }}
           >
             <span className="text-[10px] font-opensans text-foreground">
               Clique e veja nossa localização
             </span>
-            <span className="flex items-center gap-1 text-dimmed">
-              <MapPin className="h-4 w-4" />
-              <span className="text-xs font-opensans">Itapetinga</span>
-            </span>
+            <MapPin className="h-4 w-4" />
+            <span className="text-xs font-opensans">Itapetinga</span>
           </a>
         </div>
       </div>
@@ -70,12 +68,6 @@ export default function ClientHomePage() {
         >
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1.5">
-              <span
-                className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
-                style={{ color: "#D4AF37" }}
-              >
-                Novidade
-              </span>
               <span className="relative flex h-2 w-2">
                 <span
                   className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
@@ -85,6 +77,12 @@ export default function ClientHomePage() {
                   className="relative inline-flex rounded-full h-2 w-2"
                   style={{ background: "#D4AF37", boxShadow: "0 0 6px #D4AF37" }}
                 />
+              </span>
+              <span
+                className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
+                style={{ color: "#D4AF37" }}
+              >
+                Novidade
               </span>
             </div>
             <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
@@ -98,11 +96,11 @@ export default function ClientHomePage() {
             <div
               className="h-12 w-12 rounded-full flex items-center justify-center"
               style={{
-                background: "rgba(212, 175, 55, 0.12)",
-                border: "1px solid rgba(212, 175, 55, 0.4)",
+                background: "#0d0d0d",
+                border: "1px solid rgba(212, 175, 55, 0.45)",
               }}
             >
-              <ShoppingBag className="h-6 w-6" style={{ color: "#D4AF37" }} />
+              <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
             </div>
             <span
               onClick={(e) => {
@@ -110,7 +108,7 @@ export default function ClientHomePage() {
                 navigate("/produtos");
               }}
               className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
-              style={{ background: "#D4AF37", color: "#000" }}
+              style={{ background: "#D4AF37", color: "#fff" }}
             >
               Ver Produtos
             </span>
