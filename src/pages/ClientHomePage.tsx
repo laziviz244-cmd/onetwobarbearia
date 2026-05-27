@@ -118,11 +118,11 @@ export default function ClientHomePage() {
               <div
                 className="h-12 w-12 rounded-full flex items-center justify-center"
                 style={{
-                  background: "rgba(90,174,255,0.1)",
-                  border: "1.5px solid #5aaeff",
+                  background: "hsl(230 100% 37% / 0.15)",
+                  border: "1.5px solid hsl(230 100% 37%)",
                 }}
               >
-                <Package className="h-6 w-6" style={{ color: "#5aaeff" }} />
+                <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
               </div>
               <span
                 onClick={(e) => {
