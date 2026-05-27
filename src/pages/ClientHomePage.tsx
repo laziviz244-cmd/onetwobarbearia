@@ -156,13 +156,20 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                     Exclusivo
                   </span>
                 </div>
-                <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-2">
+                <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
                   Conheça nossos planos!
                 </h3>
+                <p
+                  className="font-opensans italic mb-2 leading-tight"
+                  style={{ color: "#D4AF37", fontSize: "10px" }}
+                >
+                  <span>✦ Vantagens exclusivas para você ✦</span>
+                </p>
                 <div className="grid grid-cols-2 gap-x-2 gap-y-1 mb-2">
                   {[
-                    { i: "✂️", t: "Cortes" },
-                    { i: "📅", t: "Prioridade" },
+                    { i: "🎁", t: "Brindes" },
+                    { i: "📅", t: "Prioridade na Agenda" },
+                    { i: "✂️", t: "Cortes Ilimitados" },
                     { i: "✨", t: "Sobrancelha" },
                     { i: "💧", t: "Hidratação" },
                   ].map((b) => (
@@ -182,10 +189,15 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
               </div>
               <div className="flex flex-col items-center gap-2 flex-shrink-0">
                 <div
-                  className="h-14 w-14 rounded-full flex items-center justify-center overflow-hidden"
+                  className="h-16 w-16 rounded-full flex items-center justify-center overflow-hidden"
                   style={{ background: "#000", border: "1.5px solid #D4AF37" }}
                 >
-                  <img src={logoOneTwo} alt="OneTwo Barbearia" className="w-full h-full object-cover" />
+                  <img
+                    src={logoOneTwo}
+                    alt="OneTwo Barbearia"
+                    className="w-full h-full"
+                    style={{ objectFit: "cover" }}
+                  />
                 </div>
                 <span
                   onClick={(e) => { e.stopPropagation(); navigate("/planos"); }}
