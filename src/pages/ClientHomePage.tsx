@@ -32,25 +32,25 @@ export default function ClientHomePage() {
     <div className="bg-background">
       {/* Header */}
       <div className="px-6 pt-12 pb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-dimmed font-opensans">Olá 👋</p>
-            <h1 className="font-montserrat font-bold text-2xl text-foreground tracking-tighter">
-              Bem-vindo à Barbearia OneTwo
-            </h1>
-          </div>
+        <p className="text-sm text-dimmed font-opensans">Olá 👋</p>
+        <div className="flex items-start justify-between mt-1 gap-3">
+          <h1 className="font-montserrat font-bold text-2xl text-foreground tracking-tighter">
+            Bem-vindo à Barbearia OneTwo
+          </h1>
           <a
             href="https://www.google.com/maps/search/?api=1&query=Rua+Potiragua+406+Camaca+Itapetinga+BA"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 no-underline text-dimmed"
+            className="flex flex-col items-end no-underline text-dimmed flex-shrink-0"
             style={{ textDecoration: "none" }}
           >
-            <span className="text-[10px] font-opensans text-foreground">
+            <span className="text-[10px] font-opensans text-dimmed whitespace-nowrap">
               Clique e veja nossa localização
             </span>
-            <MapPin className="h-4 w-4" />
-            <span className="text-xs font-opensans">Itapetinga</span>
+            <div className="flex items-center gap-1 mt-0.5" style={{ marginRight: "6px" }}>
+              <MapPin className="h-4 w-4" />
+              <span className="text-xs font-opensans">Itapetinga</span>
+            </div>
           </a>
         </div>
       </div>
@@ -118,8 +118,8 @@ export default function ClientHomePage() {
               <div
                 className="h-12 w-12 rounded-full flex items-center justify-center"
                 style={{
-                  background: "hsl(230 100% 37% / 0.15)",
-                  border: "1.5px solid hsl(230 100% 37%)",
+                  background: "transparent",
+                  border: "1.5px solid #1e3f6e",
                 }}
               >
                 <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
