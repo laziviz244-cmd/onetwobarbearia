@@ -188,17 +188,11 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 </div>
               </div>
               <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                <div
-                  className="h-16 w-16 rounded-full flex items-center justify-center overflow-hidden"
-                  style={{ background: "#000", border: "1.5px solid #D4AF37" }}
-                >
-                  <img
-                    src={logoOneTwo}
-                    alt="OneTwo Barbearia"
-                    className="w-full h-full"
-                    style={{ objectFit: "cover" }}
-                  />
-                </div>
+                <img
+                  src={logoOneTwo}
+                  alt="OneTwo Barbearia"
+                  style={{ width: "70px", height: "70px", objectFit: "contain", borderRadius: "8px", background: "transparent" }}
+                />
                 <span
                   onClick={(e) => { e.stopPropagation(); navigate("/planos"); }}
                   className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
