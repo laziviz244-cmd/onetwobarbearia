@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { MapPin, Package } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { staggerContainer, staggerItem } from "@/components/motion";
-import { useState, memo } from "react";
+import { useState, memo, useRef, useEffect } from "react";
 import corteImg from "@/assets/corte.jpg";
 import barbaImg from "@/assets/barba.jpg";
 import nevouImg from "@/assets/nevou.jpg";
@@ -13,6 +13,7 @@ import barba2Img from "@/assets/barba_2.jpg";
 import combo4Img from "@/assets/conbo_4.jpg";
 import peImg from "@/assets/pe.jpg";
 import cortePigmentacaoImg from "@/assets/corte-pigmentacao.png";
+import logoOneTwo from "@/assets/logo-onetwo.png";
 
 const services = [
   { id: "1", name: "Corte", price: "R$ 30,00", image: corte2Img },
@@ -23,6 +24,202 @@ const services = [
   { id: "7", name: "Corte com pigmentação", price: "R$ 50,00", image: cortePigmentacaoImg },
   { id: "6", name: "Pezinho", price: "R$ 10,00", image: peImg },
 ];
+
+function AnimatedBorderCard({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) {
+  return (
+    <div className="relative w-full" style={{ padding: "2px", borderRadius: "18px" }}>
+      <div
+        aria-hidden
+        className="pointer-events-none"
+        style={{ position: "absolute", inset: 0, overflow: "hidden", borderRadius: "18px" }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            inset: "-80px",
+            transformOrigin: "center center",
+            background:
+              "conic-gradient(from 0deg, transparent 0deg, transparent 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, transparent 360deg)",
+            animation: "produtos-border-rotate 4s linear infinite",
+          }}
+        />
+      </div>
+      <button
+        type="button"
+        onClick={onClick}
+        className="relative w-full text-left p-4 active:scale-[0.99] transition-transform"
+        style={{ background: "#1a1a1a", borderRadius: "17px" }}
+      >
+        {children}
+      </button>
+    </div>
+  );
+}
+
+function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const userInteractingRef = useRef(false);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      const el = scrollRef.current;
+      if (!el || userInteractingRef.current) return;
+      const next = (active + 1) % 2;
+      el.scrollTo({ left: next * el.clientWidth, behavior: "smooth" });
+    }, 5000);
+    return () => clearInterval(id);
+  }, [active]);
+
+  const onScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const idx = Math.round(el.scrollLeft / el.clientWidth);
+    if (idx !== active) setActive(idx);
+  };
+
+  const goTo = (i: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
+  };
+
+  return (
+    <div className="mt-2">
+      <div
+        ref={scrollRef}
+        onScroll={onScroll}
+        onTouchStart={() => { userInteractingRef.current = true; }}
+        onTouchEnd={() => { setTimeout(() => { userInteractingRef.current = false; }, 1500); }}
+        onMouseDown={() => { userInteractingRef.current = true; }}
+        onMouseUp={() => { setTimeout(() => { userInteractingRef.current = false; }, 1500); }}
+        className="home-carousel-scroll flex overflow-x-auto snap-x snap-mandatory"
+        style={{ scrollSnapType: "x mandatory" }}
+      >
+        {/* Card 1 - Produtos */}
+        <div className="min-w-full px-4 snap-center">
+          <AnimatedBorderCard onClick={() => navigate("/produtos")}>
+            <div className="flex items-center gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span
+                    className="inline-block rounded-full h-2 w-2"
+                    style={{ background: "#D4AF37", animation: "novidade-pulse 1.2s ease-in-out infinite" }}
+                  />
+                  <span
+                    className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
+                    style={{ color: "#D4AF37" }}
+                  >
+                    Novidade
+                  </span>
+                </div>
+                <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
+                  Confira nossos produtos!
+                </h3>
+                <p className="text-xs text-dimmed font-opensans leading-snug">
+                  Cuidados masculinos de alto padrão
+                </p>
+              </div>
+              <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                <div
+                  className="h-12 w-12 rounded-full flex items-center justify-center"
+                  style={{ background: "transparent", border: "1.5px solid #1e3f6e" }}
+                >
+                  <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
+                </div>
+                <span
+                  onClick={(e) => { e.stopPropagation(); navigate("/produtos"); }}
+                  className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
+                  style={{ background: "#D4AF37", color: "#fff" }}
+                >
+                  Ver Produtos
+                </span>
+              </div>
+            </div>
+          </AnimatedBorderCard>
+        </div>
+
+        {/* Card 2 - Planos */}
+        <div className="min-w-full px-4 snap-center">
+          <AnimatedBorderCard onClick={() => navigate("/planos")}>
+            <div className="flex items-start gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span
+                    className="inline-block rounded-full h-2 w-2"
+                    style={{ background: "#D4AF37", animation: "novidade-pulse 1.2s ease-in-out infinite" }}
+                  />
+                  <span
+                    className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
+                    style={{ color: "#D4AF37" }}
+                  >
+                    Exclusivo
+                  </span>
+                </div>
+                <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-2">
+                  Conheça nossos planos!
+                </h3>
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1 mb-2">
+                  {[
+                    { i: "✂️", t: "Cortes" },
+                    { i: "📅", t: "Prioridade" },
+                    { i: "✨", t: "Sobrancelha" },
+                    { i: "💧", t: "Hidratação" },
+                  ].map((b) => (
+                    <div key={b.t} className="flex items-center gap-1.5">
+                      <span
+                        className="inline-flex items-center justify-center rounded-full h-5 w-5 text-[10px]"
+                        style={{ background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.4)" }}
+                      >
+                        <span>{b.i}</span>
+                      </span>
+                      <span className="text-[10px] text-dimmed font-opensans leading-tight">
+                        <span>{b.t}</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                <div
+                  className="h-14 w-14 rounded-full flex items-center justify-center overflow-hidden"
+                  style={{ background: "#000", border: "1.5px solid #D4AF37" }}
+                >
+                  <img src={logoOneTwo} alt="OneTwo Barbearia" className="w-full h-full object-cover" />
+                </div>
+                <span
+                  onClick={(e) => { e.stopPropagation(); navigate("/planos"); }}
+                  className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
+                  style={{ background: "#D4AF37", color: "#fff" }}
+                >
+                  Ver Planos
+                </span>
+              </div>
+            </div>
+          </AnimatedBorderCard>
+        </div>
+      </div>
+
+      {/* Indicators */}
+      <div className="flex justify-center gap-2 mt-3">
+        {[0, 1].map((i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            aria-label={`Ir para card ${i + 1}`}
+            className="rounded-full transition-all"
+            style={{
+              width: active === i ? 18 : 6,
+              height: 6,
+              background: active === i ? "#D4AF37" : "rgba(255,255,255,0.3)",
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 
 export default function ClientHomePage() {
   const navigate = useNavigate();
@@ -55,89 +252,8 @@ export default function ClientHomePage() {
         </div>
       </div>
 
-      {/* Produtos Banner */}
-      <div className="px-4 mt-2">
-        <div
-          className="relative w-full"
-          style={{ padding: "2px", borderRadius: "18px" }}
-        >
-          <div
-            aria-hidden
-            className="pointer-events-none"
-            style={{
-              position: "absolute",
-              inset: 0,
-              overflow: "hidden",
-              borderRadius: "18px",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: "-80px",
-                transformOrigin: "center center",
-                background:
-                  "conic-gradient(from 0deg, transparent 0deg, transparent 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, transparent 360deg)",
-                animation: "produtos-border-rotate 4s linear infinite",
-              }}
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate("/produtos")}
-            className="relative w-full text-left p-4 flex items-center gap-3 active:scale-[0.99] transition-transform"
-            style={{
-              background: "#1a1a1a",
-              borderRadius: "17px",
-            }}
-          >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1.5">
-                <span
-                  className="inline-block rounded-full h-2 w-2"
-                  style={{
-                    background: "#D4AF37",
-                    animation: "novidade-pulse 1.2s ease-in-out infinite",
-                  }}
-                />
-                <span
-                  className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
-                  style={{ color: "#D4AF37" }}
-                >
-                  Novidade
-                </span>
-              </div>
-              <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
-                Confira nossos produtos!
-              </h3>
-              <p className="text-xs text-dimmed font-opensans leading-snug">
-                Cuidados masculinos de alto padrão
-              </p>
-            </div>
-            <div className="flex flex-col items-center gap-2 flex-shrink-0">
-              <div
-                className="h-12 w-12 rounded-full flex items-center justify-center"
-                style={{
-                  background: "transparent",
-                  border: "1.5px solid #1e3f6e",
-                }}
-              >
-                <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
-              </div>
-              <span
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate("/produtos");
-                }}
-                className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
-                style={{ background: "#D4AF37", color: "#fff" }}
-              >
-                Ver Produtos
-              </span>
-            </div>
-          </button>
-        </div>
-      </div>
+      {/* Carrossel Banners */}
+      <HomeBannerCarousel navigate={navigate} />
       <style>{`
         @keyframes produtos-border-rotate {
           0% { transform: rotate(0deg); }
@@ -147,7 +263,10 @@ export default function ClientHomePage() {
           0%, 100% { background: #D4AF37; }
           50% { background: #000000; }
         }
+        .home-carousel-scroll::-webkit-scrollbar { display: none; }
+        .home-carousel-scroll { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+
 
 
 
