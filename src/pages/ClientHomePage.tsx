@@ -223,7 +223,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
             style={{
               width: active === i ? 18 : 6,
               height: 6,
-              background: active === i ? "#D4AF37" : "rgba(255,255,255,0.3)",
+              background: active === i ? "#ffffff" : "#444",
             }}
           />
         ))}
