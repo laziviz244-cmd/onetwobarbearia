@@ -13,6 +13,7 @@ import barba2Img from "@/assets/barba_2.jpg";
 import combo4Img from "@/assets/conbo_4.jpg";
 import peImg from "@/assets/pe.jpg";
 import cortePigmentacaoImg from "@/assets/corte-pigmentacao.png";
+import logoOneTwo from "@/assets/logo-onetwo.png";
 
 const services = [
   { id: "1", name: "Corte", price: "R$ 30,00", image: corte2Img },
