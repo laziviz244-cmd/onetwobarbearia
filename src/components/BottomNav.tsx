@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Home, Calendar, User, Plus, ShoppingBag } from "lucide-react";
+import { Home, Calendar, User, Plus } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -31,7 +31,7 @@ const navItems = [
   { id: "planos", path: "/planos", label: "Planos", isTrophy: true },
   { icon: Plus, path: "/agendar", label: "Agendar", isCenter: true },
   { icon: Calendar, path: "/agenda", label: "Agenda" },
-  { icon: ShoppingBag, path: "/produtos", label: "Produtos" },
+  
   { icon: User, path: "/profile", label: "Perfil" },
 ];
 
