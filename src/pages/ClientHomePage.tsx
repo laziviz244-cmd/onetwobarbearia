@@ -56,89 +56,8 @@ export default function ClientHomePage() {
         </div>
       </div>
 
-      {/* Produtos Banner */}
-      <div className="px-4 mt-2">
-        <div
-          className="relative w-full"
-          style={{ padding: "2px", borderRadius: "18px" }}
-        >
-          <div
-            aria-hidden
-            className="pointer-events-none"
-            style={{
-              position: "absolute",
-              inset: 0,
-              overflow: "hidden",
-              borderRadius: "18px",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: "-80px",
-                transformOrigin: "center center",
-                background:
-                  "conic-gradient(from 0deg, transparent 0deg, transparent 230deg, #1e3f6e 265deg, #5aaeff 295deg, #1e3f6e 325deg, transparent 360deg)",
-                animation: "produtos-border-rotate 4s linear infinite",
-              }}
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate("/produtos")}
-            className="relative w-full text-left p-4 flex items-center gap-3 active:scale-[0.99] transition-transform"
-            style={{
-              background: "#1a1a1a",
-              borderRadius: "17px",
-            }}
-          >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1.5">
-                <span
-                  className="inline-block rounded-full h-2 w-2"
-                  style={{
-                    background: "#D4AF37",
-                    animation: "novidade-pulse 1.2s ease-in-out infinite",
-                  }}
-                />
-                <span
-                  className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
-                  style={{ color: "#D4AF37" }}
-                >
-                  Novidade
-                </span>
-              </div>
-              <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
-                Confira nossos produtos!
-              </h3>
-              <p className="text-xs text-dimmed font-opensans leading-snug">
-                Cuidados masculinos de alto padrão
-              </p>
-            </div>
-            <div className="flex flex-col items-center gap-2 flex-shrink-0">
-              <div
-                className="h-12 w-12 rounded-full flex items-center justify-center"
-                style={{
-                  background: "transparent",
-                  border: "1.5px solid #1e3f6e",
-                }}
-              >
-                <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
-              </div>
-              <span
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate("/produtos");
-                }}
-                className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
-                style={{ background: "#D4AF37", color: "#fff" }}
-              >
-                Ver Produtos
-              </span>
-            </div>
-          </button>
-        </div>
-      </div>
+      {/* Carrossel Banners */}
+      <HomeBannerCarousel navigate={navigate} />
       <style>{`
         @keyframes produtos-border-rotate {
           0% { transform: rotate(0deg); }
@@ -148,7 +67,10 @@ export default function ClientHomePage() {
           0%, 100% { background: #D4AF37; }
           50% { background: #000000; }
         }
+        .home-carousel-scroll::-webkit-scrollbar { display: none; }
+        .home-carousel-scroll { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
+
 
 
 
