@@ -124,3 +124,14 @@
     pointer-events: none !important;
   }
 }
+
+@keyframes badge-pulse-blue {
+  0%, 100% {
+    box-shadow: 0 0 4px #5aaeff, 0 0 8px #5aaeff;
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 10px #5aaeff, 0 0 20px #5aaeff;
+    transform: scale(1.3);
+  }
+}
