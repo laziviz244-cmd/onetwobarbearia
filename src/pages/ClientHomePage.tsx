@@ -105,7 +105,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 <div className="flex items-center gap-2 mb-1.5">
                   <span
                     className="inline-block rounded-full h-2 w-2"
-                    style={{ background: "#D4AF37", animation: "novidade-pulse 1.2s ease-in-out infinite" }}
+                    style={{ background: "#5aaeff", animation: "badge-pulse-blue 1.5s ease-in-out infinite" }}
                   />
                   <span
                     className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
@@ -129,10 +129,11 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                     width: "75px",
                     height: "75px",
                     borderRadius: "12px",
-                    objectFit: "cover",
+                    objectFit: "contain",
                     objectPosition: "center",
+                    background: "#1a1a1a",
                     border: "1.5px solid #1e3f6e",
-                    imageRendering: "crisp-edges",
+                    imageRendering: "-webkit-optimize-contrast",
                   }}
                 />
                 <span
@@ -155,7 +156,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 <div className="flex items-center gap-2 mb-1.5">
                   <span
                     className="inline-block rounded-full h-2 w-2"
-                    style={{ background: "#D4AF37", animation: "novidade-pulse 1.2s ease-in-out infinite" }}
+                    style={{ background: "#5aaeff", animation: "badge-pulse-blue 1.5s ease-in-out infinite" }}
                   />
                   <span
                     className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
@@ -199,7 +200,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 <img
                   src={logoOneTwo}
                   alt="OneTwo Barbearia"
-                  style={{ width: "90px", height: "90px", objectFit: "cover", borderRadius: "50%", background: "#1a1a1a", imageRendering: "crisp-edges" }}
+                  style={{ width: "90px", height: "90px", objectFit: "contain", borderRadius: "50%", background: "#1a1a1a", imageRendering: "-webkit-optimize-contrast" }}
                 />
                 <span
                   onClick={(e) => { e.stopPropagation(); navigate("/planos"); }}
