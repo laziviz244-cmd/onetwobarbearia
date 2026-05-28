@@ -14,6 +14,7 @@ import combo4Img from "@/assets/conbo_4.jpg";
 import peImg from "@/assets/pe.jpg";
 import cortePigmentacaoImg from "@/assets/corte-pigmentacao.png";
 import logoOneTwo from "@/assets/logo-onetwo-round.png";
+import produtosExclusivosImg from "@/assets/produtos-exclusivos.png";
 
 const services = [
   { id: "1", name: "Corte", price: "R$ 30,00", image: corte2Img },
@@ -121,12 +122,19 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 </p>
               </div>
               <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                <div
-                  className="h-12 w-12 rounded-full flex items-center justify-center"
-                  style={{ background: "transparent", border: "1.5px solid #1e3f6e" }}
-                >
-                  <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
-                </div>
+                <img
+                  src={produtosExclusivosImg}
+                  alt="Produtos Exclusivos"
+                  style={{
+                    width: "75px",
+                    height: "75px",
+                    borderRadius: "12px",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    border: "1.5px solid #1e3f6e",
+                    imageRendering: "crisp-edges",
+                  }}
+                />
                 <span
                   onClick={(e) => { e.stopPropagation(); navigate("/produtos"); }}
                   className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
