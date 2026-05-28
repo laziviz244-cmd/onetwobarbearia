@@ -158,7 +158,45 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                     className="inline-block rounded-full h-2 w-2"
                     style={{ background: "#5aaeff", animation: "badge-pulse-blue 1.5s ease-in-out infinite" }}
                   />
-...
+                  <span
+                    className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
+                    style={{ color: "#D4AF37" }}
+                  >
+                    Exclusivo
+                  </span>
+                </div>
+                <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
+                  Conheça nossos planos!
+                </h3>
+                <p
+                  className="font-opensans italic mb-2 leading-tight"
+                  style={{ color: "#D4AF37", fontSize: "10px" }}
+                >
+                  <span>✦ Vantagens exclusivas para você ✦</span>
+                </p>
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1 mb-2">
+                  {[
+                    { i: "🎁", t: "Brindes" },
+                    { i: "📅", t: "Prioridade na Agenda" },
+                    { i: "✂️", t: "Cortes Ilimitados" },
+                    { i: "✨", t: "Sobrancelha" },
+                    { i: "💧", t: "Hidratação" },
+                  ].map((b) => (
+                    <div key={b.t} className="flex items-center gap-1.5">
+                      <span
+                        className="inline-flex items-center justify-center rounded-full h-5 w-5 text-[10px]"
+                        style={{ background: "rgba(212,175,55,0.12)", border: "1px solid rgba(212,175,55,0.4)" }}
+                      >
+                        <span>{b.i}</span>
+                      </span>
+                      <span className="text-[10px] text-dimmed font-opensans leading-tight">
+                        <span>{b.t}</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col items-center gap-2 flex-shrink-0">
                 <img
                   src={logoOneTwo}
                   alt="OneTwo Barbearia"
