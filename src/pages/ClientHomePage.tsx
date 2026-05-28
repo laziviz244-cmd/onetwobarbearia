@@ -121,12 +121,19 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 </p>
               </div>
               <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                <div
-                  className="h-12 w-12 rounded-full flex items-center justify-center"
-                  style={{ background: "transparent", border: "1.5px solid #1e3f6e" }}
-                >
-                  <Package className="h-6 w-6" style={{ color: "#D4AF37" }} />
-                </div>
+                <img
+                  src={produtosExclusivosImg}
+                  alt="Produtos Exclusivos"
+                  style={{
+                    width: "75px",
+                    height: "75px",
+                    borderRadius: "12px",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    border: "1.5px solid #1e3f6e",
+                    imageRendering: "crisp-edges",
+                  }}
+                />
                 <span
                   onClick={(e) => { e.stopPropagation(); navigate("/produtos"); }}
                   className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
