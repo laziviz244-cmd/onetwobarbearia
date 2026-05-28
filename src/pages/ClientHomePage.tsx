@@ -13,7 +13,7 @@ import barba2Img from "@/assets/barba_2.jpg";
 import combo4Img from "@/assets/conbo_4.jpg";
 import peImg from "@/assets/pe.jpg";
 import cortePigmentacaoImg from "@/assets/corte-pigmentacao.png";
-import logoOneTwo from "@/assets/logo-onetwo.png";
+import logoOneTwo from "@/assets/logo-onetwo-round.png";
 
 const services = [
   { id: "1", name: "Corte", price: "R$ 30,00", image: corte2Img },
@@ -191,7 +191,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 <img
                   src={logoOneTwo}
                   alt="OneTwo Barbearia"
-                  style={{ width: "70px", height: "70px", objectFit: "contain", borderRadius: "8px", background: "transparent" }}
+                  style={{ width: "70px", height: "70px", objectFit: "cover", borderRadius: "50%", background: "#1a1a1a" }}
                 />
                 <span
                   onClick={(e) => { e.stopPropagation(); navigate("/planos"); }}
