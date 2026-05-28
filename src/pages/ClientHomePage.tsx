@@ -1,6 +1,6 @@
 /* refreshed */
 import { motion } from "framer-motion";
-import { MapPin, Package } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { staggerContainer, staggerItem } from "@/components/motion";
 import { useState, memo, useRef, useEffect } from "react";
@@ -14,7 +14,7 @@ import combo4Img from "@/assets/conbo_4.jpg";
 import peImg from "@/assets/pe.jpg";
 import cortePigmentacaoImg from "@/assets/corte-pigmentacao.png";
 import logoOneTwo from "@/assets/logo-onetwo-round.png";
-import produtosExclusivosImg from "@/assets/produtos-exclusivos.png";
+import produtosExclusivosImage from "@/assets/produtos-exclusivos.png";
 
 const services = [
   { id: "1", name: "Corte", price: "R$ 30,00", image: corte2Img },
@@ -123,7 +123,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
               </div>
               <div className="flex flex-col items-center gap-2 flex-shrink-0">
                 <img
-                  src={produtosExclusivosImg}
+                  src={produtosExclusivosImage}
                   alt="Produtos Exclusivos"
                   style={{
                     width: "75px",
