@@ -126,8 +126,8 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                   src={produtosExclusivosImage}
                   alt="Produtos Exclusivos"
                   style={{
-                    width: "75px",
-                    height: "75px",
+                    width: "80px",
+                    height: "80px",
                     borderRadius: "12px",
                     objectFit: "contain",
                     objectPosition: "center",
