@@ -122,20 +122,29 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 </p>
               </div>
               <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                <img
-                  src={produtosExclusivosImage}
-                  alt="Produtos Exclusivos"
+                <div
                   style={{
-                    width: "80px",
-                    height: "80px",
+                    width: "85px",
+                    height: "85px",
+                    padding: "4px",
                     borderRadius: "12px",
-                    objectFit: "contain",
-                    objectPosition: "center",
                     background: "#1a1a1a",
                     border: "1.5px solid #1e3f6e",
-                    imageRendering: "-webkit-optimize-contrast",
                   }}
-                />
+                >
+                  <img
+                    src={produtosExclusivosImage}
+                    alt="Produtos Exclusivos"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      borderRadius: "8px",
+                      objectFit: "contain",
+                      objectPosition: "center",
+                      imageRendering: "-webkit-optimize-contrast",
+                    }}
+                  />
+                </div>
                 <span
                   onClick={(e) => { e.stopPropagation(); navigate("/produtos"); }}
                   className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
