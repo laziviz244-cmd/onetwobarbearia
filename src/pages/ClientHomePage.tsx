@@ -139,7 +139,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                       height: "100%",
                       objectFit: "cover",
                       objectPosition: "center",
-                      imageRendering: "high-quality",
+                      imageRendering: "high-quality" as any,
                     }}
                   />
                 </div>
