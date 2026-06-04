@@ -126,10 +126,9 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                   style={{
                     width: "85px",
                     height: "85px",
-                    padding: "4px",
                     borderRadius: "12px",
-                    background: "#1a1a1a",
                     border: "1.5px solid #1e3f6e",
+                    overflow: "hidden",
                   }}
                 >
                   <img
@@ -138,8 +137,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                     style={{
                       width: "100%",
                       height: "100%",
-                      borderRadius: "8px",
-                      objectFit: "contain",
+                      objectFit: "cover",
                       objectPosition: "center",
                       imageRendering: "-webkit-optimize-contrast",
                     }}
