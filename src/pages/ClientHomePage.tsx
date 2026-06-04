@@ -126,7 +126,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                   style={{
                     width: "85px",
                     height: "85px",
-                    borderRadius: "12px",
+                    borderRadius: "50%",
                     border: "1.5px solid #1e3f6e",
                     overflow: "hidden",
                   }}
@@ -139,7 +139,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                       height: "100%",
                       objectFit: "cover",
                       objectPosition: "center",
-                      imageRendering: "-webkit-optimize-contrast",
+                      imageRendering: "high-quality" as any,
                     }}
                   />
                 </div>
