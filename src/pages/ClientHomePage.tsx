@@ -124,8 +124,8 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
               <div className="flex flex-col items-center gap-2 flex-shrink-0">
                 <div
                   style={{
-                    width: "85px",
-                    height: "85px",
+                    width: "95px",
+                    height: "95px",
                     borderRadius: "50%",
                     border: "none",
                     overflow: "hidden",
@@ -140,7 +140,8 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                       height: "100%",
                       objectFit: "cover",
                       objectPosition: "center",
-                      imageRendering: "high-quality" as any,
+                      imageRendering: "-webkit-optimize-contrast",
+                      filter: "contrast(1.05) brightness(1.02)",
                     }}
                   />
                 </div>
