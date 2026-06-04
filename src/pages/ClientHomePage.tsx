@@ -209,7 +209,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 <img
                   src={logoOneTwo}
                   alt="OneTwo Barbearia"
-                  style={{ width: "90px", height: "90px", objectFit: "contain", borderRadius: "50%", background: "#1a1a1a", imageRendering: "-webkit-optimize-contrast" }}
+                  style={{ width: "95px", height: "95px", objectFit: "contain", borderRadius: "50%", background: "#1a1a1a", imageRendering: "-webkit-optimize-contrast", filter: "contrast(1.05) brightness(1.02)" }}
                 />
                 <span
                   onClick={(e) => { e.stopPropagation(); navigate("/planos"); }}
