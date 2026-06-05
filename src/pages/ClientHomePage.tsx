@@ -143,7 +143,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                       objectFit: "cover",
                       objectPosition: "center",
                       imageRendering: "-webkit-optimize-contrast",
-                      filter: "contrast(1.05) brightness(1.02)",
+                      filter: "contrast(1.08) brightness(1.03)",
                     }}
                   />
                 </div>
