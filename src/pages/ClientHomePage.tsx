@@ -135,6 +135,8 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                   <img
                     src={produtosExclusivosImage}
                     alt="Produtos Exclusivos"
+                    loading="eager"
+                    decoding="sync"
                     style={{
                       width: "100%",
                       height: "100%",
