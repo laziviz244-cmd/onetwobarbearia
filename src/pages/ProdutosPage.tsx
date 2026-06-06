@@ -116,12 +116,13 @@ export default function ProdutosPage() {
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "contain",
+                      objectFit: "cover",
                       objectPosition: "center",
-                      background: "transparent",
                       imageRendering: "-webkit-optimize-contrast",
+                      filter: "contrast(1.08) brightness(1.03)",
                     }}
                   />
+
                 </div>
               </div>
 
