@@ -92,17 +92,17 @@ export default function ProdutosPage() {
                 backgroundColor: "#1a1a1a",
                 border: "1px solid #222",
                 borderRadius: "16px",
-                padding: "16px",
+                padding: "14px",
               }}
             >
               <div className="flex justify-center mb-2">
                 <div
                   style={{
-                    width: "115px",
-                    height: "115px",
+                    width: "90px",
+                    height: "90px",
                     borderRadius: "50%",
                     overflow: "hidden",
-                    background: "transparent",
+                    background: "#1a1a1a",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -138,7 +138,7 @@ export default function ProdutosPage() {
                 />
                 <h2
                   className="font-montserrat text-white leading-tight"
-                  style={{ fontSize: "14px", fontWeight: 700 }}
+                  style={{ fontSize: "13px", fontWeight: 700 }}
                 >
                   <span>{p.name}</span>
                 </h2>
@@ -179,7 +179,7 @@ export default function ProdutosPage() {
                     backgroundColor: "transparent",
                     border: "1px solid #D4AF37",
                     fontSize: "11px",
-                    padding: "8px 16px",
+                    padding: "8px 14px",
                     borderRadius: "20px",
                   }}
                 >
@@ -187,6 +187,7 @@ export default function ProdutosPage() {
                 </button>
               </div>
             </article>
+
           ))}
         </div>
       </div>
