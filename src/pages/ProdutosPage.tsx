@@ -81,7 +81,7 @@ export default function ProdutosPage() {
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "10px",
+            gap: "12px",
           }}
         >
           {products.map((p) => (
@@ -92,14 +92,14 @@ export default function ProdutosPage() {
                 backgroundColor: "#1a1a1a",
                 border: "1px solid #222",
                 borderRadius: "14px",
-                padding: "10px",
+                padding: "14px",
               }}
             >
               <div className="flex justify-center mb-2">
                 <div
                   style={{
-                    width: "70px",
-                    height: "70px",
+                    width: "100px",
+                    height: "100px",
                     borderRadius: "50%",
                     overflow: "hidden",
                     background: "#1a1a1a",
@@ -116,8 +116,7 @@ export default function ProdutosPage() {
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
-                      objectPosition: "center center",
-                      mixBlendMode: "luminosity",
+                      objectPosition: "center",
                       imageRendering: "-webkit-optimize-contrast",
                     }}
                   />
@@ -136,7 +135,7 @@ export default function ProdutosPage() {
                 />
                 <h2
                   className="font-montserrat text-white leading-tight"
-                  style={{ fontSize: "10px", fontWeight: 700 }}
+                  style={{ fontSize: "13px", fontWeight: 700 }}
                 >
                   <span>{p.name}</span>
                 </h2>
@@ -144,7 +143,7 @@ export default function ProdutosPage() {
 
               <p
                 className="font-opensans text-white/70 mb-1.5 leading-snug"
-                style={{ fontSize: "8px" }}
+                style={{ fontSize: "11px" }}
               >
                 <span>{p.description}</span>
               </p>
@@ -154,7 +153,7 @@ export default function ProdutosPage() {
                   <li
                     key={b}
                     className="font-opensans text-white/80 flex items-start gap-1"
-                    style={{ fontSize: "7.5px", margin: "1px 0" }}
+                    style={{ fontSize: "10px", margin: "1px 0" }}
                   >
                     <span style={{ color: "#4CAF50" }}>✓</span>
                     <span>{b}</span>
@@ -165,7 +164,7 @@ export default function ProdutosPage() {
               <div className="mt-auto">
                 <p
                   className="font-montserrat mb-2"
-                  style={{ color: "#4a8fd4", fontSize: "12px", fontWeight: 700 }}
+                  style={{ color: "#4a8fd4", fontSize: "15px", fontWeight: 700 }}
                 >
                   <span>{p.price}</span>
                 </p>
@@ -176,8 +175,8 @@ export default function ProdutosPage() {
                   style={{
                     backgroundColor: "transparent",
                     border: "1px solid #D4AF37",
-                    fontSize: "8px",
-                    padding: "5px 10px",
+                    fontSize: "11px",
+                    padding: "8px 16px",
                     borderRadius: "20px",
                   }}
                 >
