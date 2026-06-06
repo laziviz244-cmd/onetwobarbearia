@@ -102,7 +102,7 @@ export default function ProdutosPage() {
                     height: "90px",
                     borderRadius: "50%",
                     overflow: "hidden",
-                    background: "#1a1a1a",
+                    background: "#fff",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -119,7 +119,7 @@ export default function ProdutosPage() {
                       objectFit: "cover",
                       objectPosition: "center",
                       imageRendering: "-webkit-optimize-contrast",
-                      mixBlendMode: "multiply",
+                      mixBlendMode: "normal",
                     }}
                   />
 
@@ -167,7 +167,7 @@ export default function ProdutosPage() {
               <div className="mt-auto">
                 <p
                   className="font-montserrat mb-2"
-                  style={{ color: "#4a8fd4", fontSize: "15px", fontWeight: 700 }}
+                  style={{ color: "#1e3f6e", fontSize: "15px", fontWeight: 700 }}
                 >
                   <span>{p.price}</span>
                 </p>
