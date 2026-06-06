@@ -68,58 +68,94 @@ export default function ProdutosPage() {
   };
 
   return (
-    <div className="min-h-screen px-4 py-6" style={{ backgroundColor: "#0d0d0d" }}>
+    <div className="min-h-screen px-3 py-4" style={{ backgroundColor: "#0d0d0d" }}>
       <div className="max-w-5xl mx-auto">
-        <div className="flex items-center gap-3 mb-6">
-          <span className="block h-7 w-1 rounded-full" style={{ backgroundColor: "#D4AF37" }} />
-          <h1 className="font-montserrat font-bold text-2xl sm:text-3xl text-white">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="block h-6 w-1 rounded-full" style={{ backgroundColor: "#D4AF37" }} />
+          <h1 className="font-montserrat font-bold text-xl text-white">
             <span>Nossos Produtos</span>
           </h1>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:gap-5">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "10px",
+          }}
+        >
           {products.map((p) => (
             <article
               key={p.id}
-              className="flex flex-col p-3 sm:p-5"
+              className="flex flex-col"
               style={{
                 backgroundColor: "#1a1a1a",
                 border: "1px solid #222",
-                borderRadius: "16px",
+                borderRadius: "14px",
+                padding: "10px",
               }}
             >
-              <div className="flex items-center justify-center mb-3" style={{ minHeight: "140px" }}>
-                <img
-                  src={p.image}
-                  alt={`Pasta Fox For Men ${p.name}`}
-                  loading="lazy"
-                  className="w-full h-32 sm:h-40 object-contain"
-                  style={{ imageRendering: "-webkit-optimize-contrast" }}
-                />
+              <div className="flex justify-center mb-2">
+                <div
+                  style={{
+                    width: "70px",
+                    height: "70px",
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    background: "#1a1a1a",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={p.image}
+                    alt={`Pasta Fox For Men ${p.name}`}
+                    loading="lazy"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: "center center",
+                      mixBlendMode: "luminosity",
+                      imageRendering: "-webkit-optimize-contrast",
+                    }}
+                  />
+                </div>
               </div>
 
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-1.5 mb-0.5">
                 <span
                   className="inline-block rounded-full shrink-0"
                   style={{
-                    width: "10px",
-                    height: "10px",
+                    width: "8px",
+                    height: "8px",
                     backgroundColor: p.dotColor,
                     border: p.dotBorder ? `1px solid ${p.dotBorder}` : undefined,
                   }}
                 />
-                <h2 className="font-montserrat font-bold text-sm sm:text-base text-white leading-tight">
+                <h2
+                  className="font-montserrat text-white leading-tight"
+                  style={{ fontSize: "10px", fontWeight: 700 }}
+                >
                   <span>{p.name}</span>
                 </h2>
               </div>
 
-              <p className="font-opensans text-xs sm:text-sm text-white/70 mb-2">
+              <p
+                className="font-opensans text-white/70 mb-1.5 leading-snug"
+                style={{ fontSize: "8px" }}
+              >
                 <span>{p.description}</span>
               </p>
 
-              <ul className="flex flex-col gap-1 mb-3">
+              <ul className="flex flex-col mb-2">
                 {p.benefits.map((b) => (
-                  <li key={b} className="font-opensans text-[11px] sm:text-xs text-white/80 flex items-start gap-1.5">
+                  <li
+                    key={b}
+                    className="font-opensans text-white/80 flex items-start gap-1"
+                    style={{ fontSize: "7.5px", margin: "1px 0" }}
+                  >
                     <span style={{ color: "#4CAF50" }}>✓</span>
                     <span>{b}</span>
                   </li>
@@ -127,16 +163,22 @@ export default function ProdutosPage() {
               </ul>
 
               <div className="mt-auto">
-                <p className="font-montserrat font-bold text-lg sm:text-xl mb-3" style={{ color: "#4a8fd4" }}>
+                <p
+                  className="font-montserrat mb-2"
+                  style={{ color: "#4a8fd4", fontSize: "12px", fontWeight: 700 }}
+                >
                   <span>{p.price}</span>
                 </p>
                 <button
                   type="button"
                   onClick={() => handleBuy(p.whatsappMsg)}
-                  className="w-full font-montserrat font-semibold text-xs sm:text-sm text-white py-2.5 rounded-lg transition-colors hover:bg-white/5"
+                  className="w-full font-montserrat font-semibold text-white transition-colors hover:bg-white/5"
                   style={{
                     backgroundColor: "transparent",
                     border: "1px solid #D4AF37",
+                    fontSize: "8px",
+                    padding: "5px 10px",
+                    borderRadius: "20px",
                   }}
                 >
                   <span>Adquirir Agora</span>
