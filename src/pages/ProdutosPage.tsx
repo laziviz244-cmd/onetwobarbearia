@@ -116,8 +116,7 @@ export default function ProdutosPage() {
                       width: "100%",
                       height: "100%",
                       objectFit: "cover",
-                      objectPosition: "center center",
-                      mixBlendMode: "luminosity",
+                      objectPosition: "center",
                       imageRendering: "-webkit-optimize-contrast",
                     }}
                   />
