@@ -81,7 +81,7 @@ export default function ProdutosPage() {
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
-            gap: "10px",
+            gap: "12px",
           }}
         >
           {products.map((p) => (
@@ -92,14 +92,14 @@ export default function ProdutosPage() {
                 backgroundColor: "#1a1a1a",
                 border: "1px solid #222",
                 borderRadius: "14px",
-                padding: "10px",
+                padding: "14px",
               }}
             >
               <div className="flex justify-center mb-2">
                 <div
                   style={{
-                    width: "70px",
-                    height: "70px",
+                    width: "100px",
+                    height: "100px",
                     borderRadius: "50%",
                     overflow: "hidden",
                     background: "#1a1a1a",
