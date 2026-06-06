@@ -119,7 +119,7 @@ export default function ProdutosPage() {
                       objectFit: "cover",
                       objectPosition: "center",
                       imageRendering: "-webkit-optimize-contrast",
-                      filter: "contrast(1.08) brightness(1.03)",
+                      mixBlendMode: "multiply",
                     }}
                   />
 
