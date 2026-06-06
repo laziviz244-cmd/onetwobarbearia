@@ -91,18 +91,18 @@ export default function ProdutosPage() {
               style={{
                 backgroundColor: "#1a1a1a",
                 border: "1px solid #222",
-                borderRadius: "14px",
-                padding: "14px",
+                borderRadius: "16px",
+                padding: "16px",
               }}
             >
               <div className="flex justify-center mb-2">
                 <div
                   style={{
-                    width: "100px",
-                    height: "100px",
+                    width: "115px",
+                    height: "115px",
                     borderRadius: "50%",
                     overflow: "hidden",
-                    background: "#1a1a1a",
+                    background: "transparent",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -111,12 +111,15 @@ export default function ProdutosPage() {
                   <img
                     src={p.image}
                     alt={`Pasta Fox For Men ${p.name}`}
-                    loading="lazy"
+                    loading="eager"
+                    decoding="sync"
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "cover",
+                      objectFit: "contain",
                       objectPosition: "center",
+                      background: "transparent",
+                      mixBlendMode: "multiply",
                       imageRendering: "-webkit-optimize-contrast",
                     }}
                   />
@@ -135,7 +138,7 @@ export default function ProdutosPage() {
                 />
                 <h2
                   className="font-montserrat text-white leading-tight"
-                  style={{ fontSize: "13px", fontWeight: 700 }}
+                  style={{ fontSize: "14px", fontWeight: 700 }}
                 >
                   <span>{p.name}</span>
                 </h2>
