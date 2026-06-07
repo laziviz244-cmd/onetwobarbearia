@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { adminCrud } from "@/lib/admin-api";
-import { supabase } from "@/integrations/supabase/client";
+
 import { toast } from "sonner";
 import {
   AlertDialog,
