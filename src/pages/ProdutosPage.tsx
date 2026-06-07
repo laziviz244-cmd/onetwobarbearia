@@ -164,8 +164,8 @@ export default function ProdutosPage() {
 
               <div className="mt-auto">
                 <p
-                  className="font-montserrat mb-2"
-                  style={{ color: "#0066FF", fontSize: "15px", fontWeight: 700 }}
+                  className="font-montserrat"
+                  style={{ color: "#0066FF", fontSize: "15px", fontWeight: 700, marginBottom: "6px" }}
                 >
                   <span>{p.price}</span>
                 </p>
