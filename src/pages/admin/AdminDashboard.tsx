@@ -67,38 +67,14 @@ export default function AdminDashboard() {
     gcTime: Infinity,
     refetchOnWindowFocus: true,
     refetchOnMount: "always",
+    // Realtime was removed from the appointments table for security.
+    // Poll every 15s so the dashboard stays up to date.
+    refetchInterval: 15_000,
   });
 
   const appointments = data?.appointments ?? [];
   const todayRevenue = data?.todayRevenue ?? 0;
   const todayClients = new Set(appointments.map((a) => a.client_name)).size;
-
-  // Realtime subscription with reconnection
-  useEffect(() => {
-    const channel = supabase
-      .channel("dashboard-appointments-rt")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "appointments" },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["admin-dashboard", today] });
-        }
-      )
-      .subscribe((status) => {
-        if (status === "CHANNEL_ERROR") {
-          // Reconnect on error
-          setTimeout(() => {
-            supabase.removeChannel(channel);
-            // Re-subscribing will happen on next render cycle
-            queryClient.invalidateQueries({ queryKey: ["admin-dashboard", today] });
-          }, 1000);
-        }
-      });
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient, today]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
