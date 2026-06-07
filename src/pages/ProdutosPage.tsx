@@ -92,14 +92,14 @@ export default function ProdutosPage() {
                 backgroundColor: "#1a1a1a",
                 border: "1px solid #222",
                 borderRadius: "16px",
-                padding: "14px",
+                padding: "16px",
               }}
             >
-              <div className="flex justify-center mb-2">
+              <div className="flex justify-center" style={{ marginBottom: "12px" }}>
                 <div
                   style={{
-                    width: "90px",
-                    height: "90px",
+                    width: "110px",
+                    height: "110px",
                     borderRadius: "50%",
                     overflow: "hidden",
                     background: "#1a1a1a",
@@ -124,7 +124,7 @@ export default function ProdutosPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 mb-0.5">
+              <div className="flex items-center gap-1.5" style={{ marginBottom: "6px" }}>
                 <span
                   className="inline-block rounded-full shrink-0"
                   style={{
@@ -143,18 +143,18 @@ export default function ProdutosPage() {
               </div>
 
               <p
-                className="font-opensans text-white/70 mb-1.5 leading-snug"
-                style={{ fontSize: "11px" }}
+                className="font-opensans text-white/70 leading-snug"
+                style={{ fontSize: "11px", marginBottom: "6px" }}
               >
                 <span>{p.description}</span>
               </p>
 
-              <ul className="flex flex-col mb-2">
+              <ul className="flex flex-col" style={{ marginBottom: "6px" }}>
                 {p.benefits.map((b) => (
                   <li
                     key={b}
                     className="font-opensans text-white/80 flex items-start gap-1"
-                    style={{ fontSize: "10px", margin: "1px 0" }}
+                    style={{ fontSize: "10px", margin: "2px 0" }}
                   >
                     <span style={{ color: "#4CAF50" }}>✓</span>
                     <span>{b}</span>
