@@ -179,6 +179,7 @@ export default function ProdutosPage() {
                     fontSize: "11px",
                     padding: "8px 14px",
                     borderRadius: "20px",
+                    animation: "borderGlow 2.5s ease-in-out infinite",
                   }}
                 >
                   <span>Adquirir Agora</span>
