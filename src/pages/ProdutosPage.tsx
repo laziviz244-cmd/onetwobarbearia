@@ -102,7 +102,7 @@ export default function ProdutosPage() {
                     height: "90px",
                     borderRadius: "50%",
                     overflow: "hidden",
-                    background: "#fff",
+                    background: "#1a1a1a",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -119,10 +119,8 @@ export default function ProdutosPage() {
                       objectFit: "cover",
                       objectPosition: "center",
                       imageRendering: "-webkit-optimize-contrast",
-                      mixBlendMode: "normal",
                     }}
                   />
-
                 </div>
               </div>
 
