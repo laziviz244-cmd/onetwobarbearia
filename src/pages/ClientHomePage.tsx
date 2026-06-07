@@ -101,25 +101,39 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
         <div className="min-w-full px-4 snap-center">
           <AnimatedBorderCard onClick={() => navigate("/produtos")}>
             <div className="flex items-center gap-3">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex-1 min-w-0 flex flex-col items-start text-left">
+                <div className="flex items-center gap-2 mb-1">
                   <span
                     className="inline-block rounded-full h-2 w-2"
                     style={{ background: "#5aaeff", animation: "badge-pulse-blue 1.5s ease-in-out infinite" }}
                   />
                   <span
                     className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
-                    style={{ color: "#D4AF37" }}
+                    style={{ color: "#5aaeff" }}
                   >
-                    Novidade
+                    Novidades
                   </span>
                 </div>
-                <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
+                <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1 text-left">
                   Confira nossos produtos!
                 </h3>
-                <p className="text-xs text-dimmed font-opensans leading-snug">
+                <p className="text-xs text-dimmed font-opensans leading-snug mb-2 text-left">
                   Cuidados masculinos de alto padrão
                 </p>
+                <span
+                  onClick={(e) => { e.stopPropagation(); navigate("/produtos"); }}
+                  className="text-[11px] font-montserrat font-bold whitespace-nowrap"
+                  style={{
+                    background: "transparent",
+                    border: "1.5px solid #D4AF37",
+                    color: "#fff",
+                    borderRadius: "25px",
+                    padding: "7px 16px",
+                    animation: "borderGlow 2.5s ease-in-out infinite",
+                  }}
+                >
+                  Ver Produtos
+                </span>
               </div>
               <div className="flex flex-col items-center gap-2 flex-shrink-0">
                 <div
@@ -147,13 +161,6 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                     }}
                   />
                 </div>
-                <span
-                  onClick={(e) => { e.stopPropagation(); navigate("/produtos"); }}
-                  className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
-                  style={{ background: "#D4AF37", color: "#fff" }}
-                >
-                  Ver Produtos
-                </span>
               </div>
             </div>
           </AnimatedBorderCard>
@@ -171,19 +178,19 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                   />
                   <span
                     className="text-[10px] font-montserrat font-bold tracking-[0.15em] uppercase"
-                    style={{ color: "#D4AF37" }}
+                    style={{ color: "#5aaeff" }}
                   >
                     Exclusivo
                   </span>
                 </div>
-                <h3 className="font-montserrat font-bold text-base text-foreground leading-tight mb-1">
-                  Conheça nossos planos!
+                <h3 className="font-montserrat font-bold text-base text-white leading-tight mb-1">
+                  Tudo incluso, o mês inteiro!
                 </h3>
                 <p
                   className="font-opensans italic mb-2 leading-tight"
                   style={{ color: "#D4AF37", fontSize: "10px" }}
                 >
-                  <span>✦ Vantagens exclusivas para você ✦</span>
+                  <span>✦ Conheça nossos planos ✦</span>
                 </p>
                 <div className="grid grid-cols-2 gap-x-2 gap-y-1 mb-2">
                   {[
@@ -215,8 +222,15 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                 />
                 <span
                   onClick={(e) => { e.stopPropagation(); navigate("/planos"); }}
-                  className="px-3 py-1.5 rounded-full text-[11px] font-montserrat font-bold whitespace-nowrap"
-                  style={{ background: "#D4AF37", color: "#fff" }}
+                  className="text-[11px] font-montserrat font-bold whitespace-nowrap"
+                  style={{
+                    background: "transparent",
+                    border: "1.5px solid #D4AF37",
+                    color: "#fff",
+                    borderRadius: "25px",
+                    padding: "7px 16px",
+                    animation: "borderGlow 2.5s ease-in-out infinite",
+                  }}
                 >
                   Ver Planos
                 </span>
@@ -224,6 +238,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
             </div>
           </AnimatedBorderCard>
         </div>
+
       </div>
 
       {/* Indicators */}
