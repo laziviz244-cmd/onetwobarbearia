@@ -114,7 +114,7 @@ export default function MeusAgendamentos() {
     const res = await appointmentsApi.deleteMine(id);
     appointmentsCache.delete(currentUserId);
 
-    const notifId = res?.notification_id;
+    const notifId = (res as any)?.notification_id;
     if (notifId) {
       supabase.functions
         .invoke("cancel-notification", { body: { notification_id: notifId } })
