@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -53,22 +53,14 @@ export default function AdminAgenda() {
       const res = await adminCrud<Appointment[]>("list_appointments", { date: selectedDate });
       return res.data ?? [];
     },
-    staleTime: 30_000,
+    staleTime: 10_000,
     gcTime: 5 * 60_000,
     refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    // Realtime was removed from the appointments table for security.
+    // Poll every 15s so changes from other devices still show up promptly.
+    refetchInterval: 15_000,
   });
-
-  // Realtime: auto-refresh on any appointment change (global, not tied to selectedDate)
-  useEffect(() => {
-    const channel = supabase
-      .channel("agenda-appointments-rt")
-      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
-        queryClient.invalidateQueries({ queryKey: ["admin-agenda"] });
-        queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [queryClient]);
 
   const occupiedTimes = useMemo(() => new Set(appointments.map(a => a.time)), [appointments]);
 

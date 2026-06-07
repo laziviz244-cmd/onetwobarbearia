@@ -5,6 +5,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { getCurrentAppointmentUserId } from "@/lib/appointment-user";
+import { appointmentsApi } from "@/lib/appointments-api";
 import { tagOneSignalUser } from "@/lib/onesignal";
 import {
   Dialog,
@@ -182,28 +183,25 @@ export default function BookingPage() {
 
   useEffect(() => {
     if (!selectedDate) return;
+    let cancelled = false;
     const fetchReserved = async () => {
-      const { data } = await supabase
-        .from("appointments")
-        .select("time")
-        .eq("date", selectedDate)
-        .eq("status", "Confirmado")
-        .order("time", { ascending: true });
-      setReservedSlots((data || []).map((a: any) => a.time));
+      const res = await appointmentsApi.listReservedTimes(selectedDate);
+      if (cancelled) return;
+      setReservedSlots(res.times || []);
     };
     setReservedSlots([]);
     fetchReserved();
 
-    const channelId = `slots-realtime-${selectedDate}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    const channel = supabase
-      .channel(channelId)
-      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
-        fetchReserved();
-      })
-      .subscribe();
+    // Realtime was removed from this table for security; poll instead so
+    // two clients booking the same slot still see updates within ~8s.
+    const interval = window.setInterval(fetchReserved, 8000);
+    const onFocus = () => fetchReserved();
+    window.addEventListener("focus", onFocus);
 
     return () => {
-      supabase.removeChannel(channel);
+      cancelled = true;
+      window.clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
     };
   }, [selectedDate]);
 
@@ -238,33 +236,25 @@ export default function BookingPage() {
     const userId = getCurrentAppointmentUserId() ?? clientName.trim();
     const timeToBook = selectedTime;
 
-    // Atomic reservation: insert FIRST. Unique index blocks duplicates.
-    const { data: inserted, error: insErr } = await supabase
-      .from("appointments")
-      .insert({
-        service: serviceName,
-        date: selectedDate,
-        date_label: dateLabel,
-        time: timeToBook,
-        status: "Confirmado",
-        client_name: clientName,
-        user_id: userId,
-      } as never)
-      .select("id")
-      .single();
+    // Atomic reservation via edge function. Unique index blocks duplicates.
+    const insRes = await appointmentsApi.create({
+      service: serviceName,
+      date: selectedDate,
+      date_label: dateLabel,
+      time: timeToBook,
+      status: "Confirmado",
+      client_name: clientName,
+      user_id: userId,
+    });
 
-    if (insErr) {
-      console.error("Booking insert failed:", insErr);
+    if (insRes.error || !insRes.data) {
+      console.error("Booking insert failed:", insRes.error);
       setIsBooking(false);
 
-      if ((insErr as any)?.code === "23505") {
+      if (insRes.code === "23505") {
         setSelectedTime(null);
-        const { data: refreshed } = await supabase
-          .from("appointments")
-          .select("time")
-          .eq("date", selectedDate)
-          .eq("status", "Confirmado");
-        setReservedSlots((refreshed || []).map((a: any) => a.time));
+        const refreshed = await appointmentsApi.listReservedTimes(selectedDate);
+        setReservedSlots(refreshed.times || []);
         toast({
           title: "Horário indisponível",
           description: "Este horário acabou de ser preenchido. Por favor, escolha outro.",
@@ -280,6 +270,8 @@ export default function BookingPage() {
       }
       return;
     }
+
+    const inserted = insRes.data;
 
     // Reservation confirmed — only now redirect to WhatsApp.
     const msg = encodeURIComponent(
@@ -300,7 +292,7 @@ export default function BookingPage() {
         });
         const notifId = (notifRes as any)?.notification_id ?? (notifRes as any)?.id;
         if (notifId && inserted?.id) {
-          await supabase.from("appointments").update({ notification_id: notifId } as never).eq("id", inserted.id);
+          await appointmentsApi.setNotificationId(inserted.id, notifId);
         }
       } catch (err) {
         console.warn("Notification scheduling failed:", err);

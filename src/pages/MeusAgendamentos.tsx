@@ -4,6 +4,7 @@ import { staggerContainer, staggerItem } from "@/components/motion";
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getCurrentAppointmentUserId } from "@/lib/appointment-user";
+import { appointmentsApi } from "@/lib/appointments-api";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,13 +53,10 @@ export default function MeusAgendamentos() {
       return;
     }
 
-    const { data } = await supabase
-      .from("appointments")
-      .select("*")
-      .eq("user_id", currentUserId)
-      .order("created_at", { ascending: false });
+    const res = await appointmentsApi.listMine();
+    const rows = (res.data as any[]) || [];
 
-    const mapped = (data || []).map((a: any) => ({
+    const mapped = rows.map((a: any) => ({
       id: a.id,
       service: a.service,
       date: a.date,
@@ -95,35 +93,28 @@ export default function MeusAgendamentos() {
 
     if (!currentUserId) return;
 
-    const channelName = `appointments-realtime-${currentUserId}-${Math.random().toString(36).slice(2)}`;
-    const channel = supabase.channel(channelName);
-    channel
-      .on("postgres_changes", { event: "*", schema: "public", table: "appointments" }, () => {
-        appointmentsCache.delete(currentUserId);
-        loadAppointments();
-      })
-      .subscribe();
+    // Realtime was removed for security. Refresh on focus/visibility instead.
+    const refresh = () => {
+      appointmentsCache.delete(currentUserId);
+      loadAppointments();
+    };
+    window.addEventListener("focus", refresh);
+    const onVis = () => { if (!document.hidden) refresh(); };
+    document.addEventListener("visibilitychange", onVis);
 
     return () => {
-      supabase.removeChannel(channel);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, [currentUserId, loadAppointments]);
 
   const handleCancel = async (id: string) => {
     if (!currentUserId) return;
 
-    // Cancel scheduled push notification (if any)
-    const { data: row } = await supabase
-      .from("appointments")
-      .select("notification_id")
-      .eq("id", id)
-      .eq("user_id", currentUserId)
-      .single();
-
-    await supabase.from("appointments").delete().eq("id", id).eq("user_id", currentUserId);
+    const res = await appointmentsApi.deleteMine(id);
     appointmentsCache.delete(currentUserId);
 
-    const notifId = (row as any)?.notification_id;
+    const notifId = (res as any)?.notification_id;
     if (notifId) {
       supabase.functions
         .invoke("cancel-notification", { body: { notification_id: notifId } })
