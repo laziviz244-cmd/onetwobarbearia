@@ -21,6 +21,7 @@ interface Appointment {
   service: string;
   date: string;
   dateLabel: string;
+  barbeiro: string;
   time: string;
   status: string;
   clientName?: string;
@@ -62,6 +63,7 @@ export default function MeusAgendamentos() {
       date: a.date,
       dateLabel: a.date_label,
       time: a.time,
+      barbeiro: a.barbeiro,
       status: a.status,
       clientName: a.client_name,
     }));
@@ -218,7 +220,7 @@ export default function MeusAgendamentos() {
                       {apt.service}
                     </span>
                     <span className="text-xs text-dimmed font-opensans tabular-nums">
-                      - {apt.time}hrs
+                      - {apt.time}hrs • {apt.barbeiro || "Geral"}
                     </span>
                     <span className="text-xs text-muted-foreground">|</span>
                     <button
