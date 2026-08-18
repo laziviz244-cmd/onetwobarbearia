@@ -40,10 +40,10 @@ const dates = Array.from({ length: 30 }, (_, i) => {
 
 export default function AdminAgenda() {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [selectedBarber, setSelectedBarber] = useState<string>("Barbeiro 1");
+  const [selectedBarber, setSelectedBarber] = useState<string>("OneTwo");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "", barbeiro: "Barbeiro 1" });
+  const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "", barbeiro: "OneTwo" });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -74,7 +74,7 @@ export default function AdminAgenda() {
 
   const openEdit = (apt: Appointment) => {
     setEditingId(apt.id);
-    setForm({ client_name: apt.client_name, phone: apt.phone || "", service: apt.service, time: apt.time, barbeiro: apt.barbeiro || "Barbeiro 1" });
+    setForm({ client_name: apt.client_name, phone: apt.phone || "", service: apt.service, time: apt.time, barbeiro: apt.barbeiro || "OneTwo" });
     setDialogOpen(true);
   };
 
@@ -161,17 +161,17 @@ export default function AdminAgenda() {
 
         {/* Barber Filter */}
         <div className="flex gap-2 mb-4 px-1">
-          {["Barbeiro 1", "Barbeiro 2"].map((barber) => (
+          {["OneTwo", "Black"].map((barber) => (
             <button
               key={barber}
               onClick={() => setSelectedBarber(barber)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl font-opensans font-semibold text-sm transition-all flex-1 justify-center"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl font-opensans font-semibold text-sm transition-all flex-1 justify-center whitespace-nowrap"
               style={selectedBarber === barber
                 ? { background: "rgba(37, 99, 235, 0.15)", border: "1px solid #2563EB", color: "#2563EB" }
                 : { background: "#111111", border: "1px solid #1F2937", color: "#9CA3AF" }
               }
             >
-              <Users className="h-4 w-4" />
+              <Users className="h-4 w-4 shrink-0" />
               {barber}
             </button>
           ))}
@@ -273,8 +273,8 @@ export default function AdminAgenda() {
               <div>
                 <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Barbeiro *</label>
                 <select value={form.barbeiro} onChange={(e) => setForm(f => ({ ...f, barbeiro: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
-                  <option value="Barbeiro 1">Barbeiro 1</option>
-                  <option value="Barbeiro 2">Barbeiro 2</option>
+                  <option value="OneTwo">OneTwo</option>
+                  <option value="Black">Black</option>
                 </select>
               </div>
               <div>
