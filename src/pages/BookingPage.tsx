@@ -290,7 +290,7 @@ export default function BookingPage() {
       tagOneSignalUser(userId);
       try {
         const { data: notifRes } = await supabase.functions.invoke("schedule-notification", {
-          body: { clientName: userId, serviceName, dateLabel, time: timeToBook, date: selectedDate },
+          body: { clientName: userId, serviceName, barbeiro: selectedBarber, dateLabel, time: timeToBook, date: selectedDate },
         });
         const notifId = (notifRes as any)?.notification_id ?? (notifRes as any)?.id;
         if (notifId && inserted?.id) {

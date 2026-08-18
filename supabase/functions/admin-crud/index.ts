@@ -45,7 +45,7 @@ async function cancelOneSignalNotification(notificationId: string): Promise<void
 }
 
 async function scheduleOneSignalReminder(p: {
-  clientName: string; userId: string; serviceName: string; dateLabel: string; time: string; date: string;
+  clientName: string; userId: string; serviceName: string; barbeiro?: string; dateLabel: string; time: string; date: string;
 }): Promise<string | null> {
   const key = Deno.env.get("ONESIGNAL_REST_API_KEY")
   if (!key) return null
@@ -64,7 +64,7 @@ async function scheduleOneSignalReminder(p: {
         target_channel: "push",
         send_after: sendAt.toISOString(),
         headings: { en: "⏰ Lembrete de Agendamento" },
-        contents: { en: `Seu ${p.serviceName} é daqui a 30 minutos! (${p.dateLabel} às ${p.time}) — Onetwo Barbershop` },
+        contents: { en: `Seu ${p.serviceName} com ${p.barbeiro || 'Geral'} é daqui a 30 minutos! (${p.dateLabel} às ${p.time}) — Onetwo Barbershop` },
       }),
     })
     const result = await res.json().catch(() => ({}))
@@ -173,6 +173,7 @@ Deno.serve(async (req) => {
           clientName: data.client_name,
           userId: data.user_id,
           serviceName: data.service,
+          barbeiro: data.barbeiro,
           dateLabel: data.date_label,
           time: data.time,
           date: data.date,
@@ -213,6 +214,7 @@ Deno.serve(async (req) => {
             clientName: data.client_name,
             userId: data.user_id,
             serviceName: data.service,
+            barbeiro: data.barbeiro,
             dateLabel: data.date_label,
             time: data.time,
             date: data.date,
