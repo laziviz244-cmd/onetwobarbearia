@@ -14,6 +14,7 @@ import combo4Img from "@/assets/conbo_4.jpg";
 import peImg from "@/assets/pe.jpg";
 import cortePigmentacaoImg from "@/assets/corte-pigmentacao.png";
 import logoOneTwo from "@/assets/logo-onetwo-round.png";
+import logoOriginal from "@/assets/logo-original.png";
 import produtosExclusivosImage from "@/assets/produtos-exclusivos.png";
 
 const services = [
@@ -265,6 +266,13 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
 export default function ClientHomePage() {
   const navigate = useNavigate();
   const [showLoyalty, setShowLoyalty] = useState(false);
+  const [selectedBarber, setSelectedBarber] = useState<string | null>(null);
+  const servicesRef = useRef<HTMLDivElement>(null);
+
+  const handleBarberSelect = (barber: string) => {
+    setSelectedBarber(barber);
+    servicesRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="bg-background">
@@ -499,8 +507,47 @@ export default function ClientHomePage() {
         </div>
       </div>
 
+      {/* Escolha de Profissional */}
+      <div className="px-6 mt-8">
+        <h2 className="font-montserrat font-bold text-lg text-foreground tracking-tighter mb-4">
+          Escolha um de nossos profissionais
+        </h2>
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            { name: "Barbeiro 1", role: "Especialista em Cortes" },
+            { name: "Barbeiro 2", role: "Especialista em Barba" },
+          ].map((barber) => (
+            <motion.button
+              key={barber.name}
+              whileTap={{ scale: 0.96 }}
+              onClick={() => handleBarberSelect(barber.name)}
+              className={`flex flex-col items-center p-4 rounded-2xl transition-all border ${
+                selectedBarber === barber.name
+                  ? "border-[#C5A059] bg-[#111111]"
+                  : "border-foreground/10 surface-card"
+              }`}
+            >
+              <div className="w-20 h-20 rounded-full overflow-hidden mb-3 border-2 border-[#C5A059]/30">
+                <img
+                  src={logoOriginal}
+                  alt={barber.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <h3 className="font-montserrat font-bold text-foreground text-sm text-center">
+                {barber.name}
+              </h3>
+              <p className="text-[10px] text-dimmed font-opensans text-center mt-1">
+                {barber.role}
+              </p>
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
       {/* Nossos Serviços */}
       <motion.div
+        ref={servicesRef}
         variants={staggerContainer}
         initial="hidden"
         animate="show"
@@ -509,14 +556,23 @@ export default function ClientHomePage() {
         <h2 className="font-montserrat font-bold text-lg text-foreground tracking-tighter mb-4">
           Nossos Serviços
         </h2>
-        <div className="grid grid-cols-2 gap-3">
+        {!selectedBarber && (
+          <p className="text-xs text-[#C5A059] font-opensans mb-4 animate-pulse">
+            * Selecione um profissional acima para agendar
+          </p>
+        )}
+        <div className={`grid grid-cols-2 gap-3 transition-opacity ${!selectedBarber ? "opacity-40" : "opacity-100"}`}>
           {services.map((service) => (
             <motion.button
               key={service.id}
               variants={staggerItem}
-              whileTap={{ scale: 0.96 }}
+              whileTap={selectedBarber ? { scale: 0.96 } : undefined}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              onClick={() => navigate(`/agendar?servico=${encodeURIComponent(service.name)}`)}
+              disabled={!selectedBarber}
+              onClick={() => {
+                if (!selectedBarber) return;
+                navigate(`/agendar?servico=${encodeURIComponent(service.name)}&barbeiro=${encodeURIComponent(selectedBarber)}`);
+              }}
               className="flex flex-col rounded-2xl surface-card overflow-hidden text-left"
             >
               <div className="w-full aspect-square bg-muted/30 flex items-center justify-center overflow-hidden">

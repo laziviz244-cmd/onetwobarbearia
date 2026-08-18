@@ -21,12 +21,13 @@ async function call<T = any>(action: string, params: Record<string, any> = {}, u
 }
 
 export const appointmentsApi = {
-  listReservedTimes: (date: string) =>
-    call<never>("list_reserved_times", { date }).then((r) => ({ ...r, times: (r as any)?.times as string[] | undefined })),
+  listReservedTimes: (date: string, barbeiro?: string) =>
+    call<never>("list_reserved_times", { date, barbeiro }).then((r) => ({ ...r, times: (r as any)?.times as string[] | undefined })),
   listMine: () => call("list_mine"),
   create: (payload: {
     client_name: string;
     service: string;
+    barbeiro?: string;
     date: string;
     date_label: string;
     time: string;
