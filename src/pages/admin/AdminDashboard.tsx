@@ -99,7 +99,7 @@ export default function AdminDashboard() {
 
   const openEdit = (apt: Appointment) => {
     setEditingApt(apt);
-    setEditForm({ client_name: apt.client_name, service: apt.service, barbeiro: apt.barbeiro || "Barbeiro 1", time: apt.time, phone: apt.phone || "" });
+    setEditForm({ client_name: apt.client_name, service: apt.service, barbeiro: apt.barbeiro || "OneTwo", time: apt.time, phone: apt.phone || "" });
   };
 
   const handleEditSave = async () => {
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
                       <p className="font-opensans font-semibold text-lg truncate text-foreground">
                         {apt.client_name}
                       </p>
-                      <p className="text-base font-opensans mt-0.5 text-muted-foreground">{apt.service} • {apt.barbeiro || "Barbeiro 1"}</p>
+                      <p className="text-base font-opensans mt-0.5 text-muted-foreground">{apt.service} • {apt.barbeiro || "OneTwo"}</p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
                       {isCurrent && (
@@ -298,8 +298,8 @@ export default function AdminDashboard() {
             <div>
               <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Barbeiro *</label>
               <select value={editForm.barbeiro} onChange={(e) => setEditForm(f => ({ ...f, barbeiro: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
-                <option value="Barbeiro 1">Barbeiro 1</option>
-                <option value="Barbeiro 2">Barbeiro 2</option>
+                <option value="OneTwo">OneTwo</option>
+                <option value="Black">Black</option>
               </select>
             </div>
             <div>
