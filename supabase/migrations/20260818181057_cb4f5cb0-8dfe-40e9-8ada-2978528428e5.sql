@@ -1,0 +1,1 @@
+UPDATE public.appointments SET barbeiro = 'OneTwo' WHERE barbeiro IS NULL OR barbeiro = 'Barbeiro 1' OR barbeiro = 'Geral';

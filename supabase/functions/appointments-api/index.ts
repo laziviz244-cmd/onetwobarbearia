@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
       case 'create': {
         const client_name = sanitizeStr(params?.client_name, 120)
         const service = sanitizeStr(params?.service, 120)
-        const barbeiro = sanitizeStr(params?.barbeiro, 120) || 'Geral'
+        const barbeiro = sanitizeStr(params?.barbeiro, 120) || 'OneTwo'
         const date = sanitizeStr(params?.date, 20)
         const date_label = sanitizeStr(params?.date_label, 20)
         const time = sanitizeStr(params?.time, 10)

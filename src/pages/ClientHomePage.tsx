@@ -16,6 +16,8 @@ import cortePigmentacaoImg from "@/assets/corte-pigmentacao.png";
 import logoOneTwo from "@/assets/logo-onetwo-round.png";
 import logoOriginal from "@/assets/logo-original.png";
 import produtosExclusivosImage from "@/assets/produtos-exclusivos.png";
+import onetwoPhotoAsset from "@/assets/onetwo-photo.png.asset.json";
+import ferreiraPhotoAsset from "@/assets/ferreira-photo.png.asset.json";
 
 const services = [
   { id: "1", name: "Corte", price: "R$ 30,00", image: corte2Img },
@@ -514,8 +516,8 @@ export default function ClientHomePage() {
         </h2>
         <div className="grid grid-cols-2 gap-4">
           {[
-            { name: "Barbeiro 1", role: "Especialista em Cortes" },
-            { name: "Barbeiro 2", role: "Especialista em Barba" },
+            { name: "OneTwo", photo: onetwoPhotoAsset.url },
+            { name: "Ferreira Black", photo: ferreiraPhotoAsset.url },
           ].map((barber) => (
             <motion.button
               key={barber.name}
@@ -527,19 +529,16 @@ export default function ClientHomePage() {
                   : "border-foreground/10 surface-card"
               }`}
             >
-              <div className="w-20 h-20 rounded-full overflow-hidden mb-3 border-2 border-[#C5A059]/30">
+              <div className="w-20 h-20 rounded-full overflow-hidden mb-3 border-2 border-[#C5A059]">
                 <img
-                  src={logoOriginal}
+                  src={barber.photo}
                   alt={barber.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               <h3 className="font-montserrat font-bold text-foreground text-sm text-center">
                 {barber.name}
               </h3>
-              <p className="text-[10px] text-dimmed font-opensans text-center mt-1">
-                {barber.role}
-              </p>
             </motion.button>
           ))}
         </div>
