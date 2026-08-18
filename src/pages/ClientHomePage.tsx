@@ -517,7 +517,7 @@ export default function ClientHomePage() {
         <div className="grid grid-cols-2 gap-4">
           {[
             { name: "OneTwo", photo: onetwoPhotoAsset.url },
-            { name: "Ferreira Black", photo: ferreiraPhotoAsset.url },
+            { name: "Black", photo: ferreiraPhotoAsset.url },
           ].map((barber) => (
             <motion.button
               key={barber.name}
