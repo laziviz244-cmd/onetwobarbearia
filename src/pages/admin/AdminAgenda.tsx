@@ -142,7 +142,7 @@ export default function AdminAgenda() {
       <div className="w-full max-w-full overflow-x-hidden box-border">
         {/* Top bar */}
         <div className="flex items-center justify-between mb-4 mt-3 px-1">
-          <h1 className="font-montserrat font-bold text-2xl tracking-tight text-foreground">Agenda</h1>
+          <h1 className="font-montserrat font-bold text-2xl tracking-tight text-foreground">Agenda do dia</h1>
           <div className="flex items-center gap-3">
             <button
               onClick={() => openNew()}
