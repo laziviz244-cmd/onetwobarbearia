@@ -45,7 +45,7 @@ async function cancelOneSignalNotification(notificationId: string): Promise<void
 }
 
 async function scheduleOneSignalReminder(p: {
-  clientName: string; userId: string; serviceName: string; dateLabel: string; time: string; date: string;
+  clientName: string; userId: string; serviceName: string; barbeiro?: string; dateLabel: string; time: string; date: string;
 }): Promise<string | null> {
   const key = Deno.env.get("ONESIGNAL_REST_API_KEY")
   if (!key) return null
@@ -64,7 +64,7 @@ async function scheduleOneSignalReminder(p: {
         target_channel: "push",
         send_after: sendAt.toISOString(),
         headings: { en: "⏰ Lembrete de Agendamento" },
-        contents: { en: `Seu ${p.serviceName} é daqui a 30 minutos! (${p.dateLabel} às ${p.time}) — Onetwo Barbershop` },
+        contents: { en: `Seu ${p.serviceName} com ${p.barbeiro || 'Geral'} é daqui a 30 minutos! (${p.dateLabel} às ${p.time}) — Onetwo Barbershop` },
       }),
     })
     const result = await res.json().catch(() => ({}))
@@ -160,10 +160,10 @@ Deno.serve(async (req) => {
         return jsonResponse({ data })
       }
       case 'add_appointment': {
-        const { client_name, service, date, date_label, time, status, user_id, phone } = params
+        const { client_name, service, barbeiro, date, date_label, time, status, user_id, phone } = params
         if (!client_name || !date || !time) return jsonResponse({ error: 'Campos obrigatórios faltando' }, 400)
         const { data, error } = await supabase.from('appointments').insert({
-          client_name, service, date, date_label, time, status: status || 'Confirmado',
+          client_name, service, barbeiro: barbeiro || 'Geral', date, date_label, time, status: status || 'Confirmado',
           user_id: user_id || client_name, phone: phone || null
         }).select().single()
         if (error) return jsonResponse({ error: error.message }, 500)
@@ -173,6 +173,7 @@ Deno.serve(async (req) => {
           clientName: data.client_name,
           userId: data.user_id,
           serviceName: data.service,
+          barbeiro: data.barbeiro,
           dateLabel: data.date_label,
           time: data.time,
           date: data.date,
@@ -184,7 +185,7 @@ Deno.serve(async (req) => {
         return jsonResponse({ data })
       }
       case 'update_appointment': {
-        const { id, client_name, service, time, phone } = params
+        const { id, client_name, service, barbeiro, time, phone } = params
         if (!id) return jsonResponse({ error: 'ID obrigatório' }, 400)
 
         // Get existing row to know if time/date changed and to fetch notification_id
@@ -193,6 +194,7 @@ Deno.serve(async (req) => {
         const updates: any = {}
         if (client_name !== undefined) updates.client_name = client_name
         if (service !== undefined) updates.service = service
+        if (barbeiro !== undefined) updates.barbeiro = barbeiro
         if (time !== undefined) updates.time = time
         if (phone !== undefined) updates.phone = phone
 
@@ -212,6 +214,7 @@ Deno.serve(async (req) => {
             clientName: data.client_name,
             userId: data.user_id,
             serviceName: data.service,
+            barbeiro: data.barbeiro,
             dateLabel: data.date_label,
             time: data.time,
             date: data.date,

@@ -26,6 +26,7 @@ interface Appointment {
   id: string;
   client_name: string;
   service: string;
+  barbeiro: string;
   time: string;
   status: string;
   phone?: string;
@@ -57,7 +58,7 @@ export default function AdminDashboard() {
   const queryClient = useQueryClient();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editingApt, setEditingApt] = useState<Appointment | null>(null);
-  const [editForm, setEditForm] = useState({ client_name: "", service: "", time: "", phone: "" });
+  const [editForm, setEditForm] = useState({ client_name: "", service: "", barbeiro: "", time: "", phone: "" });
   const today = getTodayDate();
 
   const { data, isLoading } = useQuery({
@@ -98,7 +99,7 @@ export default function AdminDashboard() {
 
   const openEdit = (apt: Appointment) => {
     setEditingApt(apt);
-    setEditForm({ client_name: apt.client_name, service: apt.service, time: apt.time, phone: apt.phone || "" });
+    setEditForm({ client_name: apt.client_name, service: apt.service, barbeiro: apt.barbeiro || "Barbeiro 1", time: apt.time, phone: apt.phone || "" });
   };
 
   const handleEditSave = async () => {
@@ -122,6 +123,7 @@ export default function AdminDashboard() {
       id: editingApt.id,
       client_name: editForm.client_name.trim(),
       service: editForm.service,
+      barbeiro: editForm.barbeiro,
       time: editForm.time,
       phone: editForm.phone || null,
     });
@@ -217,7 +219,7 @@ export default function AdminDashboard() {
                       <p className="font-opensans font-semibold text-lg truncate text-foreground">
                         {apt.client_name}
                       </p>
-                      <p className="text-base font-opensans mt-0.5 text-muted-foreground">{apt.service}</p>
+                      <p className="text-base font-opensans mt-0.5 text-muted-foreground">{apt.service} • {apt.barbeiro || "Barbeiro 1"}</p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
                       {isCurrent && (
@@ -291,6 +293,13 @@ export default function AdminDashboard() {
               <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Serviço *</label>
               <select value={editForm.service} onChange={(e) => setEditForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
                 {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Barbeiro *</label>
+              <select value={editForm.barbeiro} onChange={(e) => setEditForm(f => ({ ...f, barbeiro: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
+                <option value="Barbeiro 1">Barbeiro 1</option>
+                <option value="Barbeiro 2">Barbeiro 2</option>
               </select>
             </div>
             <div>

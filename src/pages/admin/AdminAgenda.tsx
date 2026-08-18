@@ -1,8 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { format, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Plus, Edit2, Trash2, BellRing } from "lucide-react";
+import { Plus, Edit2, Trash2, BellRing, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -14,6 +14,7 @@ interface Appointment {
   id: string;
   client_name: string;
   service: string;
+  barbeiro: string;
   time: string;
   date: string;
   date_label: string;
@@ -39,16 +40,17 @@ const dates = Array.from({ length: 30 }, (_, i) => {
 
 export default function AdminAgenda() {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [selectedBarber, setSelectedBarber] = useState<string>("Barbeiro 1");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "" });
+  const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "", barbeiro: "Barbeiro 1" });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const dateLabel = format(new Date(selectedDate + "T12:00:00"), "EEE, d MMM", { locale: ptBR });
 
   const { data: appointments = [] } = useQuery({
-    queryKey: ["admin-agenda", selectedDate],
+    queryKey: ["admin-agenda", selectedDate, selectedBarber],
     queryFn: async () => {
       const res = await adminCrud<Appointment[]>("list_appointments", { date: selectedDate });
       return res.data ?? [];
@@ -66,13 +68,13 @@ export default function AdminAgenda() {
 
   const openNew = (time?: string) => {
     setEditingId(null);
-    setForm({ client_name: "", phone: "", service: SERVICES[0], time: time || "" });
+    setForm({ client_name: "", phone: "", service: SERVICES[0], time: time || "", barbeiro: selectedBarber });
     setDialogOpen(true);
   };
 
   const openEdit = (apt: Appointment) => {
     setEditingId(apt.id);
-    setForm({ client_name: apt.client_name, phone: apt.phone || "", service: apt.service, time: apt.time });
+    setForm({ client_name: apt.client_name, phone: apt.phone || "", service: apt.service, time: apt.time, barbeiro: apt.barbeiro || "Barbeiro 1" });
     setDialogOpen(true);
   };
 
@@ -82,30 +84,30 @@ export default function AdminAgenda() {
 
     if (editingId) {
       // Optimistic update
-      queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate], (old) =>
-        (old ?? []).map(a => a.id === editingId ? { ...a, client_name: form.client_name.trim(), service: form.service, time: form.time, phone: form.phone || undefined } : a)
+      queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate, selectedBarber], (old) =>
+        (old ?? []).map(a => a.id === editingId ? { ...a, client_name: form.client_name.trim(), service: form.service, time: form.time, barbeiro: form.barbeiro, phone: form.phone || undefined } : a)
       );
       setDialogOpen(false);
-      const res = await adminCrud("update_appointment", { id: editingId, client_name: form.client_name.trim(), service: form.service, time: form.time, phone: form.phone || null });
-      if (res.error) { toast.error("Erro ao atualizar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] }); return; }
+      const res = await adminCrud("update_appointment", { id: editingId, client_name: form.client_name.trim(), service: form.service, time: form.time, barbeiro: form.barbeiro, phone: form.phone || null });
+      if (res.error) { toast.error("Erro ao atualizar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate, selectedBarber] }); return; }
       toast.success("Agendamento atualizado!");
     } else {
       setDialogOpen(false);
-      const res = await adminCrud("add_appointment", { client_name: form.client_name.trim(), service: form.service, date: selectedDate, date_label: dateLabel, time: form.time, status: "Confirmado", user_id: form.client_name.trim(), phone: form.phone || null });
+      const res = await adminCrud("add_appointment", { client_name: form.client_name.trim(), service: form.service, barbeiro: form.barbeiro, date: selectedDate, date_label: dateLabel, time: form.time, status: "Confirmado", user_id: form.client_name.trim(), phone: form.phone || null });
       if (res.error) { toast.error("Erro ao salvar."); return; }
       toast.success("Agendamento criado!");
-      queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] });
+      queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate, selectedBarber] });
     }
     queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
 
   const handleDelete = async (id: string) => {
     // Optimistic delete
-    queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate], (old) =>
+    queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate, selectedBarber], (old) =>
       (old ?? []).filter(a => a.id !== id)
     );
     const res = await adminCrud("delete_appointment", { id });
-    if (res.error) { toast.error("Erro ao cancelar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] }); return; }
+    if (res.error) { toast.error("Erro ao cancelar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate, selectedBarber] }); return; }
     toast.success("Agendamento cancelado!");
     queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
@@ -157,6 +159,24 @@ export default function AdminAgenda() {
           </div>
         </div>
 
+        {/* Barber Filter */}
+        <div className="flex gap-2 mb-4 px-1">
+          {["Barbeiro 1", "Barbeiro 2"].map((barber) => (
+            <button
+              key={barber}
+              onClick={() => setSelectedBarber(barber)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl font-opensans font-semibold text-sm transition-all flex-1 justify-center"
+              style={selectedBarber === barber
+                ? { background: "rgba(37, 99, 235, 0.15)", border: "1px solid #2563EB", color: "#2563EB" }
+                : { background: "#111111", border: "1px solid #1F2937", color: "#9CA3AF" }
+              }
+            >
+              <Users className="h-4 w-4" />
+              {barber}
+            </button>
+          ))}
+        </div>
+
         {/* Date selector */}
         <div className="flex gap-2 overflow-x-auto pb-3 mb-5 px-1 scrollbar-hide -mx-1">
           <div className="flex gap-2 px-1">
@@ -180,7 +200,7 @@ export default function AdminAgenda() {
         {/* Time slots */}
         <div className="flex flex-col gap-2.5 w-full px-1">
           {TIME_SLOTS.map((time) => {
-            const apt = appointments.find(a => a.time === time);
+            const apt = appointments.find(a => a.time === time && (a.barbeiro === selectedBarber || !a.barbeiro));
             return (
               <div
                 key={time}
@@ -248,6 +268,13 @@ export default function AdminAgenda() {
                 <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Serviço *</label>
                 <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
                   {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Barbeiro *</label>
+                <select value={form.barbeiro} onChange={(e) => setForm(f => ({ ...f, barbeiro: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
+                  <option value="Barbeiro 1">Barbeiro 1</option>
+                  <option value="Barbeiro 2">Barbeiro 2</option>
                 </select>
               </div>
               <div>

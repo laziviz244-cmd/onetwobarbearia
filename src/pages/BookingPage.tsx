@@ -68,6 +68,7 @@ export default function BookingPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const serviceName = searchParams.get("servico") || "Corte";
+  const selectedBarber = searchParams.get("barbeiro") || "Geral";
 
   const weekDays = useMemo(() => generateWeekDays(), []);
   const [selectedDate, setSelectedDate] = useState(() => weekDays[0]?.full ?? "");
@@ -185,7 +186,7 @@ export default function BookingPage() {
     if (!selectedDate) return;
     let cancelled = false;
     const fetchReserved = async () => {
-      const res = await appointmentsApi.listReservedTimes(selectedDate);
+      const res = await appointmentsApi.listReservedTimes(selectedDate, selectedBarber);
       if (cancelled) return;
       setReservedSlots(res.times || []);
     };
@@ -239,6 +240,7 @@ export default function BookingPage() {
     // Atomic reservation via edge function. Unique index blocks duplicates.
     const insRes = await appointmentsApi.create({
       service: serviceName,
+      barbeiro: selectedBarber,
       date: selectedDate,
       date_label: dateLabel,
       time: timeToBook,
@@ -253,7 +255,7 @@ export default function BookingPage() {
 
       if (insRes.code === "23505") {
         setSelectedTime(null);
-        const refreshed = await appointmentsApi.listReservedTimes(selectedDate);
+        const refreshed = await appointmentsApi.listReservedTimes(selectedDate, selectedBarber);
         setReservedSlots(refreshed.times || []);
         toast({
           title: "Horário indisponível",
@@ -275,7 +277,7 @@ export default function BookingPage() {
 
     // Reservation confirmed — only now redirect to WhatsApp.
     const msg = encodeURIComponent(
-      `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${timeToBook}\n\n✅ *Agendamento realizado pelo App!*`
+      `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n💈 *Profissional:* ${selectedBarber}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${timeToBook}\n\n✅ *Agendamento realizado pelo App!*`
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`;
 
@@ -288,7 +290,7 @@ export default function BookingPage() {
       tagOneSignalUser(userId);
       try {
         const { data: notifRes } = await supabase.functions.invoke("schedule-notification", {
-          body: { clientName: userId, serviceName, dateLabel, time: timeToBook, date: selectedDate },
+          body: { clientName: userId, serviceName, barbeiro: selectedBarber, dateLabel, time: timeToBook, date: selectedDate },
         });
         const notifId = (notifRes as any)?.notification_id ?? (notifRes as any)?.id;
         if (notifId && inserted?.id) {
@@ -349,7 +351,7 @@ export default function BookingPage() {
           <h1 className="font-montserrat font-bold text-xl text-foreground tracking-tighter">
             Agendamento
           </h1>
-          <p className="text-sm text-dimmed font-opensans">{serviceName}</p>
+          <p className="text-sm text-dimmed font-opensans">{serviceName} • {selectedBarber}</p>
         </div>
       </div>
 

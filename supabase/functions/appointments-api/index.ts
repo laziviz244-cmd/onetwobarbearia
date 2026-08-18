@@ -43,13 +43,21 @@ Deno.serve(async (req) => {
       // No PII (no names, phones, services) — used only to disable taken slots.
       case 'list_reserved_times': {
         const date = sanitizeStr(params?.date, 20)
+        const barbeiro = sanitizeStr(params?.barbeiro, 120)
         if (!date) return jsonResponse({ error: 'Data obrigatória' }, 400)
-        const { data, error } = await supabase
+        
+        let query = supabase
           .from('appointments')
           .select('time')
           .eq('date', date)
           .eq('status', 'Confirmado')
-          .order('time', { ascending: true })
+        
+        if (barbeiro) {
+          query = query.eq('barbeiro', barbeiro)
+        }
+          
+        const { data, error } = await query.order('time', { ascending: true })
+        
         if (error) return jsonResponse({ error: error.message }, 500)
         return jsonResponse({ times: (data || []).map((r: any) => r.time) })
       }
@@ -72,6 +80,7 @@ Deno.serve(async (req) => {
       case 'create': {
         const client_name = sanitizeStr(params?.client_name, 120)
         const service = sanitizeStr(params?.service, 120)
+        const barbeiro = sanitizeStr(params?.barbeiro, 120) || 'Geral'
         const date = sanitizeStr(params?.date, 20)
         const date_label = sanitizeStr(params?.date_label, 20)
         const time = sanitizeStr(params?.time, 10)
@@ -84,7 +93,7 @@ Deno.serve(async (req) => {
 
         const { data, error } = await supabase
           .from('appointments')
-          .insert({ client_name, service, date, date_label, time, status, phone, user_id: ownerId })
+          .insert({ client_name, service, barbeiro, date, date_label, time, status, phone, user_id: ownerId })
           .select('id, user_id')
           .single()
 

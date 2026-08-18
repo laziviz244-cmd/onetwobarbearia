@@ -38,6 +38,7 @@ export type Database = {
       appointments: {
         Row: {
           amount: number | null
+          barbeiro: string | null
           client_name: string
           created_at: string
           date: string
@@ -53,6 +54,7 @@ export type Database = {
         }
         Insert: {
           amount?: number | null
+          barbeiro?: string | null
           client_name: string
           created_at?: string
           date: string
@@ -68,6 +70,7 @@ export type Database = {
         }
         Update: {
           amount?: number | null
+          barbeiro?: string | null
           client_name?: string
           created_at?: string
           date?: string

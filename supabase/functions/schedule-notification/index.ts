@@ -14,7 +14,7 @@ Deno.serve(async (req) => {
       throw new Error("ONESIGNAL_REST_API_KEY not configured");
     }
 
-    const { clientName, serviceName, dateLabel, time, date } = await req.json();
+    const { clientName, serviceName, barbeiro, dateLabel, time, date } = await req.json();
 
     if (!clientName || !time || !date) {
       return new Response(JSON.stringify({ error: "Missing required fields" }), {
@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
       send_after: sendAt.toISOString(),
       headings: { en: "⏰ Lembrete de Agendamento" },
       contents: {
-        en: `Seu ${serviceName} é daqui a 30 minutos! (${dateLabel} às ${time}) — Onetwo Barbershop`,
+        en: `Seu ${serviceName} com ${barbeiro || 'Geral'} é daqui a 30 minutos! (${dateLabel} às ${time}) — Onetwo Barbershop`,
       },
     };
 
