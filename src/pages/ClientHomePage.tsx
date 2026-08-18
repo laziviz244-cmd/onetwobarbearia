@@ -17,7 +17,7 @@ import logoOneTwo from "@/assets/logo-onetwo-round.png";
 import logoOriginal from "@/assets/logo-original.png";
 import produtosExclusivosImage from "@/assets/produtos-exclusivos.png";
 import onetwoPhotoAsset from "@/assets/onetwo-photo.png.asset.json";
-import ferreiraPhotoAsset from "@/assets/ferreira-photo.png.asset.json";
+import blackPhotoAsset from "@/assets/black-new.png.asset.json";
 
 const services = [
   { id: "1", name: "Corte", price: "R$ 30,00", image: corte2Img },
@@ -517,7 +517,7 @@ export default function ClientHomePage() {
         <div className="grid grid-cols-2 gap-4">
           {[
             { name: "OneTwo", photo: onetwoPhotoAsset.url },
-            { name: "Black", photo: ferreiraPhotoAsset.url },
+            { name: "Black", photo: blackPhotoAsset.url },
           ].map((barber) => (
             <motion.button
               key={barber.name}
@@ -534,6 +534,7 @@ export default function ClientHomePage() {
                   src={barber.photo}
                   alt={barber.name}
                   className="w-full h-full object-cover object-center"
+                  style={{ imageRendering: "-webkit-optimize-contrast", filter: "contrast(1.05) brightness(1.02)" }}
                 />
               </div>
               <h3 className="font-montserrat font-bold text-foreground text-sm text-center">
