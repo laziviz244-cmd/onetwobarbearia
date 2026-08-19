@@ -10,9 +10,6 @@ export function WhatsAppButton() {
 
   return (
     <div className="mt-8 mb-4 px-6">
-      <motion.button
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
         whileTap={{ scale: 0.96 }}
         onClick={handleWhatsApp}
         className="w-full py-4 rounded-2xl flex items-center justify-center gap-3 shadow-lg transition-all border-2 border-white/10"
