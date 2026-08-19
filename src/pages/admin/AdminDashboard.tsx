@@ -58,7 +58,7 @@ export default function AdminDashboard() {
   const queryClient = useQueryClient();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editingApt, setEditingApt] = useState<Appointment | null>(null);
-  const [editForm, setEditForm] = useState({ client_name: "", service: "", barbeiro: "", time: "", phone: "" });
+  const [editForm, setEditForm] = useState({ client_name: "", service: "", barbeiro: "OneTwo", time: "", phone: "" });
   const today = getTodayDate();
 
   const { data, isLoading } = useQuery({
