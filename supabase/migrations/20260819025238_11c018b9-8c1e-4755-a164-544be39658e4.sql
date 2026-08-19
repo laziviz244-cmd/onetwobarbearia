@@ -1,0 +1,1 @@
+DELETE FROM public.appointments WHERE date = '2026-08-20' AND barbeiro = 'Black' AND time = '10:00';
