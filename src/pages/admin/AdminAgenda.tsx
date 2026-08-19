@@ -190,7 +190,10 @@ export default function AdminAgenda() {
             {dates.map((d) => (
               <button
                 key={d.value}
-                onClick={() => setSelectedDate(d.value)}
+                onClick={() => {
+                  setSelectedDate(d.value);
+                  queryClient.invalidateQueries({ queryKey: ["admin-agenda", d.value] });
+                }}
                 className="flex flex-col items-center min-w-[4.2rem] py-2.5 px-3 rounded-xl font-opensans transition-all flex-shrink-0"
                 style={selectedDate === d.value
                   ? { background: primaryBlue, color: "#FFFFFF", fontWeight: 700 }
