@@ -193,7 +193,7 @@ export default function AdminAgenda() {
                 onClick={() => setSelectedDate(d.value)}
                 className="flex flex-col items-center min-w-[4.2rem] py-2.5 px-3 rounded-xl font-opensans transition-all flex-shrink-0"
                 style={selectedDate === d.value
-                  ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
+                  ? { background: primaryBlue, color: "#FFFFFF", fontWeight: 700 }
                   : { background: "#111111", color: "#9CA3AF" }
                 }
               >
