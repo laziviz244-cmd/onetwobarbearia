@@ -296,7 +296,7 @@ export default function AdminAgenda() {
                   ))}
                 </select>
               </div>
-              <button onClick={handleSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-white mt-1 transition-all hover:brightness-110 min-h-[52px]" style={{ background: "#2563EB" }}>
+              <button onClick={handleSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-white mt-1 transition-all hover:brightness-110 min-h-[52px]" style={{ background: primaryBlue }}>
                 {editingId ? "Salvar Alterações" : "Criar Agendamento"}
               </button>
             </div>
