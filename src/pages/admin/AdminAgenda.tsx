@@ -248,7 +248,7 @@ export default function AdminAgenda() {
                     Fechado
                   </div>
                 ) : (
-                  <button onClick={() => openNew(time)} className="flex-1 text-left text-base font-opensans font-medium transition-colors min-h-[44px] flex items-center ml-2 text-[#2563EB]">
+                  <button onClick={() => openNew(time)} className="flex-1 text-left text-base font-opensans font-medium transition-colors min-h-[44px] flex items-center ml-2" style={{ color: primaryBlue }}>
                     Livre — agendar
                   </button>
                 )}
