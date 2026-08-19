@@ -98,7 +98,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const c = themeColors[theme];
 
   return (
-    <div className="min-h-[100dvh] flex overflow-x-hidden max-w-[100vw]" style={{ background: c.bg }}>
+    <div className="min-h-[100dvh] flex overflow-x-hidden max-w-[100vw] isolate" style={{ background: c.bg }}>
       <AdminHeadMeta />
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 z-30" style={{ background: c.bg }}>
