@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { format, addDays } from "date-fns";
+import { format, addDays, getDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Plus, Edit2, Trash2, BellRing, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +33,11 @@ for (let h = 8; h < 20; h++) {
   if (!EXCLUDED_SLOTS.has(half)) TIME_SLOTS.push(half);
 }
 
+const DOW_TO_KEY: Record<number, string> = {
+  0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday",
+  4: "thursday", 5: "friday", 6: "saturday",
+};
+
 const dates = Array.from({ length: 30 }, (_, i) => {
   const d = addDays(new Date(), i);
   return { value: format(d, "yyyy-MM-dd"), label: format(d, "EEE", { locale: ptBR }), day: format(d, "d") };
@@ -40,7 +45,7 @@ const dates = Array.from({ length: 30 }, (_, i) => {
 
 export default function AdminAgenda() {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [selectedBarber, setSelectedBarber] = useState<string>("OneTwo");
+  const [selectedBarber] = useState<string>("OneTwo");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "", barbeiro: "OneTwo" });
@@ -59,10 +64,28 @@ export default function AdminAgenda() {
     gcTime: 5 * 60_000,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
-    // Realtime was removed from the appointments table for security.
-    // Poll every 15s so changes from other devices still show up promptly.
     refetchInterval: 15_000,
   });
+
+  const { data: businessHours } = useQuery({
+    queryKey: ["app-settings", "business_hours"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("app_settings")
+        .select("value")
+        .eq("key", "business_hours")
+        .single();
+      return data?.value as any;
+    },
+  });
+
+  const selectedDaySchedule = useMemo(() => {
+    if (!businessHours || !selectedDate) return null;
+    const d = new Date(selectedDate + "T12:00:00");
+    const dow = getDay(d);
+    const key = DOW_TO_KEY[dow];
+    return businessHours[key] ?? null;
+  }, [businessHours, selectedDate]);
 
   const occupiedTimes = useMemo(() => new Set(appointments.map(a => a.time)), [appointments]);
 
@@ -159,23 +182,6 @@ export default function AdminAgenda() {
           </div>
         </div>
 
-        {/* Barber Filter */}
-        <div className="flex gap-2 mb-4 px-1 w-full box-border">
-          {["OneTwo", "Black"].map((barber) => (
-            <button
-              key={barber}
-              onClick={() => setSelectedBarber(barber)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-opensans font-semibold text-sm transition-all flex-1 justify-center whitespace-nowrap min-w-0"
-              style={selectedBarber === barber
-                ? { background: "rgba(37, 99, 235, 0.15)", border: "1px solid #2563EB", color: "#2563EB" }
-                : { background: "#111111", border: "1px solid #1F2937", color: "#9CA3AF" }
-              }
-            >
-              <Users className="h-4 w-4 shrink-0" />
-              <span className="truncate">{barber}</span>
-            </button>
-          ))}
-        </div>
 
         {/* Date selector */}
         <div className="flex gap-2 overflow-x-auto pb-3 mb-5 px-1 scrollbar-hide -mx-1">
@@ -201,14 +207,13 @@ export default function AdminAgenda() {
         <div className="flex flex-col gap-2.5 w-full px-1">
           {TIME_SLOTS.map((time) => {
             const apt = appointments.find(a => a.time === time);
+            const isClosed = selectedDaySchedule && (time < selectedDaySchedule.open || time >= selectedDaySchedule.close || !selectedDaySchedule.enabled);
+
             return (
               <div
                 key={time}
                 className="flex items-center w-full rounded-2xl px-4 py-4 transition-all min-h-[56px]"
-                style={apt
-                  ? { background: "#111111", borderLeft: selectedBarber === apt.barbeiro ? "4px solid #2563EB" : "4px solid #374151", opacity: selectedBarber === apt.barbeiro ? 1 : 0.5 }
-                  : { background: "#111111", opacity: 1 }
-                }
+                style={{ background: "#111111", opacity: 1 }}
               >
                 <span className="text-base font-opensans font-bold tabular-nums w-14 flex-shrink-0 text-muted-foreground">
                   {time}
@@ -237,6 +242,10 @@ export default function AdminAgenda() {
                       </button>
                     </div>
                   </>
+                ) : isClosed ? (
+                  <div className="flex-1 ml-2 text-base font-opensans font-medium text-muted-foreground/40">
+                    Fechado
+                  </div>
                 ) : (
                   <button onClick={() => openNew(time)} className="flex-1 text-left text-base font-opensans font-medium transition-colors min-h-[44px] flex items-center ml-2 text-primary">
                     Livre — agendar
