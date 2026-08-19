@@ -479,7 +479,7 @@ export default function BookingPage() {
                             : selectedTime === time && selectedBarber
                               ? "btn-primary-glow text-primary-foreground font-semibold"
                               : "surface-card text-foreground font-semibold"
-                        } ${!selectedBarber ? "opacity-50 cursor-not-allowed" : ""}`}
+                        } ${!selectedBarber ? "opacity-30 cursor-not-allowed" : ""}`}
                       >
                         {isReserved ? (
                           <span className="flex flex-col items-center leading-tight text-muted-foreground">
