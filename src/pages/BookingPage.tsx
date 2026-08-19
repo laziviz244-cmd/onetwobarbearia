@@ -554,6 +554,9 @@ export default function BookingPage() {
           </div>
         </DialogContent>
       </Dialog>
+      <div className="mt-4 mb-2">
+        <WhatsAppButton />
+      </div>
     </div>
   );
 }
