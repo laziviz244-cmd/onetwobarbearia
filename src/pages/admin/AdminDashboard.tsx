@@ -58,7 +58,7 @@ export default function AdminDashboard() {
   const queryClient = useQueryClient();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editingApt, setEditingApt] = useState<Appointment | null>(null);
-  const [editForm, setEditForm] = useState({ client_name: "", service: "", barbeiro: "", time: "", phone: "" });
+  const [editForm, setEditForm] = useState({ client_name: "", service: "", barbeiro: "OneTwo", time: "", phone: "" });
   const today = getTodayDate();
 
   const { data, isLoading } = useQuery({
@@ -295,7 +295,28 @@ export default function AdminDashboard() {
             </div>
             <div>
               <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Horário *</label>
-              <input value={editForm.time} onChange={(e) => setEditForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} placeholder="HH:MM" />
+              <select 
+                value={editForm.time} 
+                onChange={(e) => setEditForm(f => ({ ...f, time: e.target.value }))} 
+                className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" 
+                style={inputStyle}
+              >
+                <option value="">Selecione</option>
+                {Array.from({ length: 24 }, (_, h) => {
+                  const hour = String(8 + Math.floor(h / 2)).padStart(2, "0");
+                  const min = h % 2 === 0 ? "00" : "30";
+                  const t = `${hour}:${min}`;
+                  if (hour === "20") return null;
+                  
+                  const isOccupied = appointments.some(a => a.time === t && a.barbeiro === editForm.barbeiro && a.id !== editingApt?.id);
+                  
+                  return (
+                    <option key={t} value={t} disabled={isOccupied}>
+                      {t} {isOccupied ? "(Ocupado)" : ""}
+                    </option>
+                  );
+                }).filter(Boolean)}
+              </select>
             </div>
             <button onClick={handleEditSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-primary-foreground mt-1 transition-all hover:brightness-110 min-h-[52px] bg-primary">
               Salvar Alterações
