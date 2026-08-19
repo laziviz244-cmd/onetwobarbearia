@@ -50,7 +50,7 @@ export default function AdminAgenda() {
   const dateLabel = format(new Date(selectedDate + "T12:00:00"), "EEE, d MMM", { locale: ptBR });
 
   const { data: appointments = [] } = useQuery({
-    queryKey: ["admin-agenda", selectedDate, selectedBarber],
+    queryKey: ["admin-agenda", selectedDate],
     queryFn: async () => {
       const res = await adminCrud<Appointment[]>("list_appointments", { date: selectedDate });
       return res.data ?? [];
@@ -84,30 +84,30 @@ export default function AdminAgenda() {
 
     if (editingId) {
       // Optimistic update
-      queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate, selectedBarber], (old) =>
+      queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate], (old) =>
         (old ?? []).map(a => a.id === editingId ? { ...a, client_name: form.client_name.trim(), service: form.service, time: form.time, barbeiro: form.barbeiro, phone: form.phone || undefined } : a)
       );
       setDialogOpen(false);
       const res = await adminCrud("update_appointment", { id: editingId, client_name: form.client_name.trim(), service: form.service, time: form.time, barbeiro: form.barbeiro, phone: form.phone || null });
-      if (res.error) { toast.error("Erro ao atualizar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate, selectedBarber] }); return; }
+      if (res.error) { toast.error("Erro ao atualizar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] }); return; }
       toast.success("Agendamento atualizado!");
     } else {
       setDialogOpen(false);
       const res = await adminCrud("add_appointment", { client_name: form.client_name.trim(), service: form.service, barbeiro: form.barbeiro, date: selectedDate, date_label: dateLabel, time: form.time, status: "Confirmado", user_id: form.client_name.trim(), phone: form.phone || null });
       if (res.error) { toast.error("Erro ao salvar."); return; }
       toast.success("Agendamento criado!");
-      queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate, selectedBarber] });
+      queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] });
     }
     queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
 
   const handleDelete = async (id: string) => {
     // Optimistic delete
-    queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate, selectedBarber], (old) =>
+    queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate], (old) =>
       (old ?? []).filter(a => a.id !== id)
     );
     const res = await adminCrud("delete_appointment", { id });
-    if (res.error) { toast.error("Erro ao cancelar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate, selectedBarber] }); return; }
+    if (res.error) { toast.error("Erro ao cancelar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] }); return; }
     toast.success("Agendamento cancelado!");
     queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
@@ -160,19 +160,19 @@ export default function AdminAgenda() {
         </div>
 
         {/* Barber Filter */}
-        <div className="flex gap-2 mb-4 px-1">
+        <div className="flex gap-2 mb-4 px-1 w-full box-border">
           {["OneTwo", "Black"].map((barber) => (
             <button
               key={barber}
               onClick={() => setSelectedBarber(barber)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl font-opensans font-semibold text-sm transition-all flex-1 justify-center whitespace-nowrap"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-opensans font-semibold text-sm transition-all flex-1 justify-center whitespace-nowrap min-w-0"
               style={selectedBarber === barber
                 ? { background: "rgba(37, 99, 235, 0.15)", border: "1px solid #2563EB", color: "#2563EB" }
                 : { background: "#111111", border: "1px solid #1F2937", color: "#9CA3AF" }
               }
             >
               <Users className="h-4 w-4 shrink-0" />
-              {barber}
+              <span className="truncate">{barber}</span>
             </button>
           ))}
         </div>
@@ -200,13 +200,13 @@ export default function AdminAgenda() {
         {/* Time slots */}
         <div className="flex flex-col gap-2.5 w-full px-1">
           {TIME_SLOTS.map((time) => {
-            const apt = appointments.find(a => a.time === time && (a.barbeiro === selectedBarber || !a.barbeiro));
+            const apt = appointments.find(a => a.time === time);
             return (
               <div
                 key={time}
                 className="flex items-center w-full rounded-2xl px-4 py-4 transition-all min-h-[56px]"
                 style={apt
-                  ? { background: "#111111", borderLeft: "4px solid #2563EB" }
+                  ? { background: "#111111", borderLeft: selectedBarber === apt.barbeiro ? "4px solid #2563EB" : "4px solid #374151", opacity: selectedBarber === apt.barbeiro ? 1 : 0.5 }
                   : { background: "#111111", opacity: 0.6 }
                 }
                 onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
@@ -219,7 +219,9 @@ export default function AdminAgenda() {
                   <>
                     <div className="flex-1 min-w-0 ml-2">
                       <p className="font-opensans font-semibold text-base truncate text-foreground">{apt.client_name}</p>
-                      <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">{apt.service}</p>
+                      <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">
+                        {apt.service} • <span className="font-bold text-primary">{apt.barbeiro || "OneTwo"}</span>
+                      </p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                       <button onClick={() => openEdit(apt)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
