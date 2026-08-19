@@ -49,8 +49,19 @@ export default function AdminAgenda() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "", barbeiro: "OneTwo" });
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (!window.visualViewport) return;
+    const handleResize = () => {
+      setViewportHeight(window.visualViewport?.height || window.innerHeight);
+    };
+    window.visualViewport.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.visualViewport?.removeEventListener("resize", handleResize);
+  }, []);
 
   const dateLabel = format(new Date(selectedDate + "T12:00:00"), "EEE, d MMM", { locale: ptBR });
 
@@ -269,7 +280,10 @@ export default function AdminAgenda() {
                 {editingId ? "Editar Agendamento" : "Novo Agendamento"}
               </DialogTitle>
             </DialogHeader>
-            <div className="overflow-y-auto max-h-[80svh] overscroll-contain touch-pan-y px-1 pb-6">
+            <div 
+              className="overflow-y-auto overscroll-contain touch-pan-y px-1 pb-6"
+              style={{ maxHeight: viewportHeight ? `${viewportHeight * 0.7}px` : "80svh" }}
+            >
               <div className="flex flex-col gap-4 mt-3">
                 <div>
                   <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Nome do Cliente *</label>
