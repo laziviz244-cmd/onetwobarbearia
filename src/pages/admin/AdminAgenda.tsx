@@ -159,6 +159,7 @@ export default function AdminAgenda() {
   };
 
   const inputStyle = { background: "#111111", border: "1px solid #1F2937", color: "#F9FAFB" };
+  const primaryBlue = "#2563EB";
 
   return (
     <AdminLayout>
@@ -192,7 +193,7 @@ export default function AdminAgenda() {
                 onClick={() => setSelectedDate(d.value)}
                 className="flex flex-col items-center min-w-[4.2rem] py-2.5 px-3 rounded-xl font-opensans transition-all flex-shrink-0"
                 style={selectedDate === d.value
-                  ? { background: "#2563EB", color: "#FFFFFF", fontWeight: 700 }
+                  ? { background: primaryBlue, color: "#FFFFFF", fontWeight: 700 }
                   : { background: "#111111", color: "#9CA3AF" }
                 }
               >
@@ -223,7 +224,7 @@ export default function AdminAgenda() {
                     <div className="flex-1 min-w-0 ml-2">
                       <p className="font-opensans font-semibold text-base truncate text-foreground">{apt.client_name}</p>
                       <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">
-                        {apt.service} • <span className="font-bold text-primary">{apt.barbeiro || "OneTwo"}</span>
+                        {apt.service} • <span className="font-bold" style={{ color: primaryBlue }}>{apt.barbeiro || "OneTwo"}</span>
                       </p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0 ml-2">
@@ -247,7 +248,7 @@ export default function AdminAgenda() {
                     Fechado
                   </div>
                 ) : (
-                  <button onClick={() => openNew(time)} className="flex-1 text-left text-base font-opensans font-medium transition-colors min-h-[44px] flex items-center ml-2 text-primary">
+                  <button onClick={() => openNew(time)} className="flex-1 text-left text-base font-opensans font-medium transition-colors min-h-[44px] flex items-center ml-2" style={{ color: primaryBlue }}>
                     Livre — agendar
                   </button>
                 )}
@@ -295,7 +296,7 @@ export default function AdminAgenda() {
                   ))}
                 </select>
               </div>
-              <button onClick={handleSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-white mt-1 transition-all hover:brightness-110 min-h-[52px]" style={{ background: "#2563EB" }}>
+              <button onClick={handleSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-white mt-1 transition-all hover:brightness-110 min-h-[52px]" style={{ background: primaryBlue }}>
                 {editingId ? "Salvar Alterações" : "Criar Agendamento"}
               </button>
             </div>
