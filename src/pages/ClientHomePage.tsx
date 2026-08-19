@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { staggerContainer, staggerItem } from "@/components/motion";
+import { toast } from "sonner";
 import { useState, memo, useRef, useEffect } from "react";
 import corteImg from "@/assets/corte.jpg";
 import barbaImg from "@/assets/barba.jpg";
@@ -570,7 +571,10 @@ export default function ClientHomePage() {
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               disabled={!selectedBarber}
               onClick={() => {
-                if (!selectedBarber) return;
+                if (!selectedBarber) {
+                  toast.error("Por favor, escolha um profissional acima primeiro.");
+                  return;
+                }
                 navigate(`/agendar?servico=${encodeURIComponent(service.name)}&barbeiro=${encodeURIComponent(selectedBarber)}`);
               }}
               className="flex flex-col rounded-2xl surface-card overflow-hidden text-left"
