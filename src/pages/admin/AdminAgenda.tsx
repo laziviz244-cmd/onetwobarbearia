@@ -84,30 +84,30 @@ export default function AdminAgenda() {
 
     if (editingId) {
       // Optimistic update
-      queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate, selectedBarber], (old) =>
+      queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate], (old) =>
         (old ?? []).map(a => a.id === editingId ? { ...a, client_name: form.client_name.trim(), service: form.service, time: form.time, barbeiro: form.barbeiro, phone: form.phone || undefined } : a)
       );
       setDialogOpen(false);
       const res = await adminCrud("update_appointment", { id: editingId, client_name: form.client_name.trim(), service: form.service, time: form.time, barbeiro: form.barbeiro, phone: form.phone || null });
-      if (res.error) { toast.error("Erro ao atualizar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate, selectedBarber] }); return; }
+      if (res.error) { toast.error("Erro ao atualizar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] }); return; }
       toast.success("Agendamento atualizado!");
     } else {
       setDialogOpen(false);
       const res = await adminCrud("add_appointment", { client_name: form.client_name.trim(), service: form.service, barbeiro: form.barbeiro, date: selectedDate, date_label: dateLabel, time: form.time, status: "Confirmado", user_id: form.client_name.trim(), phone: form.phone || null });
       if (res.error) { toast.error("Erro ao salvar."); return; }
       toast.success("Agendamento criado!");
-      queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate, selectedBarber] });
+      queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] });
     }
     queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
 
   const handleDelete = async (id: string) => {
     // Optimistic delete
-    queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate, selectedBarber], (old) =>
+    queryClient.setQueryData<Appointment[]>(["admin-agenda", selectedDate], (old) =>
       (old ?? []).filter(a => a.id !== id)
     );
     const res = await adminCrud("delete_appointment", { id });
-    if (res.error) { toast.error("Erro ao cancelar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate, selectedBarber] }); return; }
+    if (res.error) { toast.error("Erro ao cancelar."); queryClient.invalidateQueries({ queryKey: ["admin-agenda", selectedDate] }); return; }
     toast.success("Agendamento cancelado!");
     queryClient.invalidateQueries({ queryKey: ["admin-dashboard"] });
   };
@@ -206,7 +206,7 @@ export default function AdminAgenda() {
                 key={time}
                 className="flex items-center w-full rounded-2xl px-4 py-4 transition-all min-h-[56px]"
                 style={apt
-                  ? { background: "#111111", borderLeft: "4px solid #2563EB" }
+                  ? { background: "#111111", borderLeft: selectedBarber === apt.barbeiro ? "4px solid #2563EB" : "4px solid #374151", opacity: selectedBarber === apt.barbeiro ? 1 : 0.5 }
                   : { background: "#111111", opacity: 0.6 }
                 }
                 onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
