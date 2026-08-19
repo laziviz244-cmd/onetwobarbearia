@@ -14,7 +14,7 @@ export function WhatsAppButton() {
       animate={{ scale: 1, opacity: 1 }}
       whileTap={{ scale: 0.9 }}
       onClick={handleWhatsApp}
-      className="fixed right-6 bottom-28 z-[60] w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 border-2 border-white/20"
+      className="fixed right-6 bottom-32 z-[60] w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110 active:scale-95 border-2 border-white/20"
       style={{
         boxShadow: "0 4px 15px rgba(37, 211, 102, 0.4)",
       }}
