@@ -479,20 +479,22 @@ export default function BookingPage() {
         </AnimatePresence>
       </div>
 
-      {/* Confirm */}
+      {/* Confirm Button - Appears only when time is selected */}
       {selectedTime && !shouldBlockBooking && !reservedSlots.includes(selectedTime) && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-background via-background to-transparent"
-        >
+        <div className="px-6 mt-6">
           <motion.button
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
             onClick={() => handleConfirm()}
             disabled={isBooking}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-montserrat font-bold text-sm tracking-tight disabled:opacity-80"
-            style={{ background: "#25D366", color: "#FFFFFF" }}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-montserrat font-bold text-base tracking-tight shadow-lg transition-all border-2 border-white/10 disabled:opacity-80"
+            style={{ 
+              background: "#25D366", 
+              color: "#FFFFFF",
+              boxShadow: "0 4px 15px rgba(37, 211, 102, 0.2)"
+            }}
           >
             {isBooking ? (
               <>
@@ -500,10 +502,10 @@ export default function BookingPage() {
                 Validando horário...
               </>
             ) : (
-              <>Confirmar via WhatsApp · {selectedTime}</>
+              <>Agendar via WhatsApp · {selectedTime}</>
             )}
           </motion.button>
-        </motion.div>
+        </div>
       )}
 
       {/* Guest Name Modal */}
@@ -555,9 +557,12 @@ export default function BookingPage() {
           </div>
         </DialogContent>
       </Dialog>
-      <div className="mt-4 mb-2">
-        <WhatsAppButton isScheduleFull={isScheduleFull} />
-      </div>
+      {/* WhatsApp Button for queries - Appears only when schedule is full */}
+      {isScheduleFull && (
+        <div className="mt-4 mb-2">
+          <WhatsAppButton isScheduleFull={isScheduleFull} />
+        </div>
+      )}
     </div>
   );
 }
