@@ -220,7 +220,7 @@ export default function MeusAgendamentos() {
                       {apt.service}
                     </span>
                     <span className="text-xs text-dimmed font-opensans tabular-nums">
-                      - {apt.time}hrs • {apt.barbeiro || "Geral"}
+                      - {apt.time}hrs • <span className="font-bold text-primary">{apt.barbeiro}</span>
                     </span>
                     <span className="text-xs text-muted-foreground">|</span>
                     <button

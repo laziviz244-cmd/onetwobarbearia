@@ -68,8 +68,8 @@ const SCHEDULE_FULL_MESSAGE =
 export default function BookingPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const serviceName = searchParams.get("servico") || "Corte";
-  const selectedBarber = searchParams.get("barbeiro") || "Geral";
+  const serviceName = searchParams.get("servico");
+  const selectedBarber = searchParams.get("barbeiro");
 
   const weekDays = useMemo(() => generateWeekDays(), []);
   const [selectedDate, setSelectedDate] = useState(() => weekDays[0]?.full ?? "");
@@ -187,6 +187,7 @@ export default function BookingPage() {
     if (!selectedDate) return;
     let cancelled = false;
     const fetchReserved = async () => {
+      if (!selectedBarber) return;
       const res = await appointmentsApi.listReservedTimes(selectedDate, selectedBarber);
       if (cancelled) return;
       setReservedSlots(res.times || []);
@@ -208,7 +209,7 @@ export default function BookingPage() {
   }, [selectedDate]);
 
   const handleConfirm = () => {
-    if (!selectedTime || isBooking || isWalkInWeekday || shouldBlockBooking || reservedSlots.includes(selectedTime)) return;
+    if (!selectedTime || !selectedBarber || isBooking || isWalkInWeekday || shouldBlockBooking || reservedSlots.includes(selectedTime)) return;
 
     const clientName = getCurrentAppointmentUserId();
     if (!clientName) {
@@ -230,7 +231,7 @@ export default function BookingPage() {
   };
 
   const finalizeBooking = async (clientName: string) => {
-    if (!selectedTime || isBooking) return;
+    if (!selectedTime || !selectedBarber || isBooking) return;
     setIsBooking(true);
 
     const d = new Date(selectedDate + "T00:00:00");
@@ -276,9 +277,21 @@ export default function BookingPage() {
 
     const inserted = insRes.data;
 
+    // Safety check: Block if professional name is missing
+    if (!selectedBarber || selectedBarber === "Geral") {
+      console.error("Attempted to send message without professional name", { userId, time: timeToBook });
+      setIsBooking(false);
+      toast({
+        title: "Erro no agendamento",
+        description: "Profissional não selecionado corretamente. Por favor, reinicie o processo.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Reservation confirmed — only now redirect to WhatsApp.
     const msg = encodeURIComponent(
-      `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName}\n💈 *Profissional:* ${selectedBarber}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${timeToBook}\n\n✅ *Agendamento realizado pelo App!*`
+      `📌 *NOVO AGENDAMENTO*\n\n👤 *Cliente:* ${clientName}\n✂️ *Serviço:* ${serviceName || "Serviço"}\n💈 *Profissional:* ${selectedBarber}\n📅 *Data:* ${dateLabel}\n⏰ *Horário:* ${timeToBook}\n\n✅ *Agendamento realizado pelo App!*`
     );
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${msg}`;
 
@@ -352,7 +365,7 @@ export default function BookingPage() {
           <h1 className="font-montserrat font-bold text-xl text-foreground tracking-tighter">
             Agendamento
           </h1>
-          <p className="text-sm text-dimmed font-opensans">{serviceName} • {selectedBarber}</p>
+          <p className="text-sm text-dimmed font-opensans">{serviceName || "Serviço"} • {selectedBarber || "Selecione o profissional"}</p>
         </div>
       </div>
 
