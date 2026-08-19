@@ -558,7 +558,7 @@ export default function BookingPage() {
       </Dialog>
       {/* WhatsApp Button for queries - Appears only when schedule is full */}
       {isScheduleFull && (
-        <div className="mt-4 mb-2">
+        <div className="mt-8 mb-4 px-6">
           <WhatsAppButton isScheduleFull={isScheduleFull} />
         </div>
       )}

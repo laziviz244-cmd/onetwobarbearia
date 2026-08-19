@@ -9,7 +9,7 @@ export function WhatsAppButton({ isScheduleFull }: { isScheduleFull?: boolean })
   };
 
   return (
-    <div className="mt-8 mb-4 px-6">
+    <div className="w-full">
       <motion.button
         whileTap={{ scale: 0.96 }}
         onClick={handleWhatsApp}
