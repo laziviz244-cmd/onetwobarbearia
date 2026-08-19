@@ -223,7 +223,7 @@ export default function AdminAgenda() {
                     <div className="flex-1 min-w-0 ml-2">
                       <p className="font-opensans font-semibold text-base truncate text-foreground">{apt.client_name}</p>
                       <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">
-                        {apt.service} • <span className="font-bold text-primary">{apt.barbeiro || "OneTwo"}</span>
+                        {apt.service} • <span className="font-bold text-[#2563EB]">{apt.barbeiro || "OneTwo"}</span>
                       </p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0 ml-2">
