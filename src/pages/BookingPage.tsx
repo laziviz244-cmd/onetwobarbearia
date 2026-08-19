@@ -481,7 +481,7 @@ export default function BookingPage() {
 
       {/* Confirm Button - Appears only when time is selected */}
       {selectedTime && !shouldBlockBooking && !reservedSlots.includes(selectedTime) && (
-        <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent z-50">
+        <div className="fixed bottom-20 left-0 right-0 p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent z-50">
           <motion.button
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
