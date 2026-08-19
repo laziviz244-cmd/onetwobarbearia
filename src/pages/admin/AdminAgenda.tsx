@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { format, addDays } from "date-fns";
+import { format, addDays, getDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Plus, Edit2, Trash2, BellRing, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +33,11 @@ for (let h = 8; h < 20; h++) {
   if (!EXCLUDED_SLOTS.has(half)) TIME_SLOTS.push(half);
 }
 
+const DOW_TO_KEY: Record<number, string> = {
+  0: "sunday", 1: "monday", 2: "tuesday", 3: "wednesday",
+  4: "thursday", 5: "friday", 6: "saturday",
+};
+
 const dates = Array.from({ length: 30 }, (_, i) => {
   const d = addDays(new Date(), i);
   return { value: format(d, "yyyy-MM-dd"), label: format(d, "EEE", { locale: ptBR }), day: format(d, "d") };
@@ -59,10 +64,28 @@ export default function AdminAgenda() {
     gcTime: 5 * 60_000,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
-    // Realtime was removed from the appointments table for security.
-    // Poll every 15s so changes from other devices still show up promptly.
     refetchInterval: 15_000,
   });
+
+  const { data: businessHours } = useQuery({
+    queryKey: ["app-settings", "business_hours"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("app_settings")
+        .select("value")
+        .eq("key", "business_hours")
+        .single();
+      return data?.value as any;
+    },
+  });
+
+  const selectedDaySchedule = useMemo(() => {
+    if (!businessHours || !selectedDate) return null;
+    const d = new Date(selectedDate + "T12:00:00");
+    const dow = getDay(d);
+    const key = DOW_TO_KEY[dow];
+    return businessHours[key] ?? null;
+  }, [businessHours, selectedDate]);
 
   const occupiedTimes = useMemo(() => new Set(appointments.map(a => a.time)), [appointments]);
 
@@ -184,6 +207,8 @@ export default function AdminAgenda() {
         <div className="flex flex-col gap-2.5 w-full px-1">
           {TIME_SLOTS.map((time) => {
             const apt = appointments.find(a => a.time === time);
+            const isClosed = selectedDaySchedule && (time < selectedDaySchedule.open || time >= selectedDaySchedule.close || !selectedDaySchedule.enabled);
+
             return (
               <div
                 key={time}
@@ -217,6 +242,10 @@ export default function AdminAgenda() {
                       </button>
                     </div>
                   </>
+                ) : isClosed ? (
+                  <div className="flex-1 ml-2 text-base font-opensans font-medium text-muted-foreground/40">
+                    Fechado
+                  </div>
                 ) : (
                   <button onClick={() => openNew(time)} className="flex-1 text-left text-base font-opensans font-medium transition-colors min-h-[44px] flex items-center ml-2 text-primary">
                     Livre — agendar
