@@ -209,6 +209,7 @@ export default function AdminAgenda() {
           {TIME_SLOTS.map((time) => {
             const apt = appointments.find(a => a.time === time);
             const isClosed = selectedDaySchedule && (time < selectedDaySchedule.open || time >= selectedDaySchedule.close || !selectedDaySchedule.enabled);
+            const isActuallyClosed = isClosed && !apt;
 
             return (
               <div
@@ -243,7 +244,7 @@ export default function AdminAgenda() {
                       </button>
                     </div>
                   </>
-                ) : isClosed ? (
+                ) : isActuallyClosed ? (
                   <div className="flex-1 ml-2 text-base font-opensans font-medium text-muted-foreground/40">
                     Fechado
                   </div>
