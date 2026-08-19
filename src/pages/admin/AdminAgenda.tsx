@@ -40,7 +40,7 @@ const dates = Array.from({ length: 30 }, (_, i) => {
 
 export default function AdminAgenda() {
   const [selectedDate, setSelectedDate] = useState(format(new Date(), "yyyy-MM-dd"));
-  const [selectedBarber, setSelectedBarber] = useState<string>("OneTwo");
+  const [selectedBarber] = useState<string>("OneTwo");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ client_name: "", phone: "", service: SERVICES[0], time: "", barbeiro: "OneTwo" });
@@ -159,23 +159,6 @@ export default function AdminAgenda() {
           </div>
         </div>
 
-        {/* Barber Filter */}
-        <div className="flex gap-2 mb-4 px-1 w-full box-border">
-          {["OneTwo", "Black"].map((barber) => (
-            <button
-              key={barber}
-              onClick={() => setSelectedBarber(barber)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl font-opensans font-semibold text-sm transition-all flex-1 justify-center whitespace-nowrap min-w-0"
-              style={selectedBarber === barber
-                ? { background: "rgba(37, 99, 235, 0.15)", border: "1px solid #2563EB", color: "#2563EB" }
-                : { background: "#111111", border: "1px solid #1F2937", color: "#9CA3AF" }
-              }
-            >
-              <Users className="h-4 w-4 shrink-0" />
-              <span className="truncate">{barber}</span>
-            </button>
-          ))}
-        </div>
 
         {/* Date selector */}
         <div className="flex gap-2 overflow-x-auto pb-3 mb-5 px-1 scrollbar-hide -mx-1">
@@ -205,10 +188,7 @@ export default function AdminAgenda() {
               <div
                 key={time}
                 className="flex items-center w-full rounded-2xl px-4 py-4 transition-all min-h-[56px]"
-                style={apt
-                  ? { background: "#111111", borderLeft: selectedBarber === apt.barbeiro ? "4px solid #2563EB" : "4px solid #374151", opacity: selectedBarber === apt.barbeiro ? 1 : 0.5 }
-                  : { background: "#111111", opacity: 1 }
-                }
+                style={{ background: "#111111", opacity: 1 }}
               >
                 <span className="text-base font-opensans font-bold tabular-nums w-14 flex-shrink-0 text-muted-foreground">
                   {time}
