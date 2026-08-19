@@ -207,7 +207,7 @@ export default function AdminAgenda() {
                 className="flex items-center w-full rounded-2xl px-4 py-4 transition-all min-h-[56px]"
                 style={apt
                   ? { background: "#111111", borderLeft: selectedBarber === apt.barbeiro ? "4px solid #2563EB" : "4px solid #374151", opacity: selectedBarber === apt.barbeiro ? 1 : 0.5 }
-                  : { background: "#111111", opacity: 0.6 }
+                  : { background: "#111111", opacity: 1 }
                 }
                 onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
                 onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
