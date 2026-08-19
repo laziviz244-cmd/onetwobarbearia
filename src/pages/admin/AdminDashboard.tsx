@@ -271,56 +271,58 @@ export default function AdminDashboard() {
           <DialogHeader>
             <DialogTitle className="font-montserrat text-xl text-foreground">Editar Agendamento</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-4 mt-3">
-            <div>
-              <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Nome do Cliente *</label>
-              <input value={editForm.client_name} onChange={(e) => setEditForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} />
+          <div className="overflow-y-auto max-h-[80svh] overscroll-contain touch-pan-y px-1 pb-6">
+            <div className="flex flex-col gap-4 mt-3">
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Nome do Cliente *</label>
+                <input value={editForm.client_name} onChange={(e) => setEditForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} />
+              </div>
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Telefone</label>
+                <input value={editForm.phone} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} />
+              </div>
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Serviço *</label>
+                <select value={editForm.service} onChange={(e) => setEditForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
+                  {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Barbeiro *</label>
+                <select value={editForm.barbeiro} onChange={(e) => setEditForm(f => ({ ...f, barbeiro: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
+                  <option value="OneTwo">OneTwo</option>
+                  <option value="Black">Black</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Horário *</label>
+                <select 
+                  value={editForm.time} 
+                  onChange={(e) => setEditForm(f => ({ ...f, time: e.target.value }))} 
+                  className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" 
+                  style={inputStyle}
+                >
+                  <option value="">Selecione</option>
+                  {Array.from({ length: 24 }, (_, h) => {
+                    const hour = String(8 + Math.floor(h / 2)).padStart(2, "0");
+                    const min = h % 2 === 0 ? "00" : "30";
+                    const t = `${hour}:${min}`;
+                    if (hour === "20") return null;
+                    
+                    const isOccupied = appointments.some(a => a.time === t && a.barbeiro === editForm.barbeiro && a.id !== editingApt?.id);
+                    
+                    return (
+                      <option key={t} value={t} disabled={isOccupied}>
+                        {t} {isOccupied ? "(Ocupado)" : ""}
+                      </option>
+                    );
+                  }).filter(Boolean)}
+                </select>
+              </div>
+              <button onClick={handleEditSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-primary-foreground mt-1 transition-all hover:brightness-110 min-h-[52px] bg-primary">
+                Salvar Alterações
+              </button>
             </div>
-            <div>
-              <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Telefone</label>
-              <input value={editForm.phone} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} />
-            </div>
-            <div>
-              <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Serviço *</label>
-              <select value={editForm.service} onChange={(e) => setEditForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
-                {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Barbeiro *</label>
-              <select value={editForm.barbeiro} onChange={(e) => setEditForm(f => ({ ...f, barbeiro: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
-                <option value="OneTwo">OneTwo</option>
-                <option value="Black">Black</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Horário *</label>
-              <select 
-                value={editForm.time} 
-                onChange={(e) => setEditForm(f => ({ ...f, time: e.target.value }))} 
-                className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" 
-                style={inputStyle}
-              >
-                <option value="">Selecione</option>
-                {Array.from({ length: 24 }, (_, h) => {
-                  const hour = String(8 + Math.floor(h / 2)).padStart(2, "0");
-                  const min = h % 2 === 0 ? "00" : "30";
-                  const t = `${hour}:${min}`;
-                  if (hour === "20") return null;
-                  
-                  const isOccupied = appointments.some(a => a.time === t && a.barbeiro === editForm.barbeiro && a.id !== editingApt?.id);
-                  
-                  return (
-                    <option key={t} value={t} disabled={isOccupied}>
-                      {t} {isOccupied ? "(Ocupado)" : ""}
-                    </option>
-                  );
-                }).filter(Boolean)}
-              </select>
-            </div>
-            <button onClick={handleEditSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-primary-foreground mt-1 transition-all hover:brightness-110 min-h-[52px] bg-primary">
-              Salvar Alterações
-            </button>
           </div>
         </DialogContent>
       </Dialog>
