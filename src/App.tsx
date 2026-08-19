@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminAuthProvider, useAdminAuth } from "@/contexts/AdminAuthContext";
 import { BottomNav } from "@/components/BottomNav";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { isAdminLikePath, resolveAdminPath } from "@/lib/emergency-route-recovery";
 import { applyRoutePwaIdentity } from "@/lib/pwa-route-identity";
 import WelcomePage from "./pages/WelcomePage";
@@ -94,6 +95,7 @@ function ClientLayout() {
     <div className="min-h-screen bg-background text-foreground pb-24">
       <Outlet />
       <BottomNav />
+      <WhatsAppButton />
     </div>
   );
 }

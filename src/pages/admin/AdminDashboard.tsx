@@ -173,13 +173,13 @@ export default function AdminDashboard() {
       </div>
 
       {/* Today's appointments */}
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="font-montserrat font-bold text-2xl tracking-tight text-foreground">
+      <div className="flex items-center justify-between mb-5 pr-4">
+        <h2 className="font-montserrat font-bold text-2xl tracking-tight text-foreground shrink-0">
           Agenda do dia
         </h2>
         <button
           onClick={() => navigate("/admin/agenda")}
-          className="text-base font-opensans font-semibold flex items-center gap-1 min-h-[48px] text-primary"
+          className="text-base font-opensans font-semibold flex items-center gap-1 min-h-[48px] text-primary whitespace-nowrap"
         >
           Ver tudo <ChevronRight className="h-5 w-5" />
         </button>
