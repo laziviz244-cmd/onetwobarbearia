@@ -212,6 +212,7 @@ export default function AdminAgenda() {
           {TIME_SLOTS.map((time) => {
             const apt = appointments.find(a => a.time === time);
             const isClosed = selectedDaySchedule && (time < selectedDaySchedule.open || time >= selectedDaySchedule.close || !selectedDaySchedule.enabled);
+            const isActuallyClosed = isClosed && !apt && !(selectedDate === '2026-08-19' && (time === '19:00' || time === '19:30')) && !(selectedDate === '2026-08-20' && barbeiro === 'Black');
             const isManuallyExcluded = EXCLUDED_SLOTS.has(time);
             const isActuallyClosed = (isClosed || isManuallyExcluded) && !apt;
 
