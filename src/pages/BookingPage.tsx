@@ -469,10 +469,10 @@ export default function BookingPage() {
                         className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
                           isReserved
                             ? "surface-card opacity-40 cursor-not-allowed"
-                            : selectedTime === time
+                            : selectedTime === time && selectedBarber
                               ? "btn-primary-glow text-primary-foreground font-semibold"
                               : "surface-card text-foreground font-semibold"
-                        }`}
+                        } ${!selectedBarber ? "opacity-50 cursor-not-allowed" : ""}`}
                       >
                         {isReserved ? (
                           <span className="flex flex-col items-center leading-tight text-muted-foreground">
@@ -493,7 +493,7 @@ export default function BookingPage() {
       </div>
 
       {/* Confirm Button - Appears only when time is selected */}
-      {selectedTime && !shouldBlockBooking && !reservedSlots.includes(selectedTime) && (
+      {selectedTime && selectedBarber && !shouldBlockBooking && !reservedSlots.includes(selectedTime) && (
         <div className="fixed bottom-20 left-0 right-0 p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent z-50">
           <motion.button
             initial={{ opacity: 0, y: 20 }}
