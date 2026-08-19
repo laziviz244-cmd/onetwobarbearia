@@ -98,7 +98,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   const c = themeColors[theme];
 
   return (
-    <div className="min-h-[100dvh] flex overflow-x-hidden max-w-[100vw] isolate" style={{ background: c.bg }}>
+    <div className="h-[100dvh] flex overflow-hidden max-w-[100vw] isolate" style={{ background: c.bg }}>
       <AdminHeadMeta />
       {/* Desktop sidebar */}
       <aside className="hidden md:flex w-64 flex-col fixed inset-y-0 left-0 z-30" style={{ background: c.bg }}>
@@ -106,7 +106,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 md:ml-64 flex flex-col min-h-[100dvh]">
+      <div className="flex-1 md:ml-64 flex flex-col h-full overflow-y-auto">
         {/* Mobile header */}
         <header
           className="md:hidden flex items-center justify-between px-4 py-3 sticky top-0 z-20"
