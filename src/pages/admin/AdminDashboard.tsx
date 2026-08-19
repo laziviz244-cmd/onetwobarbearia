@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { format } from "date-fns";
