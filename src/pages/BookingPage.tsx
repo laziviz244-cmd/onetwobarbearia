@@ -472,7 +472,7 @@ export default function BookingPage() {
                           }
                           setSelectedTime(time);
                         }}
-                        disabled={isReserved || isBooking}
+                        disabled={isReserved || isBooking || !selectedBarber}
                         className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
                           isReserved
                             ? "surface-card opacity-40 cursor-not-allowed"
