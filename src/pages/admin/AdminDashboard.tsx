@@ -160,14 +160,14 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-10">
+      <div className="grid grid-cols-3 gap-3 mb-10 w-full box-border">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-2xl p-5 flex flex-col items-start gap-2 bg-card">
-            <stat.icon className="h-8 w-8 mb-1 text-primary" />
-            <span className="font-montserrat font-bold text-[1.75rem] tabular-nums leading-tight text-foreground">
+          <div key={stat.label} className="rounded-2xl p-4 sm:p-5 flex flex-col items-start gap-1.5 bg-card overflow-hidden">
+            <stat.icon className="h-7 w-7 sm:h-8 sm:w-8 mb-0.5 text-primary shrink-0" />
+            <span className="font-montserrat font-bold text-lg sm:text-[1.75rem] tabular-nums leading-tight text-foreground truncate w-full">
               {stat.value}
             </span>
-            <span className="text-base font-opensans text-muted-foreground">{stat.sub}</span>
+            <span className="text-xs sm:text-base font-opensans text-muted-foreground truncate w-full">{stat.sub}</span>
           </div>
         ))}
       </div>
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
                       <p className="font-opensans font-semibold text-lg truncate text-foreground">
                         {apt.client_name}
                       </p>
-                      <p className="text-base font-opensans mt-0.5 text-muted-foreground">{apt.service} • {apt.barbeiro || "OneTwo"}</p>
+                      <p className="text-base font-opensans mt-0.5 text-muted-foreground">{apt.service} • <span className="font-bold text-primary">{apt.barbeiro || "OneTwo"}</span></p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0">
                       {isCurrent && (
