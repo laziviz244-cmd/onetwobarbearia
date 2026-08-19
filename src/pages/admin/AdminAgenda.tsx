@@ -24,7 +24,7 @@ interface Appointment {
 }
 
 const SERVICES = ["Corte Masculino", "Barba", "Corte + Barba", "Degradê", "Pigmentação", "Sobrancelha"];
-const EXCLUDED_SLOTS = new Set(["12:30", "13:00", "13:30"]);
+const EXCLUDED_SLOTS = new Set([]);
 const TIME_SLOTS: string[] = [];
 for (let h = 8; h < 20; h++) {
   const full = `${String(h).padStart(2, "0")}:00`;
@@ -289,7 +289,7 @@ export default function AdminAgenda() {
                 <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Horário *</label>
                 <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
                   <option value="">Selecione</option>
-                  {TIME_SLOTS.filter(t => !EXCLUDED_SLOTS.has(t)).map(t => (
+                  {TIME_SLOTS.map(t => (
                     <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>{t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}</option>
                   ))}
                 </select>
