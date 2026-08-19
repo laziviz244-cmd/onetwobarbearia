@@ -145,7 +145,7 @@ export default function AdminDashboard() {
   const inputStyle = { background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", color: "hsl(var(--foreground))" };
 
   return (
-    <AdminLayout>
+    <AdminLayout key={`admin-dashboard-${appointments.length}`}>
       {/* Hero title */}
       <div className="mb-10">
         <p className="text-xl font-opensans text-muted-foreground">
