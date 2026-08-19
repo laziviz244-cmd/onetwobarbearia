@@ -453,8 +453,15 @@ export default function BookingPage() {
                     return (
                       <motion.button
                         key={time}
-                        whileTap={isReserved ? undefined : { scale: 0.95 }}
+                        whileTap={isReserved || !selectedBarber ? undefined : { scale: 0.95 }}
                         onClick={() => {
+                          if (!selectedBarber) {
+                            toast({
+                              title: "Escolha um profissional",
+                              description: "Selecione o profissional no topo da tela antes de escolher um horário.",
+                            });
+                            return;
+                          }
                           if (isReserved) {
                             toast({
                               title: "Putz! Horário indisponível",
@@ -465,14 +472,14 @@ export default function BookingPage() {
                           }
                           setSelectedTime(time);
                         }}
-                        disabled={isReserved || isBooking}
+                        disabled={isReserved || isBooking || !selectedBarber}
                         className={`rounded-xl px-2 py-3 font-opensans text-sm tabular-nums transition-colors ${
                           isReserved
                             ? "surface-card opacity-40 cursor-not-allowed"
                             : selectedTime === time && selectedBarber
                               ? "btn-primary-glow text-primary-foreground font-semibold"
                               : "surface-card text-foreground font-semibold"
-                        } ${!selectedBarber ? "opacity-50 cursor-not-allowed" : ""}`}
+                        } ${!selectedBarber ? "opacity-30 cursor-not-allowed" : ""}`}
                       >
                         {isReserved ? (
                           <span className="flex flex-col items-center leading-tight text-muted-foreground">
