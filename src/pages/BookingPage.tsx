@@ -481,19 +481,18 @@ export default function BookingPage() {
 
       {/* Confirm Button - Appears only when time is selected */}
       {selectedTime && !shouldBlockBooking && !reservedSlots.includes(selectedTime) && (
-        <div className="px-6 mt-6">
+        <div className="fixed bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/95 via-black/80 to-transparent z-50">
           <motion.button
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             whileTap={{ scale: 0.96 }}
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
             onClick={() => handleConfirm()}
             disabled={isBooking}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-montserrat font-bold text-base tracking-tight shadow-lg transition-all border-2 border-white/10 disabled:opacity-80"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl py-4 font-montserrat font-bold text-base tracking-tight shadow-[0_8px_30px_rgb(37,211,102,0.4)] transition-all border-2 border-white/10 disabled:opacity-80"
             style={{ 
               background: "#25D366", 
-              color: "#FFFFFF",
-              boxShadow: "0 4px 15px rgba(37, 211, 102, 0.2)"
+              color: "#FFFFFF"
             }}
           >
             {isBooking ? (
@@ -559,7 +558,7 @@ export default function BookingPage() {
       </Dialog>
       {/* WhatsApp Button for queries - Appears only when schedule is full */}
       {isScheduleFull && (
-        <div className="mt-4 mb-2">
+        <div className="mt-8 mb-24 px-6">
           <WhatsAppButton isScheduleFull={isScheduleFull} />
         </div>
       )}

@@ -157,7 +157,7 @@ function HomeBannerCarousel({ navigate }: { navigate: (path: string) => void }) 
                     style={{
                       width: "100%",
                       height: "100%",
-                      objectFit: "cover",
+                      objectFit: "contain",
                       objectPosition: "center",
                       imageRendering: "-webkit-optimize-contrast",
                       filter: "contrast(1.08) brightness(1.03)",

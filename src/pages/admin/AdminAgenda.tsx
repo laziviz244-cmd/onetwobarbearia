@@ -29,8 +29,8 @@ const TIME_SLOTS: string[] = [];
 for (let h = 8; h < 20; h++) {
   const full = `${String(h).padStart(2, "0")}:00`;
   const half = `${String(h).padStart(2, "0")}:30`;
-  if (!EXCLUDED_SLOTS.has(full)) TIME_SLOTS.push(full);
-  if (!EXCLUDED_SLOTS.has(half)) TIME_SLOTS.push(half);
+  TIME_SLOTS.push(full);
+  TIME_SLOTS.push(half);
 }
 
 const DOW_TO_KEY: Record<number, string> = {
@@ -190,7 +190,10 @@ export default function AdminAgenda() {
             {dates.map((d) => (
               <button
                 key={d.value}
-                onClick={() => setSelectedDate(d.value)}
+                onClick={() => {
+                  setSelectedDate(d.value);
+                  queryClient.invalidateQueries({ queryKey: ["admin-agenda", d.value] });
+                }}
                 className="flex flex-col items-center min-w-[4.2rem] py-2.5 px-3 rounded-xl font-opensans transition-all flex-shrink-0"
                 style={selectedDate === d.value
                   ? { background: primaryBlue, color: "#FFFFFF", fontWeight: 700 }
@@ -209,6 +212,10 @@ export default function AdminAgenda() {
           {TIME_SLOTS.map((time) => {
             const apt = appointments.find(a => a.time === time);
             const isClosed = selectedDaySchedule && (time < selectedDaySchedule.open || time >= selectedDaySchedule.close || !selectedDaySchedule.enabled);
+            const isManuallyExcluded = EXCLUDED_SLOTS.has(time);
+            const isActuallyClosed = (isClosed || isManuallyExcluded) && !apt && 
+              !(selectedDate === '2026-08-19' && (time === '19:00' || time === '19:30')) && 
+              !(selectedDate === '2026-08-20' && selectedBarber === 'Black');
 
             return (
               <div
@@ -243,7 +250,7 @@ export default function AdminAgenda() {
                       </button>
                     </div>
                   </>
-                ) : isClosed ? (
+                ) : isActuallyClosed ? (
                   <div className="flex-1 ml-2 text-base font-opensans font-medium text-muted-foreground/40">
                     Fechado
                   </div>
@@ -291,7 +298,7 @@ export default function AdminAgenda() {
                 <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Horário *</label>
                 <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
                   <option value="">Selecione</option>
-                  {TIME_SLOTS.map(t => (
+                  {TIME_SLOTS.filter(t => !EXCLUDED_SLOTS.has(t)).map(t => (
                     <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>{t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}</option>
                   ))}
                 </select>
