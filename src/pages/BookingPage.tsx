@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { addDays, format, startOfDay, getDay } from "date-fns";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 const ALL_TIME_SLOTS = [
   "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
