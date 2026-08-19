@@ -269,40 +269,42 @@ export default function AdminAgenda() {
                 {editingId ? "Editar Agendamento" : "Novo Agendamento"}
               </DialogTitle>
             </DialogHeader>
-            <div className="flex flex-col gap-4 mt-3">
-              <div>
-                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Nome do Cliente *</label>
-                <input value={form.client_name} onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} placeholder="Ex: João Silva" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
+            <div className="overflow-y-auto max-h-[80svh] overscroll-contain touch-pan-y px-1 pb-6">
+              <div className="flex flex-col gap-4 mt-3">
+                <div>
+                  <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Nome do Cliente *</label>
+                  <input value={form.client_name} onChange={(e) => setForm(f => ({ ...f, client_name: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} placeholder="Ex: João Silva" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
+                </div>
+                <div>
+                  <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Telefone (opcional)</label>
+                  <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} placeholder="(00) 00000-0000" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
+                </div>
+                <div>
+                  <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Serviço *</label>
+                  <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
+                    {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Barbeiro *</label>
+                  <select value={form.barbeiro} onChange={(e) => setForm(f => ({ ...f, barbeiro: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
+                    <option value="OneTwo">OneTwo</option>
+                    <option value="Black">Black</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Horário *</label>
+                  <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
+                    <option value="">Selecione</option>
+                    {TIME_SLOTS.map(t => (
+                      <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>{t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}</option>
+                    ))}
+                  </select>
+                </div>
+                <button onClick={handleSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-white mt-1 transition-all hover:brightness-110 min-h-[52px]" style={{ background: primaryBlue }}>
+                  {editingId ? "Salvar Alterações" : "Criar Agendamento"}
+                </button>
               </div>
-              <div>
-                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Telefone (opcional)</label>
-                <input value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle} placeholder="(00) 00000-0000" onFocus={(e) => e.currentTarget.style.borderColor = "#2563EB"} onBlur={(e) => e.currentTarget.style.borderColor = "#1F2937"} />
-              </div>
-              <div>
-                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Serviço *</label>
-                <select value={form.service} onChange={(e) => setForm(f => ({ ...f, service: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
-                  {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Barbeiro *</label>
-                <select value={form.barbeiro} onChange={(e) => setForm(f => ({ ...f, barbeiro: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
-                  <option value="OneTwo">OneTwo</option>
-                  <option value="Black">Black</option>
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Horário *</label>
-                <select value={form.time} onChange={(e) => setForm(f => ({ ...f, time: e.target.value }))} className="w-full rounded-xl px-4 py-3.5 text-base font-opensans outline-none transition-all" style={inputStyle}>
-                  <option value="">Selecione</option>
-                  {TIME_SLOTS.map(t => (
-                    <option key={t} value={t} disabled={!editingId && occupiedTimes.has(t)}>{t} {!editingId && occupiedTimes.has(t) ? "(Ocupado)" : ""}</option>
-                  ))}
-                </select>
-              </div>
-              <button onClick={handleSave} className="w-full py-4 rounded-xl font-montserrat font-bold text-base text-white mt-1 transition-all hover:brightness-110 min-h-[52px]" style={{ background: primaryBlue }}>
-                {editingId ? "Salvar Alterações" : "Criar Agendamento"}
-              </button>
             </div>
           </DialogContent>
         </Dialog>
