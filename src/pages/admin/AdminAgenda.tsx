@@ -87,7 +87,13 @@ export default function AdminAgenda() {
     return businessHours[key] ?? null;
   }, [businessHours, selectedDate]);
 
-  const occupiedTimes = useMemo(() => new Set(appointments.map(a => a.time)), [appointments]);
+  const occupiedTimes = useMemo(() => {
+    return new Set(
+      appointments
+        .filter(a => a.barbeiro === form.barbeiro)
+        .map(a => a.time)
+    );
+  }, [appointments, form.barbeiro]);
 
   const openNew = (time?: string) => {
     setEditingId(null);
