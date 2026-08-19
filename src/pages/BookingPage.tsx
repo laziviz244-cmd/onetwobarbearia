@@ -556,7 +556,7 @@ export default function BookingPage() {
         </DialogContent>
       </Dialog>
       <div className="mt-4 mb-2">
-        <WhatsAppButton />
+        <WhatsAppButton isScheduleFull={isScheduleFull} />
       </div>
     </div>
   );
