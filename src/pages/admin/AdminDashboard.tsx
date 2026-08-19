@@ -179,7 +179,7 @@ export default function AdminDashboard() {
         </h2>
         <button
           onClick={() => navigate("/admin/agenda")}
-          className="text-base font-opensans font-semibold flex items-center gap-1 min-h-[48px] text-primary"
+          className="text-base font-opensans font-semibold flex items-center gap-1 min-h-[48px] text-primary pr-2"
         >
           Ver tudo <ChevronRight className="h-5 w-5" />
         </button>
