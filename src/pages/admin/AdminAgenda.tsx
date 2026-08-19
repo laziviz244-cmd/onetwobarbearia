@@ -209,8 +209,6 @@ export default function AdminAgenda() {
                   ? { background: "#111111", borderLeft: selectedBarber === apt.barbeiro ? "4px solid #2563EB" : "4px solid #374151", opacity: selectedBarber === apt.barbeiro ? 1 : 0.5 }
                   : { background: "#111111", opacity: 1 }
                 }
-                onMouseEnter={(e) => { if (!apt) e.currentTarget.style.opacity = "1"; }}
-                onMouseLeave={(e) => { if (!apt) e.currentTarget.style.opacity = "0.6"; }}
               >
                 <span className="text-base font-opensans font-bold tabular-nums w-14 flex-shrink-0 text-muted-foreground">
                   {time}
