@@ -159,6 +159,7 @@ export default function AdminAgenda() {
   };
 
   const inputStyle = { background: "#111111", border: "1px solid #1F2937", color: "#F9FAFB" };
+  const primaryBlue = "#2563EB";
 
   return (
     <AdminLayout>
