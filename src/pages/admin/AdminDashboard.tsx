@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAdminAuth } from "@/contexts/AdminAuthContext";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { format } from "date-fns";
@@ -59,6 +59,18 @@ export default function AdminDashboard() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editingApt, setEditingApt] = useState<Appointment | null>(null);
   const [editForm, setEditForm] = useState({ client_name: "", service: "", barbeiro: "OneTwo", time: "", phone: "" });
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!window.visualViewport) return;
+    const handleResize = () => {
+      setViewportHeight(window.visualViewport?.height || window.innerHeight);
+    };
+    window.visualViewport.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.visualViewport?.removeEventListener("resize", handleResize);
+  }, []);
+
   const today = getTodayDate();
 
   const { data, isLoading } = useQuery({
@@ -271,7 +283,10 @@ export default function AdminDashboard() {
           <DialogHeader>
             <DialogTitle className="font-montserrat text-xl text-foreground">Editar Agendamento</DialogTitle>
           </DialogHeader>
-          <div className="overflow-y-auto max-h-[80svh] overscroll-contain touch-pan-y px-1 pb-6">
+          <div 
+            className="overflow-y-auto overscroll-contain touch-pan-y px-1 pb-6"
+            style={{ maxHeight: viewportHeight ? `${viewportHeight * 0.7}px` : "80svh" }}
+          >
             <div className="flex flex-col gap-4 mt-3">
               <div>
                 <label className="text-sm font-opensans mb-1.5 block text-muted-foreground">Nome do Cliente *</label>
