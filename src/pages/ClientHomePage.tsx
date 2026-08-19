@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { staggerContainer, staggerItem } from "@/components/motion";
+import { toast } from "sonner";
 import { useState, memo, useRef, useEffect } from "react";
 import corteImg from "@/assets/corte.jpg";
 import barbaImg from "@/assets/barba.jpg";
