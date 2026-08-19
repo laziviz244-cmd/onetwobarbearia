@@ -453,8 +453,15 @@ export default function BookingPage() {
                     return (
                       <motion.button
                         key={time}
-                        whileTap={isReserved ? undefined : { scale: 0.95 }}
+                        whileTap={isReserved || !selectedBarber ? undefined : { scale: 0.95 }}
                         onClick={() => {
+                          if (!selectedBarber) {
+                            toast({
+                              title: "Escolha um profissional",
+                              description: "Selecione o profissional no topo da tela antes de escolher um horário.",
+                            });
+                            return;
+                          }
                           if (isReserved) {
                             toast({
                               title: "Putz! Horário indisponível",
