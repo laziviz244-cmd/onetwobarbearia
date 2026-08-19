@@ -213,9 +213,7 @@ export default function AdminAgenda() {
             const apt = appointments.find(a => a.time === time);
             const isClosed = selectedDaySchedule && (time < selectedDaySchedule.open || time >= selectedDaySchedule.close || !selectedDaySchedule.enabled);
             const isManuallyExcluded = EXCLUDED_SLOTS.has(time);
-            const isActuallyClosed = (isClosed || isManuallyExcluded) && !apt && 
-              !(selectedDate === '2026-08-19' && (time === '19:00' || time === '19:30')) && 
-              !(selectedDate === '2026-08-20' && selectedBarber === 'Black');
+            const isActuallyClosed = (isClosed || isManuallyExcluded) && !apt;
 
             return (
               <div

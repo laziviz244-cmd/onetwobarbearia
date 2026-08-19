@@ -68,8 +68,6 @@ export default function AdminDashboard() {
     gcTime: Infinity,
     refetchOnWindowFocus: true,
     refetchOnMount: "always",
-    // Realtime was removed from the appointments table for security.
-    // Poll every 15s so the dashboard stays up to date.
     refetchInterval: 15_000,
   });
 
@@ -79,7 +77,6 @@ export default function AdminDashboard() {
 
   const handleDelete = async () => {
     if (!deleteId) return;
-    // Optimistic: remove from cache
     queryClient.setQueryData(["admin-dashboard", today], (old: any) => {
       if (!old) return old;
       return {
@@ -108,7 +105,6 @@ export default function AdminDashboard() {
       toast.error("Preencha nome e horário.");
       return;
     }
-    // Optimistic update
     const updatedApt = { ...editingApt, ...editForm, client_name: editForm.client_name.trim() };
     queryClient.setQueryData(["admin-dashboard", today], (old: any) => {
       if (!old) return old;
@@ -146,7 +142,6 @@ export default function AdminDashboard() {
 
   return (
     <AdminLayout>
-      {/* Hero title */}
       <div className="mb-10">
         <p className="text-xl font-opensans text-muted-foreground">
           {"Olá, Onetwo👋"}
@@ -159,7 +154,6 @@ export default function AdminDashboard() {
         </p>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-3 gap-3 mb-10 w-full box-border">
         {stats.map((stat) => (
           <div key={stat.label} className="rounded-2xl p-4 sm:p-5 flex flex-col items-start gap-1.5 bg-card overflow-hidden">
@@ -172,7 +166,6 @@ export default function AdminDashboard() {
         ))}
       </div>
 
-      {/* Today's appointments */}
       <div className="flex items-center justify-between mb-5 pr-4">
         <h2 className="font-montserrat font-bold text-2xl tracking-tight text-foreground shrink-0">
           Agenda do dia
@@ -256,7 +249,6 @@ export default function AdminDashboard() {
         )}
       </div>
 
-      {/* Delete confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => { if (!open) setDeleteId(null); }}>
         <AlertDialogContent className="bg-card border-border">
           <AlertDialogHeader>
@@ -274,7 +266,6 @@ export default function AdminDashboard() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Edit dialog */}
       <Dialog open={!!editingApt} onOpenChange={(open) => { if (!open) setEditingApt(null); }}>
         <DialogContent className="max-w-[calc(100vw-2rem)] mx-auto bg-card border-border">
           <DialogHeader>
