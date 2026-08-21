@@ -4,7 +4,7 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 const buildTimestamp = Date.now().toString();
-const forceUpdateTag = "force-refresh-2026-05-01-mobile-chrome-safari-mandatory-version-check-04";
+const forceUpdateTag = "force-refresh-2026-08-21-v1-cache-bust-verified";
 const fullBuildVersion = `${buildTimestamp}-${forceUpdateTag}`;
 
 const earlyVersionGuard = `
