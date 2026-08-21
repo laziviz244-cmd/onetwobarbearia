@@ -223,32 +223,34 @@ export default function AdminDashboard() {
                     <span className="text-lg font-opensans font-bold tabular-nums w-[3.5rem] flex-shrink-0 text-muted-foreground">
                       {time}
                     </span>
-                    <div className="flex-1 flex justify-between items-center min-w-0">
+                    <div className="flex-1 flex flex-col sm:flex-row sm:justify-between sm:items-center min-w-0 gap-4 sm:gap-2">
                       {slotAppointments.map((apt, idx) => (
-                        <div key={apt.id} className={`flex items-center flex-1 min-w-0 ${idx > 0 ? "ml-4" : ""}`}>
+                        <div key={apt.id} className="flex items-center flex-1 min-w-0 bg-white/5 sm:bg-transparent p-3 sm:p-0 rounded-xl">
                           <div className="flex-1 min-w-0">
-                            <p className="font-opensans font-semibold text-lg truncate text-foreground">
+                            <p className="font-opensans font-semibold text-lg text-foreground break-words leading-tight">
                               {apt.client_name}
                             </p>
-                            <p className="text-base font-opensans mt-0.5 text-muted-foreground">
-                              {apt.service} • <span className="font-bold text-primary">{apt.barbeiro || "OneTwo"}</span>
+                            <p className="text-base font-opensans mt-0.5 text-muted-foreground leading-tight">
+                              {apt.service} • <span className="font-bold text-primary whitespace-nowrap">{apt.barbeiro || "OneTwo"}</span>
                             </p>
                           </div>
-                          <div className="flex items-center gap-1 flex-shrink-0">
+                          <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
                             {isCurrent && idx === 0 && (
-                              <span className="text-xs font-montserrat font-bold px-3 py-1 rounded-full mr-1 text-primary-foreground bg-primary">AGORA</span>
+                              <span className="text-[10px] font-montserrat font-bold px-2 py-0.5 rounded-full mr-1 text-primary-foreground bg-primary shrink-0">AGORA</span>
                             )}
                             <button
                               onClick={() => openEdit(apt)}
-                              className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-accent"
+                              className="h-10 w-10 flex items-center justify-center rounded-lg transition-colors active:bg-accent"
+                              title="Editar"
                             >
-                              <Edit2 className="h-[20px] w-[20px] text-primary" strokeWidth={1.8} />
+                              <Edit2 className="h-[18px] w-[18px] text-primary" strokeWidth={2} />
                             </button>
                             <button
                               onClick={() => setDeleteId(apt.id)}
-                              className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-accent"
+                              className="h-10 w-10 flex items-center justify-center rounded-lg transition-colors active:bg-accent"
+                              title="Excluir"
                             >
-                              <Trash2 className="h-[20px] w-[20px] text-destructive" strokeWidth={1.8} />
+                              <Trash2 className="h-[18px] w-[18px] text-destructive" strokeWidth={2} />
                             </button>
                           </div>
                         </div>
