@@ -227,10 +227,10 @@ export default function AdminAgenda() {
         {/* Time slots */}
         <div className="flex flex-col gap-2.5 w-full px-1">
           {TIME_SLOTS.map((time) => {
-            const apt = appointments.find(a => a.time === time);
+            const slotAppointments = appointments.filter(a => a.time === time);
             const isClosed = selectedDaySchedule && (time < selectedDaySchedule.open || time >= selectedDaySchedule.close || !selectedDaySchedule.enabled);
             const isManuallyExcluded = EXCLUDED_SLOTS.has(time);
-            const isActuallyClosed = (isClosed || isManuallyExcluded) && !apt;
+            const isActuallyClosed = (isClosed || isManuallyExcluded) && slotAppointments.length === 0;
 
             return (
               <div
@@ -241,23 +241,27 @@ export default function AdminAgenda() {
                 <span className="text-base font-opensans font-bold tabular-nums w-14 flex-shrink-0 text-muted-foreground">
                   {time}
                 </span>
-                {apt ? (
-                  <>
-                    <div className="flex-1 min-w-0 ml-2">
-                      <p className="font-opensans font-semibold text-base truncate text-foreground">{apt.client_name}</p>
-                      <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">
-                        {apt.service} • <span className="font-bold" style={{ color: primaryBlue }}>{apt.barbeiro || "OneTwo"}</span>
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 flex-shrink-0 ml-2">
-                      <button onClick={() => openEdit(apt)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
-                        <Edit2 className="h-[22px] w-[22px] text-primary" strokeWidth={1.8} />
-                      </button>
-                      <button onClick={() => handleDelete(apt.id)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
-                        <Trash2 className="h-[22px] w-[22px] text-destructive" strokeWidth={1.8} />
-                      </button>
-                    </div>
-                  </>
+                {slotAppointments.length > 0 ? (
+                  <div className="flex-1 flex justify-between items-center min-w-0 ml-2">
+                    {slotAppointments.map((apt, idx) => (
+                      <div key={apt.id} className={`flex items-center flex-1 min-w-0 ${idx > 0 ? "ml-4" : ""}`}>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-opensans font-semibold text-base truncate text-foreground">{apt.client_name}</p>
+                          <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">
+                            {apt.service} • <span className="font-bold" style={{ color: primaryBlue }}>{apt.barbeiro || "OneTwo"}</span>
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                          <button onClick={() => openEdit(apt)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
+                            <Edit2 className="h-[22px] w-[22px] text-primary" strokeWidth={1.8} />
+                          </button>
+                          <button onClick={() => handleDelete(apt.id)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
+                            <Trash2 className="h-[22px] w-[22px] text-destructive" strokeWidth={1.8} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : isActuallyClosed ? (
                   <div className="flex-1 ml-2 text-base font-opensans font-medium text-muted-foreground/40">
                     Fechado

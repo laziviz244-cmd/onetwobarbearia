@@ -203,12 +203,15 @@ export default function AdminDashboard() {
           </div>
         ) : (
           <>
-            {appointments.map((apt) => {
-              const isPast = apt.time < now;
-              const isCurrent = !isPast && appointments.filter(a => a.time <= now).length > 0 && apt.time === appointments.filter(a => a.time >= now)[0]?.time;
+            {Array.from(new Set(appointments.map(a => a.time))).sort().map((time) => {
+              const slotAppointments = appointments.filter(a => a.time === time);
+              const isPast = time < now;
+              const nextAptTime = appointments.filter(a => a.time >= now).sort((a,b) => a.time.localeCompare(b.time))[0]?.time;
+              const isCurrent = !isPast && time === nextAptTime;
+
               return (
                 <motion.div
-                  key={apt.id}
+                  key={time}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className={`relative rounded-2xl px-5 py-6 bg-card ${isCurrent ? "border border-primary" : ""} ${isPast ? "opacity-50" : ""}`}
@@ -218,30 +221,38 @@ export default function AdminDashboard() {
                   )}
                   <div className="flex items-center gap-3">
                     <span className="text-lg font-opensans font-bold tabular-nums w-[3.5rem] flex-shrink-0 text-muted-foreground">
-                      {apt.time}
+                      {time}
                     </span>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-opensans font-semibold text-lg truncate text-foreground">
-                        {apt.client_name}
-                      </p>
-                      <p className="text-base font-opensans mt-0.5 text-muted-foreground">{apt.service} • <span className="font-bold text-primary">{apt.barbeiro || "OneTwo"}</span></p>
-                    </div>
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      {isCurrent && (
-                        <span className="text-xs font-montserrat font-bold px-3 py-1 rounded-full mr-1 text-primary-foreground bg-primary">AGORA</span>
-                      )}
-                      <button
-                        onClick={() => openEdit(apt)}
-                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-accent"
-                      >
-                        <Edit2 className="h-[20px] w-[20px] text-primary" strokeWidth={1.8} />
-                      </button>
-                      <button
-                        onClick={() => setDeleteId(apt.id)}
-                        className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-accent"
-                      >
-                        <Trash2 className="h-[20px] w-[20px] text-destructive" strokeWidth={1.8} />
-                      </button>
+                    <div className="flex-1 flex justify-between items-center min-w-0">
+                      {slotAppointments.map((apt, idx) => (
+                        <div key={apt.id} className={`flex items-center flex-1 min-w-0 ${idx > 0 ? "ml-4" : ""}`}>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-opensans font-semibold text-lg truncate text-foreground">
+                              {apt.client_name}
+                            </p>
+                            <p className="text-base font-opensans mt-0.5 text-muted-foreground">
+                              {apt.service} • <span className="font-bold text-primary">{apt.barbeiro || "OneTwo"}</span>
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            {isCurrent && idx === 0 && (
+                              <span className="text-xs font-montserrat font-bold px-3 py-1 rounded-full mr-1 text-primary-foreground bg-primary">AGORA</span>
+                            )}
+                            <button
+                              onClick={() => openEdit(apt)}
+                              className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-accent"
+                            >
+                              <Edit2 className="h-[20px] w-[20px] text-primary" strokeWidth={1.8} />
+                            </button>
+                            <button
+                              onClick={() => setDeleteId(apt.id)}
+                              className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-accent"
+                            >
+                              <Trash2 className="h-[20px] w-[20px] text-destructive" strokeWidth={1.8} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </motion.div>
