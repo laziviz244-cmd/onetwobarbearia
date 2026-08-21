@@ -242,21 +242,23 @@ export default function AdminAgenda() {
                   {time}
                 </span>
                 {slotAppointments.length > 0 ? (
-                  <div className="flex-1 flex justify-between items-center min-w-0 ml-2">
+                  <div className="flex-1 flex flex-col sm:flex-row sm:justify-between sm:items-center min-w-0 ml-2 gap-4 sm:gap-2">
                     {slotAppointments.map((apt, idx) => (
-                      <div key={apt.id} className={`flex items-center flex-1 min-w-0 ${idx > 0 ? "ml-4" : ""}`}>
+                      <div key={apt.id} className="flex items-center flex-1 min-w-0 bg-white/5 sm:bg-transparent p-3 sm:p-0 rounded-xl">
                         <div className="flex-1 min-w-0">
-                          <p className="font-opensans font-semibold text-base truncate text-foreground">{apt.client_name}</p>
-                          <p className="text-sm font-opensans truncate mt-0.5 text-muted-foreground">
-                            {apt.service} • <span className="font-bold" style={{ color: primaryBlue }}>{apt.barbeiro || "OneTwo"}</span>
+                          <p className="font-opensans font-semibold text-base text-foreground break-words leading-tight">
+                            {apt.client_name}
+                          </p>
+                          <p className="text-sm font-opensans mt-0.5 text-muted-foreground leading-tight">
+                            {apt.service} • <span className="font-bold whitespace-nowrap" style={{ color: primaryBlue }}>{apt.barbeiro || "OneTwo"}</span>
                           </p>
                         </div>
-                        <div className="flex items-center gap-1 flex-shrink-0 ml-2">
-                          <button onClick={() => openEdit(apt)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
-                            <Edit2 className="h-[22px] w-[22px] text-primary" strokeWidth={1.8} />
+                        <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
+                          <button onClick={() => openEdit(apt)} className="h-10 w-10 flex items-center justify-center rounded-lg transition-colors active:bg-white/10" title="Editar">
+                            <Edit2 className="h-[18px] w-[18px] text-primary" strokeWidth={2} />
                           </button>
-                          <button onClick={() => handleDelete(apt.id)} className="h-11 w-11 flex items-center justify-center rounded-xl transition-colors active:bg-white/10">
-                            <Trash2 className="h-[22px] w-[22px] text-destructive" strokeWidth={1.8} />
+                          <button onClick={() => handleDelete(apt.id)} className="h-10 w-10 flex items-center justify-center rounded-lg transition-colors active:bg-white/10" title="Excluir">
+                            <Trash2 className="h-[18px] w-[18px] text-destructive" strokeWidth={2} />
                           </button>
                         </div>
                       </div>
